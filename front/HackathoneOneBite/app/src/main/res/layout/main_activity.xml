@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:text="PW"/>
         <EditText
+            android:id="@+id/userPW"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </LinearLayout>
