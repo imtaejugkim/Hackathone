@@ -10,5 +10,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         binding = MainActivityBinding.inflate(layoutInflater)
+
+        init()
+    }
+    fun init() {
+        binding.loginBtn.setOnClickListener {
+            var ID = binding.userID.text
+        }
     }
 }
