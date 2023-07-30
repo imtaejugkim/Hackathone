@@ -1,11 +1,11 @@
 package com.example.hackathoneonebite.Data
 
-class User {
-    var id: String? = null
-        get() {return field}
-        set(value) {field = value}
+import com.google.gson.annotations.SerializedName
 
+class User (
+    @SerializedName("id")
+    var id: String? = null,
+
+    @SerializedName("password")
     var pw: String? = null
-        get() {return field}
-        set(value) {field = value}
-}
+)

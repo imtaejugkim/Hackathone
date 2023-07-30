@@ -7,12 +7,14 @@ import androidx.activity.ComponentActivity
 import com.example.hackathoneonebite.Data.User
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.MainActivityBinding
-import okhttp3.ResponseBody
+import com.google.gson.annotations.SerializedName
+import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.security.AccessController.getContext
+import java.io.IOException
+import java.util.Objects
 
 
 class MainActivity : ComponentActivity() {
@@ -37,30 +39,34 @@ class MainActivity : ComponentActivity() {
 
     fun Login(user: User){
         val call = RetrofitBuilder.api.getLoginResponse(user)
-        call.enqueue(object : Callback<String> { // 비동기 방식 통신 메소드
+        call.enqueue(object : Callback<User> { // 비동기 방식 통신 메소드
             override fun onResponse( // 통신에 성공한 경우
-                call: Call<String>,
-                response: Response<String>
+                call: Call<User>,
+                response: Response<User>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
-                    Log.d("RESPONSE: ", response.body().toString())
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "ID: ${userResponse?.id}, Name: ${userResponse?.pw}")
                 }else{
                     // 통신 성공 but 응답 실패
-                    Log.d("RESPONSE", "FAILURE:"+ response.errorBody().toString())
-                    try {
-                        val jObjError = JSONObject(response.errorBody()!!.string())
-                        Toast.makeText(
-                            this@MainActivity,
-                            jObjError.getJSONObject("error").getString("message"),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(this@MainActivity, e.message, Toast.LENGTH_LONG).show()
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@MainActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@MainActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
-            override fun onFailure(call: Call<String>, t: Throwable) {
+            override fun onFailure(call: Call<User>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
