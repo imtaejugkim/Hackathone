@@ -1,43 +1,43 @@
 package com.example.hackathoneonebite
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import com.example.hackathoneonebite.Data.User
 import com.example.hackathoneonebite.api.RetrofitBuilder
-import com.example.hackathoneonebite.databinding.MainActivityBinding
-import com.google.gson.annotations.SerializedName
+import com.example.hackathoneonebite.databinding.ActivityStartBinding
+import com.example.hackathoneonebite.main.MainFrameActivity
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import java.util.Objects
 
-
-class MainActivity : ComponentActivity() {
-    lateinit var binding: MainActivityBinding
+class StartActivity : ComponentActivity() {
+    lateinit var binding: ActivityStartBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = MainActivityBinding.inflate(layoutInflater)
+        binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         init()
     }
     fun init() {
         binding.loginBtn.setOnClickListener {
-            val user = User()
+            val i = Intent(this@StartActivity, MainFrameActivity::class.java)
+            startActivity(i)
+/*            val user = User()
             user.id = binding.userID.text.toString()
             user.pw = binding.userPW.text.toString()
 
             Log.d("Login Button Clicked", "ID:" + user.id + " / PW:" + user.pw)
-            Login(user)
+            Login(user)*/
         }
     }
 
-    fun Login(user: User){
+    /*fun Login(user: User){
         val call = RetrofitBuilder.api.getLoginResponse(user)
         call.enqueue(object : Callback<User> { // 비동기 방식 통신 메소드
             override fun onResponse( // 통신에 성공한 경우
@@ -55,13 +55,13 @@ class MainActivity : ComponentActivity() {
                         try {
                             val jsonObject = JSONObject(errorBody)
                             val errorMessage = jsonObject.getString("error_message")
-                            Toast.makeText(this@MainActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@StartActivity, errorMessage, Toast.LENGTH_SHORT).show()
                         } catch (e: JSONException) {
                             Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
-                            Toast.makeText(this@MainActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@StartActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(this@MainActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@StartActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -71,5 +71,5 @@ class MainActivity : ComponentActivity() {
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
-    }
+    }*/
 }
