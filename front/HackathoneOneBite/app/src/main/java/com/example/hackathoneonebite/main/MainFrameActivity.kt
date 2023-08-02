@@ -9,7 +9,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainFrameActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainFrameBinding
     val imgArray = arrayListOf<Int>(
-        R.drawable.baseline_home_24,R.drawable.baseline_search_24,R.drawable.baseline_exposure_plus_1_24,R.drawable.baseline_star_24,R.drawable.baseline_account_circle_24)
+        R.drawable.tab_main,R.drawable.tab_search,R.drawable.tab_post,R.drawable.tab_rank,R.drawable.tab_profile)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainFrameBinding.inflate(layoutInflater)
