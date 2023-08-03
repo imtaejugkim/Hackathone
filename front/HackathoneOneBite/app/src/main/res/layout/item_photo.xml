@@ -4,4 +4,4 @@
     android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:scaleType="centerCrop"
-    android:src="@drawable/baseline_account_circle_24" />
+    android:src="@drawable/baseline_airplanemode_active_24" />

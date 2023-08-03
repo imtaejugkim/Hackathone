@@ -1,14 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.fragment.Main5ProfileFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="fragment5" />
+    <!-- 기존의 ImageView -->
+    <ImageView
+        android:id="@+id/profileBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.65"
+        android:src="@drawable/img_pseudo_background"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/profileInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-</FrameLayout>
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <ImageView
+        android:id="@+id/profileMain"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/circle_shape"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toBottomOf="@+id/profileBackground"
+        app:layout_constraintBottom_toTopOf="@+id/profileInfo"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <!-- 기존의 RecyclerView -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/profileInfo"
+        tools:listitem="@layout/item_ranking_list"
+        app:layout_constraintHeight_percent="0.35"
+        app:layout_constraintTop_toBottomOf="@+id/profileBackground"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_marginTop="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/profileId"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="25dp"
+                android:text="홍길동"
+                android:textColor="@android:color/black">
+            </TextView>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_gravity="center"
+                android:text="+팔로우"
+                android:textSize="10sp"
+                android:background="@color/black"
+                android:textColor="@android:color/white">
+            </Button>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="25dp">
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="15dp"
+                android:text="릴레이">
+            </TextView>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="15dp"
+                android:text="팔로워">
+            </TextView>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="30dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="15dp"
+                android:text="좋아요">
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/countRelay"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="30dp"
+                android:text="57">
+            </TextView>
+            <TextView
+                android:id="@+id/countFollow"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="30dp"
+                android:text="10.3K">
+            </TextView>
+            <TextView
+                android:id="@+id/countLike"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@id/profileMain"
+                android:textSize="30dp"
+                android:text="5M">
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

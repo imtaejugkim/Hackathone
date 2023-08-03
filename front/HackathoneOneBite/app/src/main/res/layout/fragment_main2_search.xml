@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.fragment.Main2SearchFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+
     <TextView
+        android:textColor="@color/black"
+        android:id="@+id/scheduleDate"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:text="릴레이"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart" />
+
+
+    <ImageView
+        android:id="@+id/profileMain"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/circle_shape"
+        android:scaleType="fitXY"
+        app:layout_constraintTop_toBottomOf="@+id/profileBackground"
+        app:layout_constraintBottom_toTopOf="@+id/profileInfo"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintVertical_bias="0.5" />
+
+    <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="fragment2" />
+        android:id="@+id/recyclerView"
+        tools:listitem="@layout/item_ranking_list"
+        android:paddingTop="10dp"
+        android:layout_margin="16dp"/>
 
-</FrameLayout>
+</LinearLayout>

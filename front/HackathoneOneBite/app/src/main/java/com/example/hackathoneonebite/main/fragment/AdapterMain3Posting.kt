@@ -7,7 +7,6 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.example.hackathoneonebite.R
 
 class AdapterMain3Posting(private val photoList: List<String>) : RecyclerView.Adapter<AdapterMain3Posting.PhotoViewHolder>() {
@@ -19,7 +18,7 @@ class AdapterMain3Posting(private val photoList: List<String>) : RecyclerView.Ad
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
         val photoPath = photoList[position]
-        val options = RequestOptions()
+        val options = com.bumptech.glide.request.RequestOptions()
             .diskCacheStrategy(DiskCacheStrategy.ALL)
         Glide.with(holder.itemView.context)
             .load(photoPath)

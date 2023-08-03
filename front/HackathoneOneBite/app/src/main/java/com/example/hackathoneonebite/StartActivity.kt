@@ -28,10 +28,9 @@ class StartActivity : ComponentActivity() {
         binding.loginBtn.setOnClickListener {
             val i = Intent(this@StartActivity, MainFrameActivity::class.java)
             startActivity(i)
-/*            val user = User()
+            /*val user = User()
             user.id = binding.userID.text.toString()
             user.pw = binding.userPW.text.toString()
-
             Log.d("Login Button Clicked", "ID:" + user.id + " / PW:" + user.pw)
             Login(user)*/
         }
