@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/post_frame">
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="3.2:10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/black"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintTop_toTopOf="@+id/space"
+        app:layout_constraintBottom_toBottomOf="@id/space"
+        android:background="@color/black"/>
+
+    <View
+        android:id="@+id/emptyView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.03"
+        app:layout_constraintTop_toTopOf="@id/space"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"/>
+
+    <ImageView
+        android:id="@+id/imageView1frame1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintHeight_percent="0.21"
+        app:layout_constraintTop_toBottomOf="@id/emptyView1"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintDimensionRatio="26:21"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/emptyView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.01"
+        app:layout_constraintTop_toBottomOf="@id/imageView1frame1"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"/>
+
+    <ImageView
+        android:id="@+id/imageView2frame1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintHeight_percent="0.21"
+        app:layout_constraintTop_toBottomOf="@id/emptyView2"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintDimensionRatio="26:21"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/emptyView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.01"
+        app:layout_constraintTop_toBottomOf="@id/imageView2frame1"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"/>
+
+    <ImageView
+        android:id="@+id/imageView3frame1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintHeight_percent="0.21"
+        app:layout_constraintTop_toBottomOf="@id/emptyView3"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintDimensionRatio="26:21"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/emptyView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.01"
+        app:layout_constraintTop_toBottomOf="@id/imageView3frame1"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"/>
+
+    <ImageView
+        android:id="@+id/imageView4frame1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintHeight_percent="0.21"
+        app:layout_constraintTop_toBottomOf="@id/emptyView4"
+        app:layout_constraintStart_toStartOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintDimensionRatio="26:21"
+        android:scaleType="centerCrop"/>
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="RELAY"
+        android:textColor="@color/white"
+        app:layout_constraintHeight_percent="0.1"
+        app:layout_constraintTop_toBottomOf="@id/imageView4frame1"
+        app:layout_constraintStart_toStartOf="@id/imageView4frame1"
+        app:layout_constraintEnd_toEndOf="@id/imageView4frame1"
+        app:layout_constraintBottom_toBottomOf="@id/space"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
