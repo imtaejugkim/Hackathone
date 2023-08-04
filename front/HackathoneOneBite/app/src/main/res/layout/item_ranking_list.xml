@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_marginTop="8dp"
     android:layout_marginLeft="8dp"
@@ -19,9 +20,10 @@
         android:layout_marginLeft="10dp">
         <TextView
             android:id="@+id/rankText"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
+            android:textSize="22sp"
             android:textColor="@color/black"
             android:text="00"/>
     </LinearLayout>
@@ -30,10 +32,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginLeft="10dp">
+        <com.google.android.material.imageview.ShapeableImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@color/light_gray"
+            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
         android:layout_marginLeft="10dp">
         <TextView
             android:id="@+id/rankName"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
@@ -44,28 +59,15 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
-        android:layout_marginLeft="10dp">
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/rankImage"
-            />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical"
+        android:layout_weight="3"
         android:layout_marginLeft="10dp">
         <TextView
             android:id="@+id/followText"
+            android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textColor="@color/gray"
             android:text="85,102"/>
     </LinearLayout>
 </LinearLayout>

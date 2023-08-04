@@ -2,18 +2,23 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.Manifest
 import android.content.ContentUris
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.R
 
 class Main3PostingFragment : Fragment() {
@@ -23,30 +28,55 @@ class Main3PostingFragment : Fragment() {
     }
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var layoutManager: GridLayoutManager
     private lateinit var adapter: AdapterMain3Posting
     private val photoList = mutableListOf<String>()
+    private lateinit var selectedImageView: ImageView
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_main3_posting, container, false)
         recyclerView = view.findViewById(R.id.recyclerView)
-        recyclerView.layoutManager = GridLayoutManager(context, 3)
-        adapter = AdapterMain3Posting(photoList)
+        layoutManager = GridLayoutManager(requireContext(), 4)
+        recyclerView.layoutManager = layoutManager
+
+        adapter = AdapterMain3Posting(photoList) { photoPath ->
+            // 아이템이 클릭되면 해당 사진을 위의 ConstraintLayout에 표시
+            Glide.with(requireContext())
+                .load(photoPath)
+                .into(selectedImageView)
+        }
         recyclerView.adapter = adapter
+
+        selectedImageView = view.findViewById(R.id.selectedImageView)
+
         return view
     }
 
+
+
     override fun onStart() {
         super.onStart()
-        if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
+        val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val isPermissionGranted = prefs.getBoolean("permission_granted", false)
+
+        if (isPermissionGranted) {
             loadPhotos()
         } else {
-            requestExternalStoragePermission()
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // 이미 이전에 권한이 허용되었지만, preference가 업데이트되지 않았을 수 있으므로
+                // 지금은 preference를 업데이트하고 사진을 로드
+                prefs.edit().putBoolean("permission_granted", true).apply()
+                loadPhotos()
+            } else {
+                requestExternalStoragePermission()
+            }
         }
     }
 
@@ -87,10 +117,14 @@ class Main3PostingFragment : Fragment() {
     ) {
         if (requestCode == REQUEST_READ_EXTERNAL_STORAGE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 권한이 허용, SharedPreferences를 업데이트
+                val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                prefs.edit().putBoolean("permission_granted", true).apply()
                 loadPhotos()
             } else {
                 // 권한이 거부된 경우 처리
             }
         }
     }
+
 }
