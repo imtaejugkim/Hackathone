@@ -78,15 +78,15 @@ class Main1HomeFragment : Fragment() {
 
     private fun initRecyclerView() {
         binding.apply {
-            /*recyclerView.setHasFixedSize(true)
+            recyclerView.setHasFixedSize(true)
             val carouselLayoutManager = CarouselLayoutManager(CarouselLayoutManager.HORIZONTAL)
             carouselLayoutManager.setPostLayoutListener(CarouselZoomPostLayoutListener())
             recyclerView.layoutManager = carouselLayoutManager
             recyclerView.addOnScrollListener(CenterScrollListener())
             adapter = AdapterMain1Home(data)
-            recyclerView.adapter = adapter*/
+            recyclerView.adapter = adapter
 
-            recyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
+            /*recyclerView.layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             //recyclerView.layoutManager = Main1homeCircleLayoutManager(requireContext())
             adapter = AdapterMain1Home(data)
             recyclerView.adapter = adapter
@@ -107,7 +107,7 @@ class Main1HomeFragment : Fragment() {
 
             // PagerSnapHelper를 사용하여 아이템을 중앙에 스냅시킴
             val snapHelper = PagerSnapHelper()
-            snapHelper.attachToRecyclerView(recyclerView)
+            snapHelper.attachToRecyclerView(recyclerView)*/
         }
     }
 }

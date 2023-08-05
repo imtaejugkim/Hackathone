@@ -28,11 +28,7 @@ class MainFrameActivity : AppCompatActivity() {
         }.attach()
         binding.mainViewPager.registerOnPageChangeCallback (object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    binding.mainViewPager.isUserInputEnabled = false
-                } else {
-                    binding.mainViewPager.isUserInputEnabled = true
-                }
+                binding.mainViewPager.isUserInputEnabled = false
             }
         })
     }
