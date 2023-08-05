@@ -9,6 +9,7 @@ data class Post(
     var likeCount: Int = 0,
     var date: LocalDate? = null,
     var message: String? = null,
-    var frame: String? = null
+    var frame: String? = null,
+    var isFliped: Boolean = false
 )
 
