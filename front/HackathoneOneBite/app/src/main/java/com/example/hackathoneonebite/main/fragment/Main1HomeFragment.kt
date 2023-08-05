@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -54,7 +53,7 @@ class Main1HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMain1HomeBinding.inflate(layoutInflater, container, false)
-        return binding!!.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -101,7 +100,7 @@ class Main1HomeFragment : Fragment() {
             recyclerView.adapter = adapter_thema1
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
-            //TODO: 다른 리사이클러뷰로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
+            //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
             if (data_thema1.isNotEmpty()) {
                 messageTextView.text = data_thema1[0]?.message
             } else {
@@ -135,7 +134,7 @@ class Main1HomeFragment : Fragment() {
             recyclerView.adapter = adapter_thema2
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
-            //TODO: 다른 리사이클러뷰로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
+            //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
             if (data_thema2.isNotEmpty()) {
                 messageTextView.text = data_thema2[0]?.message
             } else {
@@ -159,7 +158,7 @@ class Main1HomeFragment : Fragment() {
         //Film RecyclerView
         binding.postImageLayoutFilm.apply {
             recyclerView.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter_film = AdapterMain1HomeFilm(data_film)
             adapter_film.itemClickListener = object: AdapterMain1HomeFilm.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
@@ -169,7 +168,7 @@ class Main1HomeFragment : Fragment() {
             recyclerView.adapter = adapter_film
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
-            //TODO: 다른 리사이클러뷰로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
+            //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
             if (data_film.isNotEmpty()) {
                 messageTextView.text = data_film[0]?.message
             } else {

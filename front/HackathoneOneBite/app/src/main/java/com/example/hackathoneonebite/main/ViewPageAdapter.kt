@@ -1,8 +1,12 @@
 package com.example.hackathoneonebite.main
 
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.main.fragment.Main1HomeFirstFragment
 import com.example.hackathoneonebite.main.fragment.Main1HomeFragment
 import com.example.hackathoneonebite.main.fragment.Main2SearchFragment
 import com.example.hackathoneonebite.main.fragment.Main3PostingFragment
@@ -16,7 +20,7 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
 
     override fun createFragment(position: Int): Fragment {
         return when(position) {
-            0 -> Main1HomeFragment()
+            0 -> Main1HomeFirstFragment()
             1 -> Main2SearchFragment()
             2 -> Main3PostingFragment()
             3 -> Main4RankingFragment()
