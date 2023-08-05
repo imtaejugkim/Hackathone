@@ -46,19 +46,11 @@
         app:layout_constraintEnd_toEndOf="@id/space"/>
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/imageView1frame1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
-=======
-<<<<<<< HEAD
-        app:layout_constraintHeight_percent="0.21"
-=======
-        app:layout_constraintHeight_percent="0.205"
->>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
->>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView1"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -70,24 +62,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.009"
-        app:layout_constraintTop_toBottomOf="@id/imageView1"
+        app:layout_constraintTop_toBottomOf="@id/imageView1frame1"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"/>
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/imageView2frame1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
-=======
-<<<<<<< HEAD
-        app:layout_constraintHeight_percent="0.21"
-=======
-        app:layout_constraintHeight_percent="0.205"
->>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
->>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -99,24 +83,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.009"
-        app:layout_constraintTop_toBottomOf="@id/imageView2"
+        app:layout_constraintTop_toBottomOf="@id/imageView2frame1"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"/>
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageView3frame1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
-=======
-<<<<<<< HEAD
-        app:layout_constraintHeight_percent="0.21"
-=======
-        app:layout_constraintHeight_percent="0.205"
->>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
->>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView3"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -128,24 +104,16 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.009"
-        app:layout_constraintTop_toBottomOf="@id/imageView3"
+        app:layout_constraintTop_toBottomOf="@id/imageView3frame1"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"/>
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView4frame1"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
-=======
-<<<<<<< HEAD
-        app:layout_constraintHeight_percent="0.21"
-=======
-        app:layout_constraintHeight_percent="0.205"
->>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
->>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView4"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -158,7 +126,7 @@
         android:layout_height="0dp"
         app:layout_constraintWidth_percent="0.027"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintStart_toStartOf="@id/imageView4"
+        app:layout_constraintStart_toStartOf="@id/imageView4frame1"
         app:layout_constraintBottom_toBottomOf="@+id/space"/>
 
     <TextView
@@ -170,9 +138,9 @@
         android:textSize="20sp"
         android:textColor="@color/white"
         app:layout_constraintHeight_percent="0.126"
-        app:layout_constraintTop_toBottomOf="@id/imageView4"
-        app:layout_constraintStart_toStartOf="@id/imageView4"
-        app:layout_constraintEnd_toEndOf="@id/imageView4"
+        app:layout_constraintTop_toBottomOf="@id/imageView4frame1"
+        app:layout_constraintStart_toStartOf="@id/imageView4frame1"
+        app:layout_constraintEnd_toEndOf="@id/imageView4frame1"
         app:layout_constraintBottom_toTopOf="@id/emptyView5"/>
 
     <TextView
