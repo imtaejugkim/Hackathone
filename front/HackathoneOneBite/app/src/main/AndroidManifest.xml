@@ -20,6 +20,12 @@
             android:name=".main.MainFrameActivity"
             android:exported="false" />
         <activity
+            android:name=".main.fragment.Main3PostingMakingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".main.fragment.Main3PostingSelectActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartActivity"
             android:exported="true"
             android:label="@string/app_name">

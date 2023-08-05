@@ -57,7 +57,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.264"
+=======
+<<<<<<< HEAD
+        app:layout_constraintWidth_percent="0.48"
+=======
+        app:layout_constraintHeight_percent="0.264"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView1"
         app:layout_constraintStart_toEndOf="@id/emptyView1"
         app:layout_constraintDimensionRatio="327:264"
@@ -68,7 +76,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.281"
+=======
+<<<<<<< HEAD
+        app:layout_constraintWidth_percent="0.48"
+=======
+        app:layout_constraintHeight_percent="0.281"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView3"
         app:layout_constraintStart_toEndOf="@id/emptyView1"
         app:layout_constraintDimensionRatio="327:281"
@@ -79,6 +95,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        app:layout_constraintWidth_percent="0.45"
+=======
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
         app:layout_constraintBottom_toBottomOf="@id/imageView2"
         app:layout_constraintStart_toEndOf="@id/emptyView3"
@@ -99,6 +122,13 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+        app:layout_constraintWidth_percent="0.94"
+=======
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView4"
         app:layout_constraintStart_toStartOf="@id/imageView1"
         app:layout_constraintEnd_toEndOf="@id/imageView3"

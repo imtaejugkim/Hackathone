@@ -20,57 +20,88 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.95" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/innerStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/innerEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.9" />
+
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="게시물 업로드"
+        android:text="테마선택"
         android:textSize="25dp"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="30dp" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/postingMain"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+    <TextView
+        android:id="@+id/textFilm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="필름형"
+        android:textSize="15dp"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="@id/innerStart"
         app:layout_constraintTop_toBottomOf="@id/textView"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp">
+        android:layout_marginTop="30dp" />
 
-        <ImageView
-            android:id="@+id/selectedImageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@color/light_gray"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf ="parent">
-        </ImageView>
+    <include layout="@layout/post_frame1"
+        android:id="@+id/postImageLayout_pseudo"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.23"
+        app:layout_constraintStart_toStartOf="@id/innerStart"
+        app:layout_constraintTop_toBottomOf="@id/textFilm"
+        android:layout_marginTop="15dp"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/textBasic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기본형"
+        android:textSize="15dp"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="@id/innerStart"
+        app:layout_constraintTop_toBottomOf="@id/postImageLayout_pseudo"
+        android:layout_marginTop="30dp" />
 
-    <androidx.recyclerview.widget.RecyclerView
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:id="@+id/recyclerView"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintTop_toBottomOf="@id/postingMain"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:padding="4dp"
-        android:background="@android:color/white"
-        android:clipToPadding="false"
-        android:scrollbars="vertical"
-        android:scrollbarThumbVertical="@android:color/darker_gray"
-        android:scrollbarTrackVertical="@android:color/transparent"
-        tools:listitem="@layout/item_photo" />
+        app:layout_constraintHeight_percent="0.23"
+        app:layout_constraintWidth_percent="0.8"
+        app:layout_constraintStart_toStartOf="@id/innerStart"
+        app:layout_constraintTop_toBottomOf="@id/textBasic"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+
+        <include layout="@layout/post_frame1"
+            android:id="@+id/postImageLayout1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginRight="30dp"
+            app:layout_constraintHeight_percent="0.23"/>
+
+        <include layout="@layout/post_frame2"
+            android:id="@+id/postImageLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            app:layout_constraintHeight_percent="0.23"/>
+
+    </LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -50,7 +50,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
+=======
+<<<<<<< HEAD
+        app:layout_constraintHeight_percent="0.21"
+=======
+        app:layout_constraintHeight_percent="0.205"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView1"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -71,7 +79,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
+=======
+<<<<<<< HEAD
+        app:layout_constraintHeight_percent="0.21"
+=======
+        app:layout_constraintHeight_percent="0.205"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -92,7 +108,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
+=======
+<<<<<<< HEAD
+        app:layout_constraintHeight_percent="0.21"
+=======
+        app:layout_constraintHeight_percent="0.205"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView3"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
@@ -113,7 +137,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
+<<<<<<< Updated upstream
         app:layout_constraintHeight_percent="0.205"
+=======
+<<<<<<< HEAD
+        app:layout_constraintHeight_percent="0.21"
+=======
+        app:layout_constraintHeight_percent="0.205"
+>>>>>>> 93e6a1e0ec5902bce2c978c779ca693e3076204e
+>>>>>>> Stashed changes
         app:layout_constraintTop_toBottomOf="@id/emptyView4"
         app:layout_constraintStart_toStartOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
