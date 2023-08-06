@@ -1,107 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:id="@+id/viewGroup">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"/>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/innerStart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/innerEnd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="테마선택"
-        android:textSize="25dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+    <View
+        android:id="@+id/emptyView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.05"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp" />
+        app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView
-        android:id="@+id/textFilm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="게시물 선택"
+        android:textColor="@color/black"
+        android:textSize="25sp"
+        app:layout_constraintStart_toEndOf="@+id/emptyView1"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="50dp"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.22"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.87"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineLeft"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.17"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineRight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.83"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="필름형"
-        android:textSize="15dp"
-        android:textColor="@color/gray"
-        app:layout_constraintStart_toStartOf="@id/innerStart"
-        app:layout_constraintTop_toBottomOf="@id/textView"
-        android:layout_marginTop="30dp" />
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/filmImage"
+        app:layout_constraintBottom_toTopOf="@id/filmImage"
+        android:layout_marginBottom="20dp"/>
 
-    <include layout="@layout/post_frame1"
-        android:id="@+id/postImageLayout_pseudo"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/filmImage"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.23"
-        app:layout_constraintStart_toStartOf="@id/innerStart"
-        app:layout_constraintTop_toBottomOf="@id/textFilm"
-        android:layout_marginTop="15dp"/>
+        app:layout_constraintHeight_percent="0.26"
+        app:layout_constraintDimensionRatio="7:18"
+        android:src="@drawable/img_thema_film"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTop"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"/>
 
     <TextView
-        android:id="@+id/textBasic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="기본형"
-        android:textSize="15dp"
-        android:textColor="@color/gray"
-        app:layout_constraintStart_toStartOf="@id/innerStart"
-        app:layout_constraintTop_toBottomOf="@id/postImageLayout_pseudo"
-        android:layout_marginTop="30dp" />
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/filmImage"
+        app:layout_constraintBottom_toTopOf="@id/thema1Image"
+        android:layout_marginBottom="20dp"/>
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/thema1Image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.23"
-        app:layout_constraintWidth_percent="0.8"
-        app:layout_constraintStart_toStartOf="@id/innerStart"
-        app:layout_constraintTop_toBottomOf="@id/textBasic"
-        android:orientation="horizontal"
-        android:layout_marginTop="15dp">
+        app:layout_constraintHeight_percent="0.27"
+        app:layout_constraintDimensionRatio="7:18"
+        android:src="@drawable/img_thema1"
+        app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"/>
 
-        <include layout="@layout/post_frame1"
-            android:id="@+id/postImageLayout1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginRight="30dp"
-            app:layout_constraintHeight_percent="0.23"/>
-
-        <include layout="@layout/post_frame2"
-            android:id="@+id/postImageLayout2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layout_constraintHeight_percent="0.23"/>
-
-    </LinearLayout>
-
-
-
+    <ImageView
+        android:id="@+id/thema2Image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.26"
+        app:layout_constraintDimensionRatio="13:18"
+        android:src="@drawable/img_thema2"
+        app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

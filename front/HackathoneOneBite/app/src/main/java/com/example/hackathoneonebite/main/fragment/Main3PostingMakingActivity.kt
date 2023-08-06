@@ -7,11 +7,14 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.R
 
 class Main3PostingMakingActivity : AppCompatActivity() {
+
+    private var contentFramesFilled = booleanArrayOf(false, false, false, false)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,26 +24,26 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         val clickedLayoutId = intent.getIntExtra("layout_id",0)
 
         // 클릭된 레이아웃의 ID에 따라 해당 레이아웃을 보여주도록 처리
-        val postImageLayout_pseudo = findViewById<View>(R.id.postImageLayout_pseudo)
+        val postImageLayoutFilm = findViewById<View>(R.id.postImageLayoutFilm)
         val postImageLayout1 = findViewById<View>(R.id.postImageLayout1)
         val postImageLayout2 = findViewById<View>(R.id.postImageLayout2)
 
         when (clickedLayoutId) {
             0 -> {
-                postImageLayout_pseudo.visibility = View.VISIBLE
+                postImageLayoutFilm.visibility = View.VISIBLE
                 postImageLayout1.visibility = View.INVISIBLE
                 postImageLayout2.visibility = View.INVISIBLE
                 contentFramePseudo()
             }
             1 -> {
-                postImageLayout_pseudo.visibility = View.INVISIBLE
+                postImageLayoutFilm.visibility = View.INVISIBLE
                 postImageLayout1.visibility = View.VISIBLE
                 postImageLayout2.visibility = View.INVISIBLE
                 contentFrame1()
 
             }
             2 -> {
-                postImageLayout_pseudo.visibility = View.INVISIBLE
+                postImageLayoutFilm.visibility = View.INVISIBLE
                 postImageLayout1.visibility = View.INVISIBLE
                 postImageLayout2.visibility = View.VISIBLE
                 contentFrame2()
@@ -50,7 +53,32 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         val relayButton = findViewById<Button>(R.id.relayButton)
         val uploadButton = findViewById<Button>(R.id.uploadButton)
 
+        updateButtonsVisibility()
+
+        relayButton.setOnClickListener {
+
+        }
+
+        uploadButton.setOnClickListener {
+
+        }
+
     }
+
+    private fun updateButtonsVisibility() {
+        val relayButton = findViewById<Button>(R.id.relayButton)
+        val uploadButton = findViewById<Button>(R.id.uploadButton)
+
+        if (contentFramesFilled.all { it }) {
+            relayButton.visibility = View.GONE
+            uploadButton.visibility = View.VISIBLE
+        } else {
+            relayButton.visibility = View.VISIBLE
+            uploadButton.visibility = View.GONE
+        }
+    }
+
+
 
     private fun contentFramePseudo() {
         val img1 = findViewById<ImageView>(R.id.imageView1frame1)
@@ -66,6 +94,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                contentFramesFilled[index] = true
+                updateButtonsVisibility()
             }
         }
     }
@@ -84,6 +114,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                contentFramesFilled[index] = true
+                updateButtonsVisibility()
             }
         }
     }
@@ -102,6 +134,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                contentFramesFilled[index] = true
+                updateButtonsVisibility()
             }
         }
     }
@@ -114,11 +148,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
             val selectedImagePath = data?.getStringExtra("selected_image_path")
-            val contentsId = intent.getIntExtra("contents_id",2)
-            // 이제 선택한 이미지 경로가 있으므로 해당하는 constraintLayout에 이미지를 표시합니다.
-            // 예를 들어, selectedImagePath가 null이 아니라면 해당 이미지를 ImageView에 로드합니다.
+            val contentsId = data?.getIntExtra("contents_id", 2) ?: 2
             if (selectedImagePath != null) {
-                val selectedImageView = findImageViewForCurrentContentFrame(contentsId) // 현재 content frame에 따라 올바른 ImageView를 찾는 함수를 구현해야 합니다.
+                val selectedImageView = findImageViewForCurrentContentFrame(contentsId)
                 Glide.with(this)
                     .load(selectedImagePath)
                     .into(selectedImageView)
@@ -126,16 +158,26 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
     }
 
-    private fun findImageViewForCurrentContentFrame(contentsId:Int): ImageView {
-        val postImageLayout_pseudo = findViewById<View>(R.id.postImageLayout_pseudo)
-        val postImageLayout1 = findViewById<View>(R.id.postImageLayout1)
-        val postImageLayout2 = findViewById<View>(R.id.postImageLayout2)
+    private fun findImageViewForCurrentContentFrame(contentsId: Int): ImageView {
+        val postImageLayoutFilm = findViewById<View>(R.id.postImageLayoutFilm)
 
         return when (contentsId) {
-            0 -> postImageLayout_pseudo.findViewById(R.id.imageView1frame1)
-            1 -> postImageLayout_pseudo.findViewById(R.id.imageView2frame1)
-            2 -> postImageLayout_pseudo.findViewById(R.id.imageView3frame1)
-            3 -> postImageLayout_pseudo.findViewById(R.id.imageView4frame1)
+            0 -> {
+                postImageLayoutFilm.findViewById(R.id.imageView1frame1)
+            }
+
+            1 -> {
+                postImageLayoutFilm.findViewById(R.id.imageView2frame1)
+            }
+
+            2 -> {
+                postImageLayoutFilm.findViewById(R.id.imageView3frame1)
+            }
+
+            3 -> {
+                postImageLayoutFilm.findViewById(R.id.imageView4frame1)
+            }
+
             else -> throw IllegalArgumentException("Invalid clickedLayoutId")
         }
     }

@@ -75,9 +75,8 @@ class Main3PostingSelectActivity : AppCompatActivity() {
         registerButton.setOnClickListener {
             val selectedImagePath = photoList.getOrNull(adapter.selectedPosition)
             val resultIntent = Intent()
-            val contentIntent = Intent()
             resultIntent.putExtra("selected_image_path", selectedImagePath)
-            contentIntent.putExtra("contents_id", clickedLayoutId)
+            resultIntent.putExtra("contents_id", clickedLayoutId)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
         }
@@ -109,7 +108,7 @@ class Main3PostingSelectActivity : AppCompatActivity() {
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                     imageId
                 ).toString()
-                photoList.add(imagePath)
+                photoList.add(0,imagePath)
             }
             adapter.notifyDataSetChanged()
         }

@@ -22,12 +22,12 @@ class Main3PostingFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val postImageLayout_pseudo = view.findViewById<View>(R.id.postImageLayout_pseudo)
-        val postImageLayout1 = view.findViewById<View>(R.id.postImageLayout1)
-        val postImageLayout2 = view.findViewById<View>(R.id.postImageLayout2)
+        val postImageLayoutFilm = view.findViewById<View>(R.id.filmImage)
+        val postImageLayout1 = view.findViewById<View>(R.id.thema1Image)
+        val postImageLayout2 = view.findViewById<View>(R.id.thema2Image)
 
 
-        val postImageLayouts = arrayOf(postImageLayout_pseudo, postImageLayout1, postImageLayout2)
+        val postImageLayouts = arrayOf(postImageLayoutFilm, postImageLayout1, postImageLayout2)
 
         for ((index, layout) in postImageLayouts.withIndex()) {
             layout.setOnClickListener {
