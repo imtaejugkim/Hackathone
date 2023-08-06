@@ -1,26 +1,88 @@
 package com.example.hackathoneonebite
 
+import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import com.example.hackathoneonebite.Data.User
-import com.example.hackathoneonebite.api.RetrofitBuilder
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.IntentSenderRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import com.example.hackathoneonebite.databinding.ActivityStartBinding
 import com.example.hackathoneonebite.main.MainFrameActivity
-import org.json.JSONException
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
+
 
 class StartActivity : ComponentActivity() {
+
+    private var oneTapClient: SignInClient? = null
+    private var signInRequest: BeginSignInRequest? = null
     lateinit var binding: ActivityStartBinding
+
+    private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
+    private var showOneTapUI = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        val googleBtn = binding.googleSignBtn
+        oneTapClient = Identity.getSignInClient(this);
+        signInRequest = BeginSignInRequest.builder()
+            .setPasswordRequestOptions(
+                BeginSignInRequest.PasswordRequestOptions.builder()
+                    .setSupported(true)
+                    .build())
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    // Your server's client ID, not your Android client ID.
+                    .setServerClientId(getString(R.string.web_client_id))
+                    // Only show accounts previously used to sign in.
+                    .setFilterByAuthorizedAccounts(true)
+                    .build())
+            // Automatically sign in when exactly one credential is retrieved.
+            .setAutoSelectEnabled(true)
+            .build();
+
+        val oneTapActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                try {
+                    val credential = oneTapClient!!.getSignInCredentialFromIntent(result.data)
+                    val idToken = credential.googleIdToken
+                    if (idToken != null) {
+                        val email = credential.id
+                        Toast.makeText(applicationContext, "Email: $email", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: ApiException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        googleBtn.setOnClickListener {
+            oneTapClient!!.beginSignIn(signInRequest!!)
+                .addOnSuccessListener(this) { result ->
+                    val intentSenderRequest = IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
+                    oneTapActivityResultLauncher.launch(intentSenderRequest)
+
+                }
+                .addOnFailureListener(this) { e ->
+                    // No saved credentials found. Launch the One Tap sign-up flow, or
+                    // do nothing and continue presenting the signed-out UI.
+                    Log.d("TAG", e.localizedMessage)
+                }
+        }
+
 
         init()
     }
