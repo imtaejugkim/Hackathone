@@ -31,7 +31,7 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
             Log.d("PostDebug", "Like Count: ${receivedPost.likeCount}")
             Log.d("PostDebug", "Date: ${receivedPost.date}")
             Log.d("PostDebug", "Message: ${receivedPost.message}")
-            Log.d("PostDebug", "Frame: ${receivedPost.frame}")
+            Log.d("PostDebug", "Theme: ${receivedPost.theme}")
             Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
         }
 

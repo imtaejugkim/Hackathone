@@ -12,9 +12,6 @@ data class Post(
     @SerializedName("theme")
     var theme: Int = 0,
 
-    @SerializedName("frame") //1인 곳이 이미지가 있는 frame입니다.
-    var frame: String = "0000",
-
     @SerializedName("id")
     var id: String? = null,
 

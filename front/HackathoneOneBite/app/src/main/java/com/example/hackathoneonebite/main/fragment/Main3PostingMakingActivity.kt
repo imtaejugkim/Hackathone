@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
-import com.example.hackathoneonebite.Data.User
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import org.json.JSONException
@@ -20,7 +19,6 @@ import retrofit2.Call
 import java.time.LocalDateTime
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.http.POST
 
 
 class Main3PostingMakingActivity : AppCompatActivity() {
@@ -74,7 +72,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, null, 0, LocalDateTime.now(), message, null, false)
+            val post = Post(images, 0, "", 0, LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -84,7 +82,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, null, 0, LocalDateTime.now(), message, null, false)
+            val post = Post(images, 0, "", 0, LocalDateTime.now(), message,false)
 
             sendPost(post)
         }
@@ -108,7 +106,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                     Log.d("PostDebug", "Like Count: ${post.likeCount}")
                     Log.d("PostDebug", "Date: ${post.date}")
                     Log.d("PostDebug", "Message: ${post.message}")
-                    Log.d("PostDebug", "Frame: ${post.frame}")
+                    Log.d("PostDebug", "Theme: ${post.theme}")
                     Log.d("PostDebug", "Is Flipped: ${post.isFliped}")
                 }else{
                     // 통신 성공 but 응답 실패
