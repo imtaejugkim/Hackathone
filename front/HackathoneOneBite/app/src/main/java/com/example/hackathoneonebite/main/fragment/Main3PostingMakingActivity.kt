@@ -7,12 +7,21 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.Data.User
 import com.example.hackathoneonebite.R
-import java.time.LocalDate
+import com.example.hackathoneonebite.api.RetrofitBuilder
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
 import java.time.LocalDateTime
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.http.POST
+
 
 class Main3PostingMakingActivity : AppCompatActivity() {
 
@@ -77,16 +86,50 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val message = "백엔드야 메세지 받아라"
             val post = Post(images, null, 0, LocalDateTime.now(), message, null, false)
 
-            Log.d("PostDebug", "Images: ${post.imgArray.joinToString()}")
-            Log.d("PostDebug", "ID: ${post.id}")
-            Log.d("PostDebug", "Like Count: ${post.likeCount}")
-            Log.d("PostDebug", "Date: ${post.date}")
-            Log.d("PostDebug", "Message: ${post.message}")
-            Log.d("PostDebug", "Frame: ${post.frame}")
-            Log.d("PostDebug", "Is Flipped: ${post.isFliped}")
+            sendPost(post)
         }
 
     }
+
+    private fun sendPost(post : Post) {
+        val call = RetrofitBuilder.api.getPostResponse(post)
+        call.enqueue(object : Callback<Post> { // 비동기 방식 통신 메소드
+            override fun onFailure(call: Call<Post>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+            }
+
+            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("PostDebug", "Images: ${post.imgArray.joinToString()}")
+                    Log.d("PostDebug", "ID: ${post.id}")
+                    Log.d("PostDebug", "Like Count: ${post.likeCount}")
+                    Log.d("PostDebug", "Date: ${post.date}")
+                    Log.d("PostDebug", "Message: ${post.message}")
+                    Log.d("PostDebug", "Frame: ${post.frame}")
+                    Log.d("PostDebug", "Is Flipped: ${post.isFliped}")
+                }else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@Main3PostingMakingActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@Main3PostingMakingActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@Main3PostingMakingActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        })
+    }
+
     private fun updateButtonsVisibility() {
         val relayButton = findViewById<Button>(R.id.relayButton)
         val uploadButton = findViewById<Button>(R.id.uploadButton)
