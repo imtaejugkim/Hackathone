@@ -16,14 +16,14 @@ import java.time.LocalDateTime
 
 class Main3PostingMakingActivity : AppCompatActivity() {
 
-    private lateinit var contentFramesFilled: Array<String>
+    private lateinit var images: Array<String>
     private var currentLayoutId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3_posting_making)
 
-        contentFramesFilled = Array(4) { "" }
+        images = Array(4) { "" }
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
         currentLayoutId = intent.getIntExtra("layout_id", 0)
@@ -65,7 +65,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(contentFramesFilled, null, 0, LocalDate.now(), message, null, false)
+            val post = Post(images, null, 0, LocalDate.now(), message, null, false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -75,7 +75,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(contentFramesFilled, null, 0, LocalDate.now(), message, null, false)
+            val post = Post(images, null, 0, LocalDate.now(), message, null, false)
 
             Log.d("PostDebug", "Images: ${post.imgArray.joinToString()}")
             Log.d("PostDebug", "ID: ${post.id}")
@@ -92,18 +92,22 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         val uploadButton = findViewById<Button>(R.id.uploadButton)
         val disabledButton = findViewById<Button>(R.id.unActiveButton)
 
-        if (contentFramesFilled.all { it.toBoolean() }) {
-            relayButton.visibility = View.GONE
-            uploadButton.visibility = View.VISIBLE
-            disabledButton.visibility = View.GONE
-        } else if (contentFramesFilled.any { it.toBoolean() }) {
-            relayButton.visibility = View.VISIBLE
-            uploadButton.visibility = View.GONE
-            disabledButton.visibility = View.GONE
-        } else {
-            relayButton.visibility = View.GONE
-            uploadButton.visibility = View.GONE
-            disabledButton.visibility = View.VISIBLE
+        when (images.count { it.isNotBlank() }) {
+            0 -> {
+                relayButton.visibility = View.GONE
+                uploadButton.visibility = View.GONE
+                disabledButton.visibility = View.VISIBLE
+            }
+            in 1..3 -> {
+                relayButton.visibility = View.VISIBLE
+                uploadButton.visibility = View.GONE
+                disabledButton.visibility = View.GONE
+            }
+            4 -> {
+                relayButton.visibility = View.GONE
+                uploadButton.visibility = View.VISIBLE
+                disabledButton.visibility = View.GONE
+            }
         }
     }
 
@@ -123,7 +127,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                contentFramesFilled[index] = true.toString()
+                images[index] = true.toString()
 
             }
         }
@@ -143,7 +147,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                contentFramesFilled[index] = true.toString()
+                images[index] = true.toString()
 
             }
         }
@@ -163,7 +167,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("contents_id", index)
                 startActivity(intent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                contentFramesFilled[index] = true.toString()
+                images[index] = true.toString()
 
             }
         }
@@ -180,7 +184,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val selectedImagePath = data?.getStringExtra("selected_image_path")
             val contentsId = data?.getIntExtra("contents_id", 2) ?: 2
             if (selectedImagePath != null) {
-                contentFramesFilled[contentsId] = selectedImagePath
+                images[contentsId] = selectedImagePath
                 val selectedImageView = findImageViewForCurrentContentFrame(contentsId, currentLayoutId)
                 Glide.with(this)
                     .load(selectedImagePath)
