@@ -18,75 +18,85 @@ import com.example.hackathoneonebite.main.MainFrameActivity
 import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.Task
 
 
 class StartActivity : ComponentActivity() {
-
-    private var oneTapClient: SignInClient? = null
-    private var signInRequest: BeginSignInRequest? = null
+    lateinit var mGoogleSignInClient: GoogleSignInClient
+    lateinit var resultLauncher: ActivityResultLauncher<Intent>
     lateinit var binding: ActivityStartBinding
-
-    private val REQ_ONE_TAP = 2  // Can be any integer unique to the Activity
-    private var showOneTapUI = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val googleBtn = binding.googleSignBtn
-        oneTapClient = Identity.getSignInClient(this);
-        signInRequest = BeginSignInRequest.builder()
-            .setPasswordRequestOptions(
-                BeginSignInRequest.PasswordRequestOptions.builder()
-                    .setSupported(true)
-                    .build())
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    // Your server's client ID, not your Android client ID.
-                    .setServerClientId(getString(R.string.web_client_id))
-                    // Only show accounts previously used to sign in.
-                    .setFilterByAuthorizedAccounts(true)
-                    .build())
-            // Automatically sign in when exactly one credential is retrieved.
-            .setAutoSelectEnabled(true)
-            .build();
-
-        val oneTapActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                try {
-                    val credential = oneTapClient!!.getSignInCredentialFromIntent(result.data)
-                    val idToken = credential.googleIdToken
-                    if (idToken != null) {
-                        val email = credential.id
-                        Toast.makeText(applicationContext, "Email: $email", Toast.LENGTH_SHORT).show()
-                    }
-                } catch (e: ApiException) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
-        googleBtn.setOnClickListener {
-            oneTapClient!!.beginSignIn(signInRequest!!)
-                .addOnSuccessListener(this) { result ->
-                    val intentSenderRequest = IntentSenderRequest.Builder(result.pendingIntent.intentSender).build()
-                    oneTapActivityResultLauncher.launch(intentSenderRequest)
-
-                }
-                .addOnFailureListener(this) { e ->
-                    // No saved credentials found. Launch the One Tap sign-up flow, or
-                    // do nothing and continue presenting the signed-out UI.
-                    Log.d("TAG", e.localizedMessage)
-                }
-        }
-
-
+        setResultSignUp()
+        setGoogleLogin()
         init()
     }
+
+    override fun onStart() {
+        super.onStart()
+        //로그인 되어 있는 상태면 null이 아닌것을 return
+        //로그인이 안 되어 있으면 null을 return
+        val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(this)
+        if(account == null) { //아직 앱에 로그인 하지 않음.
+            Toast.makeText(this,"아직 로그인 안됨.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this,"이미 로그인 됨.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setGoogleLogin() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestProfile()
+            .build()
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
+    }
+
+    private fun setResultSignUp() {
+        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                handleSignInResult(task)
+            } else {
+                Toast.makeText(this,result.resultCode.toString(), Toast.LENGTH_LONG).show()
+
+            }
+        }
+    }
+
+    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
+        try {
+            val account = completedTask.getResult(ApiException::class.java)
+            val email = account?.email.toString()
+            val familyName = account?.familyName.toString()
+            val givenName = account?.givenName.toString()
+            val displayName = account?.displayName.toString()
+            val photoUrl = account?.photoUrl.toString()
+            Toast.makeText(this@StartActivity, email, Toast.LENGTH_SHORT).show()
+            Log.d("이메일", email)
+            Log.d("성", familyName)
+            Log.d("이름", givenName)
+            Log.d("전체이름", displayName)
+            Log.d("프로필사진 주소", photoUrl)
+        } catch (e: ApiException) {
+            Log.w("failed", "signInResult: failed code = " + e.statusCode)
+        }
+    }
+
     fun init() {
+        binding.googleSignBtn.setOnClickListener {
+            signIn()
+        }
         binding.loginBtn.setOnClickListener {
             val i = Intent(this@StartActivity, MainFrameActivity::class.java)
             startActivity(i)
@@ -96,6 +106,11 @@ class StartActivity : ComponentActivity() {
             Log.d("Login Button Clicked", "ID:" + user.id + " / PW:" + user.pw)
             Login(user)*/
         }
+    }
+
+    private fun signIn() {
+        val signInIntent: Intent = mGoogleSignInClient.getSignInIntent()
+        resultLauncher.launch(signInIntent)
     }
 
     /*fun Login(user: User){
