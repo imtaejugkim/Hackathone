@@ -22,6 +22,7 @@ import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.DialogMain1TopBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeBinding
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 
 class Main1HomeFragment : Fragment() {
@@ -82,7 +83,7 @@ class Main1HomeFragment : Fragment() {
             data.add(Post())
             data[i].id = "kakaka"
             data[i].likeCount = 10
-            data[i].date = LocalDate.of(2023, 1, 3)
+            data[i].date = LocalDateTime.now()
             data[i].message = i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString()
             for (j in 0..3) {
                 if(j == i % 4) {

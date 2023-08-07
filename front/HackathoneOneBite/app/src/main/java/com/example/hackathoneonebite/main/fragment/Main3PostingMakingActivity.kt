@@ -54,8 +54,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         val leftArrow = findViewById<ImageView>(R.id.leftArrow)
         leftArrow.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-            //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         val relayButton = findViewById<Button>(R.id.relayButton)
@@ -65,7 +65,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, null, 0, LocalDate.now(), message, null, false)
+            val post = Post(images, null, 0, LocalDateTime.now(), message, null, false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -75,7 +75,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, null, 0, LocalDate.now(), message, null, false)
+            val post = Post(images, null, 0, LocalDateTime.now(), message, null, false)
 
             Log.d("PostDebug", "Images: ${post.imgArray.joinToString()}")
             Log.d("PostDebug", "ID: ${post.id}")
