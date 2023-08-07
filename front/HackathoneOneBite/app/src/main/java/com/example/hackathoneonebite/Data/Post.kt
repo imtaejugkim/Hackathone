@@ -9,6 +9,12 @@ data class Post(
     @SerializedName("imgArray")
     var imgArray: Array<String> = Array(4) {""}, // 이미지 URI 또는 파일 경로의 배열
 
+    @SerializedName("theme")
+    var theme: Int = 0,
+
+    @SerializedName("frame") //1인 곳이 이미지가 있는 frame입니다.
+    var frame: String = "0000",
+
     @SerializedName("id")
     var id: String? = null,
 
@@ -20,9 +26,6 @@ data class Post(
 
     @SerializedName("message")
     var message: String? = null,
-
-    @SerializedName("frame")
-    var frame: String? = null,
 
     @SerializedName("isFliped")
     var isFliped: Boolean = false
