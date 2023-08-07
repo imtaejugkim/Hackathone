@@ -11,25 +11,36 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.06" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="0.94" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="게시물 업로드"
         android:textSize="25dp"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="30dp" />
+        android:layout_marginTop="50dp" />
+
+    <ImageView
+        android:id="@+id/leftArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_left"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
 
     <Button
         android:id="@+id/registerButton"
@@ -39,8 +50,8 @@
         android:textSize="15dp"
         app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/textView"
-        android:layout_marginTop="30dp" />
+        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
+        android:layout_marginTop="50dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/postingMain"
@@ -48,7 +59,7 @@
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintTop_toBottomOf="@id/textView"
+        app:layout_constraintTop_toBottomOf="@id/topicTextView"
         app:layout_constraintBottom_toTopOf="@id/recyclerView"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="20dp">

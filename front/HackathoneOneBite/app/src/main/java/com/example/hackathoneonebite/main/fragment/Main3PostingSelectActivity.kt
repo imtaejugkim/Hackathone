@@ -77,8 +77,17 @@ class Main3PostingSelectActivity : AppCompatActivity() {
             val resultIntent = Intent()
             resultIntent.putExtra("selected_image_path", selectedImagePath)
             resultIntent.putExtra("contents_id", clickedLayoutId)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
+        }
+
+        val leftArrow = findViewById<ImageView>(R.id.leftArrow)
+        leftArrow.setOnClickListener {
+            onBackPressedDispatcher.onBackPressed()
+            //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }
 

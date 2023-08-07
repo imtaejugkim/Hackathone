@@ -5,27 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/viewGroup">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"/>
-
-    <View
-        android:id="@+id/emptyView1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
-
     <TextView
+        android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="게시물 선택"
         android:textColor="@color/black"
         android:textSize="25sp"
-        app:layout_constraintStart_toEndOf="@+id/emptyView1"
+        app:layout_constraintStart_toStartOf="@+id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="50dp"/>
 
@@ -57,12 +45,27 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.83"/>
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineRightArrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineLeftArrow"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06"/>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="필름형"
         android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/filmImage"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
         app:layout_constraintBottom_toTopOf="@id/filmImage"
         android:layout_marginBottom="20dp"/>
 
@@ -74,14 +77,17 @@
         app:layout_constraintDimensionRatio="7:18"
         android:src="@drawable/img_thema_film"
         app:layout_constraintTop_toTopOf="@id/GuideLineTop"
-        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"/>
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
+        />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="기본형"
         android:textSize="13sp"
-        app:layout_constraintStart_toStartOf="@id/filmImage"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
         app:layout_constraintBottom_toTopOf="@id/thema1Image"
         android:layout_marginBottom="20dp"/>
 
@@ -93,7 +99,8 @@
         app:layout_constraintDimensionRatio="7:18"
         android:src="@drawable/img_thema1"
         app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
-        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"/>
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        android:layout_marginLeft="15dp"/>
 
     <ImageView
         android:id="@+id/thema2Image"
@@ -103,6 +110,7 @@
         app:layout_constraintDimensionRatio="13:18"
         android:src="@drawable/img_thema2"
         app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
-        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"/>
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"
+        android:layout_marginRight="15dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
