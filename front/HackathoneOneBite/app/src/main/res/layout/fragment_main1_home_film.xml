@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/viewGroup"
-    android:visibility="visible">
+    android:visibility="gone">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -88,22 +88,23 @@
         app:layout_constraintHeight_percent="0.01"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toBottomOf="@id/GuideLine1"
-        app:layout_constraintEnd_toStartOf="@id/shareButton"/>
-
-    <Button
-        android:id="@+id/likeButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintEnd_toStartOf="@id/emptyView3"
-        app:layout_constraintTop_toBottomOf="@id/emptyView2"
-        android:layout_marginTop="1dp"/>
+        app:layout_constraintEnd_toStartOf="@id/likeButton"/>
 
     <Button
         android:id="@+id/shareButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
+        app:layout_constraintEnd_toStartOf="@id/emptyView3"
+        app:layout_constraintTop_toBottomOf="@id/emptyView2"
+        android:background="@drawable/img_icon_share"/>
+
+    <Button
+        android:id="@+id/likeButton"
+        android:layout_width="33dp"
+        android:layout_height="33dp"
         app:layout_constraintEnd_toEndOf="@id/emptyView1"
-        app:layout_constraintTop_toBottomOf="@id/emptyView2"/>
+        app:layout_constraintTop_toBottomOf="@id/emptyView2"
+        android:background="@drawable/img_icon_heart"/>
 
     <View
         android:id="@+id/emptyView3"
@@ -111,8 +112,8 @@
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.01"
         app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toBottomOf="@id/shareButton"
-        app:layout_constraintEnd_toStartOf="@id/shareButton"/>
+        app:layout_constraintTop_toBottomOf="@id/likeButton"
+        app:layout_constraintEnd_toStartOf="@id/likeButton"/>
 
     <TextView
         android:id="@+id/messageTextView"
