@@ -44,7 +44,6 @@ class MainFrameActivity : AppCompatActivity(), ViewPageAdapter.OnFragmentButtonC
     }
 
     override fun onButtonClick(position: Int, newFragment: Fragment, themaNum: Int) {
-        Toast.makeText(this@MainFrameActivity, "클릭! GOTO:"+newFragment.toString(), Toast.LENGTH_SHORT).show()
         binding.mainViewPager.currentItem = 0
         adapter.replaceFragment(position, newFragment, themaNum)
     }

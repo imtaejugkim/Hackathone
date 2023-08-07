@@ -2,7 +2,9 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -183,13 +185,17 @@ class Main1HomeFragment : Fragment() {
         //Film RecyclerView
         binding.postImageLayoutFilm.apply {
             recyclerView.layoutManager =
-                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
             adapter_film = AdapterMain1HomeFilm(data_film)
             adapter_film.itemClickListener = object: AdapterMain1HomeFilm.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
                     data_film[position].isFliped = !data_film[position].isFliped
                 }
             }
+            val bottomPadding = (recyclerView.height * 0.64 * 0.88).toInt()  // 예시로 64%의 높이를 패딩으로 추가합니다.
+            recyclerView.setPadding(0, 0, 0, bottomPadding)
+            recyclerView.clipToPadding = false
+
             recyclerView.adapter = adapter_film
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
@@ -200,6 +206,22 @@ class Main1HomeFragment : Fragment() {
                 viewGroup.visibility = View.INVISIBLE
             }
 
+            /*//item간에 간격 조정
+            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    val itemHeight = (recyclerView.height * 0.64).toInt()
+                    val itemDecoration = CenterItemDecoration(itemHeight)
+                    recyclerView.addItemDecoration(itemDecoration)
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    } else {
+                        recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+                    }
+                }
+            })
+            //----*/
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -297,7 +319,6 @@ class Main1HomeFragment : Fragment() {
     }
 }
 
-/*
 class CenterItemDecoration(private val itemWidth: Int) : RecyclerView.ItemDecoration() { //리사이클러뷰의 좌우 간격 설정을 위한 클래스
     override fun getItemOffsets(
         outRect: Rect,
@@ -316,6 +337,7 @@ class CenterItemDecoration(private val itemWidth: Int) : RecyclerView.ItemDecora
 
     private fun initializeItemPosition(outRect: Rect, parent: RecyclerView) {
         val totalWidth = parent.width
+        outRect.bottom = (itemWidth * 0.88).toInt()
         //outRect.right = (totalWidth - itemWidth) / 6
     }
 
@@ -324,4 +346,4 @@ class CenterItemDecoration(private val itemWidth: Int) : RecyclerView.ItemDecora
         //outRect.left = (totalWidth - itemWidth) / 6
         //outRect.right = (totalWidth - itemWidth) / 6
     }
-}*/
+}

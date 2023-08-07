@@ -6,13 +6,27 @@
     android:layout_height="match_parent"
     android:id="@+id/viewGroup">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLine1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.18"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLine2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.82"/>
+
     <include layout="@layout/post_frame_film"
         android:id="@+id/postImageLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toTopOf="@id/GuideLine1"
+        app:layout_constraintBottom_toBottomOf="@id/GuideLine2"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
