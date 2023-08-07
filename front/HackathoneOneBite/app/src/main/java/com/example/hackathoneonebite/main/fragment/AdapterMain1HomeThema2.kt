@@ -62,10 +62,10 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
             }
 
             var imgArray = data[position].imgArray
-            postImageLayout.imageView1frame2.setImageResource(imgArray[0])
-            postImageLayout.imageView2frame2.setImageResource(imgArray[1])
-            postImageLayout.imageView3frame2.setImageResource(imgArray[2])
-            postImageLayout.imageView4frame2.setImageResource(imgArray[3])
+            postImageLayout.imageView1frame2.setImageResource(imgArray[0].toInt())
+            postImageLayout.imageView2frame2.setImageResource(imgArray[1].toInt())
+            postImageLayout.imageView3frame2.setImageResource(imgArray[2].toInt())
+            postImageLayout.imageView4frame2.setImageResource(imgArray[3].toInt())
         }
     }
 

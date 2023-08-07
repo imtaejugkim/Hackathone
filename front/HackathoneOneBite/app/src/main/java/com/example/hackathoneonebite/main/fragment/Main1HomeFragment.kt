@@ -72,9 +72,9 @@ class Main1HomeFragment : Fragment() {
             data[i].message = i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString()
             for (j in 0..3) {
                 if(j == i % 4) {
-                    data[i].imgArray[j] = R.drawable.test_image1
+                    data[i].imgArray[j] = R.drawable.test_image1.toString()
                 } else {
-                    data[i].imgArray[j] = R.drawable.test_image2
+                    data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
             }
         }

@@ -45,10 +45,10 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
             Log.i("정보",data[position].isFliped.toString())
 
             var imgArray = data[position].imgArray
-            postImageLayout.imageView1.setImageResource(imgArray[0])
-            postImageLayout.imageView2.setImageResource(imgArray[1])
-            postImageLayout.imageView3.setImageResource(imgArray[2])
-            postImageLayout.imageView4.setImageResource(imgArray[3])
+            postImageLayout.imageView1.setImageResource(imgArray[0].toInt())
+            postImageLayout.imageView2.setImageResource(imgArray[1].toInt())
+            postImageLayout.imageView3.setImageResource(imgArray[2].toInt())
+            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())
         }
     }
 

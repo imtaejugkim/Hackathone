@@ -4,8 +4,7 @@ import android.graphics.Bitmap
 import java.time.LocalDate
 
 data class Post(
-    //TODO: 지금은 테스트를 위해 Array 자료형으로 Int가 들어가 있지만, 수정해야됨.
-    var imgArray: Array<Int> = Array(4) { 0 },
+    var imgArray: Array<String> = Array(4) {""}, // 이미지 URI 또는 파일 경로의 배열
     var id: String? = null,
     var likeCount: Int = 0,
     var date: LocalDate? = null,
@@ -13,4 +12,3 @@ data class Post(
     var frame: String? = null,
     var isFliped: Boolean = false
 )
-

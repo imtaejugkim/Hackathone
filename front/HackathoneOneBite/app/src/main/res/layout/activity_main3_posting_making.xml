@@ -54,7 +54,7 @@
 
     <include
         android:id="@+id/postImageLayoutFilm"
-        layout="@layout/post_frame1"
+        layout="@layout/post_frame_film"
         android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="0dp"
