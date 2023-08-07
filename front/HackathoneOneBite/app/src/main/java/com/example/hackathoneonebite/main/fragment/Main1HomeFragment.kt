@@ -40,6 +40,7 @@ class Main1HomeFragment : Fragment() {
     var current_selected_thema: Int = ThemaNumbering.thema1.value
 
     override fun onAttach(context: Context) {
+        Log.d("onAttach", "onAttach called");
         super.onAttach(context)
         initData(data_thema1)
         initData(data_thema2)
@@ -50,15 +51,28 @@ class Main1HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("onCreateView", "onCreateView called");
         binding = FragmentMain1HomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        Log.d("onViewCreated", "onViewCreated called");
         super.onViewCreated(view, savedInstanceState)
 
+        initSelectedThema()
         initRecyclerView()
         init()
+    }
+
+    override fun onStart() {
+        Log.d("onStart", "onStart called");
+        super.onStart()
+    }
+
+    override fun onResume() {
+        Log.d("onResume", "onResume called");
+        super.onResume()
     }
 
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
@@ -74,6 +88,19 @@ class Main1HomeFragment : Fragment() {
                 } else {
                     data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
+            }
+        }
+    }
+
+    private fun initSelectedThema() {
+        val themaNum = arguments?.getInt("themaNum")
+
+        if (themaNum != null) {
+            current_selected_thema = themaNum
+            when(themaNum) {
+                0 -> binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
+                1 -> binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
+                2 -> binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
             }
         }
     }
@@ -172,21 +199,7 @@ class Main1HomeFragment : Fragment() {
             } else {
                 viewGroup.visibility = View.INVISIBLE
             }
-/*
-            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val itemWidth = (recyclerView.height * 4.0 / 10).toInt()
-                    val itemDecoration = CenterItemDecoration(itemWidth)
-                    recyclerView.addItemDecoration(itemDecoration)
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    } else {
-                        recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
-                    }
-                }
-            })*/
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {

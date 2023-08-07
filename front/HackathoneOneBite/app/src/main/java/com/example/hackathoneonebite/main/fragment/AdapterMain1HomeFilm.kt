@@ -42,7 +42,6 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.binding.apply {
             postImageLayout.postFrame.rotationY = if(data[position].isFliped) 180f else 0f
-            Log.i("정보",data[position].isFliped.toString())
 
             var imgArray = data[position].imgArray
             postImageLayout.imageView1.setImageResource(imgArray[0].toInt())
