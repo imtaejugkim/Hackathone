@@ -21,40 +21,25 @@
         app:layout_constraintGuide_percent="0.94" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineName"
+        android:id="@+id/guidelineRelayInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.36" />
+        app:layout_constraintGuide_percent="0.31" />
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineButtonLeft"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.06" />
-
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineButtonRight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.94" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineTimeBottom"
+        android:id="@+id/guidelineButtonTop"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.59" />
+        app:layout_constraintGuide_percent="0.64" />
 
 
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="시간 제한 설정"
+        android:text="게시물 업로드"
         android:textSize="25dp"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
@@ -83,93 +68,82 @@
         android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"/>
 
-    <TextView
-        android:text="이름 데이터가 안왔어요"
-        android:id="@+id/selectName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintDimensionRatio="H,2.75:1"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineName"
-        app:layout_constraintStart_toEndOf="@+id/leftArrow"/>
-
     <LinearLayout
+        android:id="@+id/linear1"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.06"
         app:layout_constraintStart_toEndOf="@id/leftArrow"
         app:layout_constraintEnd_toStartOf="@+id/rightArrow"
-        app:layout_constraintTop_toBottomOf="@id/selectName"
-        app:layout_constraintBottom_toTopOf="@+id/guidelineTimeBottom">
-
-        <ImageView
-            android:id="@+id/imageView1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
+        app:layout_constraintTop_toBottomOf="@id/guidelineRelayInfo">
         <TextView
+            android:text="릴레이 상대"
             android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
         </TextView>
-        <ImageView
-            android:id="@+id/imageView3"
+        <TextView
+            android:id="@+id/relayName"
+            android:text="NULL"
             android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
-        <ImageView
-            android:id="@+id/imageView4"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </TextView>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/linear2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.06"
         app:layout_constraintStart_toEndOf="@id/leftArrow"
         app:layout_constraintEnd_toStartOf="@+id/rightArrow"
-        app:layout_constraintTop_toBottomOf="@id/guidelineTimeBottom"
-        app:layout_constraintBottom_toBottomOf="parent">
-
+        app:layout_constraintTop_toBottomOf="@id/linear1">
         <TextView
-            android:text="시간"
+            android:text="릴레이 시간"
             android:textSize="15dp"
             android:layout_width="0dp"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
         </TextView>
-
         <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent">
-        </TextView>
-
-        <TextView
-            android:text="분"
+            android:text="NULL"
             android:textSize="15dp"
             android:layout_width="0dp"
-            android:layout_weight="4"
-            android:gravity="center"
-            android:layout_height="wrap_content">
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
         </TextView>
-
-
     </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/linear3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toEndOf="@id/leftArrow"
+        app:layout_constraintEnd_toStartOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@id/linear2">
+        <TextView
+            android:text="음악 추가"
+            android:textSize="15dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </TextView>
+        <TextView
+            android:text="NULL"
+            android:textSize="15dp"
+            android:layout_width="0dp"
+            android:gravity="right"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+        </TextView>
+    </LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

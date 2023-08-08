@@ -21,6 +21,16 @@ class AdapterMain3PostingRelaySearch
         notifyDataSetChanged()
     }
 
+    interface OnNameClickListener {
+        fun onNameClick(name: String)
+    }
+
+    private var nameClickListener: OnNameClickListener? = null
+
+    fun setOnNameClickListener(listener: OnNameClickListener) {
+        nameClickListener = listener
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NameViewHolder {
         val view =
             ItemRelayNameListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -38,6 +48,10 @@ class AdapterMain3PostingRelaySearch
     inner class NameViewHolder(val binding: ItemRelayNameListBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(name: String) {
             binding.nameTextView.text = name
+
+            binding.root.setOnClickListener {
+                nameClickListener?.onNameClick(name)
+            }
         }
     }
 
@@ -61,4 +75,10 @@ class AdapterMain3PostingRelaySearch
             }
         }
     }
+
+    fun clearData() {
+        filteredNameList.clear()
+        notifyDataSetChanged()
+    }
+
 }

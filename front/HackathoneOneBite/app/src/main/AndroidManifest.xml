@@ -32,6 +32,12 @@
             android:name=".main.fragment.Main3PostingTimeActivity"
             android:exported="false" />
         <activity
+            android:name=".main.fragment.Main3PostingRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".main.fragment.Main3PostingUploadActivity"
+            android:exported="false" />
+        <activity
             android:name=".StartActivity"
             android:exported="true"
             android:label="@string/app_name">

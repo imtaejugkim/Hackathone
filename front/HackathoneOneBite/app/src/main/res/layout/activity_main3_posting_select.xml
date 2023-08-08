@@ -20,6 +20,27 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.94" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.22" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineRecent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.52" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelinePhotoRecyclerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.57" />
+
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
@@ -57,12 +78,11 @@
         android:id="@+id/postingMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        app:layout_constraintWidth_percent="0.88"
+        app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintTop_toBottomOf="@id/topicTextView"
-        app:layout_constraintBottom_toTopOf="@id/recyclerView"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="20dp">
+        app:layout_constraintTop_toBottomOf="@id/guidelinePhoto">
 
         <ImageView
             android:id="@+id/selectedImageView"
@@ -78,13 +98,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/recentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="최근"
+        android:textSize="15dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintTop_toBottomOf="@id/guidelineRecent"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:id="@+id/recyclerView"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        app:layout_constraintTop_toBottomOf="@id/postingMain"
+        app:layout_constraintTop_toBottomOf="@id/guidelinePhotoRecyclerview"
         app:layout_constraintBottom_toBottomOf="parent"
         android:padding="4dp"
         android:background="@android:color/white"

@@ -35,14 +35,12 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
             Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
         }
 
-        val leftArrow = binding.leftArrow
+        val leftArrow = findViewById<ImageView>(R.id.leftArrow)
         leftArrow.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
-            //overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-
-        val rightArrow = binding.rightArrow
+        /*val rightArrow = binding.rightArrow
         rightArrow.setOnClickListener {
             val selectedName = binding.searchEdit.text.toString()
 
@@ -50,28 +48,50 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
             nextIntent.putExtra("selected_name", selectedName)
             nextIntent.putExtra("post_data", receivedPost)
             startActivity(nextIntent)
-        }
+        }*/
 
         adapter = AdapterMain3PostingRelaySearch()
         binding.nameRecyclerView.adapter = adapter
         binding.nameRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        adapter.setOnNameClickListener(object : AdapterMain3PostingRelaySearch.OnNameClickListener {
+            override fun onNameClick(name: String) {
+
+                val nextIntent = Intent(this@Main3PostingRelaySearchActivity, Main3PostingTimeActivity::class.java)
+                nextIntent.putExtra("selected_name", name)
+                nextIntent.putExtra("post_data", receivedPost)
+                startActivity(nextIntent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        })
+
+        binding.searchEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (!hasFocus) {
+                adapter.clearData() // 포커스가 없으면 RecyclerView에 표시되는 이름을 모두 지움
+            }
+        }
+
+
         binding.searchEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                adapter.filter.filter(s)
+                if (s.isNullOrEmpty()) {
+                    adapter.clearData() // 텍스트가 비어있을 경우 RecyclerView에 표시되는 이름을 모두 지움
+                } else {
+                    // TODO: 데베 데이터를 가져와서 여기서 나오게 해야함
+                    val nameList = mutableListOf<String>()
+
+                    for (i in 1..100) {
+                        nameList.add("Name $i")
+                    }
+                    adapter.setData(nameList)
+                    adapter.filter.filter(s)
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // TODO: 데베 데이터를 가져와서 여기서 나오게 해야함
-        val nameList = mutableListOf<String>()
-
-        for (i in 1..100) {
-            nameList.add("Name $i")
-        }
-        adapter.setData(nameList)
     }
 }

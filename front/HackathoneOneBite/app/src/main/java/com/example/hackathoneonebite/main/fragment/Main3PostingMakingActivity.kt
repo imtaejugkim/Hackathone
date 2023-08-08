@@ -62,7 +62,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         leftArrow.setOnClickListener {
             onBackPressedDispatcher.onBackPressed()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
-            //overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         val relayButton = findViewById<Button>(R.id.relayButton)

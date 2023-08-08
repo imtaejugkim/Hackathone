@@ -9,6 +9,7 @@ public interface API {
     //login
     @POST("/android")
     fun getLoginResponse(@Body user: User): Call<User>
+    @POST("/posting")
     fun getPostResponse(@Body post: Post): Call<Post>
 
 }
