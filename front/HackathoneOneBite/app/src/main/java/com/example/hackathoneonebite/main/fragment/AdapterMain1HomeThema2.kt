@@ -10,8 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.ItemMain1PostThema2Binding
 
 class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
@@ -20,11 +22,19 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
         fun OnItemClick(position: Int)
     }
     var itemClickListener: OnItemClickListener? = null
-    val rotateTime: Long = 600
+    val rotateTime: Long = 600 //0.6초
     var isRotating: Boolean = false
+    //cd 회전
+    val rotationSpeed = 480f //초당 480도
+    val cdOuterImageChangeTime = 400 // 0.4초
+    var currentlyPlayingViewHolder: AdapterMain1HomeThema2.ViewHolder? = null
 
     inner class ViewHolder(val binding: ItemMain1PostThema2Binding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        var isMusicPlaying: Boolean = false
+        lateinit var continuousRotationAnimator: ValueAnimator
+
         init {
             binding.postImageLayout.touchView.setOnClickListener {
                 if(!isRotating) {
@@ -37,6 +47,49 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
                     flipView(binding.postImageLayoutBack.postFrameBack, binding.postImageLayout.postFrame)
                     itemClickListener?.OnItemClick(adapterPosition)
                 }
+            }
+            binding.postImageLayoutBack.playButton.setOnClickListener {
+                val cdView: View = binding.postImageLayoutBack.cdImageView
+                if(!isMusicPlaying) {
+                    continuousRotationAnimator = ValueAnimator.ofFloat(cdView.rotation, cdView.rotation + 360f).apply {
+                        duration = (360f / rotationSpeed * 1000).toLong()
+                        interpolator = LinearInterpolator()
+                        repeatCount = ValueAnimator.INFINITE
+                        addUpdateListener { animation ->
+                            val animatedValue = animation.animatedValue as Float
+                            cdView.rotation = animatedValue
+                        }
+                    }
+                    continuousRotationAnimator.start()
+                    currentlyPlayingViewHolder = this@ViewHolder
+
+                    //play 시 cd 테두리 색 변경
+                    binding.postImageLayoutBack.cdOuterWhenPlaying.animate()
+                        .alpha(1f)
+                        .setDuration(cdOuterImageChangeTime.toLong())
+                        .setListener(null)
+                }
+                else {
+                    continuousRotationAnimator.cancel()
+                    currentlyPlayingViewHolder = null
+
+                    //stop 시 cd 테두리 색 변경
+                    binding.postImageLayoutBack.cdOuterWhenPlaying.animate()
+                        .alpha(0f)
+                        .setDuration(cdOuterImageChangeTime.toLong())
+                        .setListener(null)
+                }
+                isMusicPlaying = !isMusicPlaying
+            }
+        }
+
+        fun stopMusicAnimation() {
+            if(isMusicPlaying) {
+                continuousRotationAnimator.cancel()
+                binding.postImageLayoutBack.cdOuter.setImageResource(R.drawable.cd_outer)
+                binding.postImageLayoutBack.cdImageView.rotation = 0f
+                binding.postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
+                isMusicPlaying = false
             }
         }
     }
@@ -51,7 +104,16 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        //cd회전
+        holder.stopMusicAnimation()
+
         holder.binding.apply {
+            //cd회전
+            holder.stopMusicAnimation()
+            postImageLayoutBack.cdImageView.rotation = 0f
+            postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
+
+
             if(data[position].isFliped) {
                 postImageLayout.postFrame.visibility = View.INVISIBLE
                 postImageLayoutBack.postFrameBack.visibility = View.VISIBLE
