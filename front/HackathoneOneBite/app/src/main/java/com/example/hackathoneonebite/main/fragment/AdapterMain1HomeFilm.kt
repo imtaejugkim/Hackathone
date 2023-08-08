@@ -42,11 +42,11 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
         holder.binding.apply {
             postImageLayout.postFrame.rotationY = if(data[position].isFliped) 180f else 0f
 
-            var imgArray = data[position].imgArray
+            /*var imgArray = data[position].imgArray
             postImageLayout.imageView1.setImageResource(imgArray[0].toInt())
             postImageLayout.imageView2.setImageResource(imgArray[1].toInt())
             postImageLayout.imageView3.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())
+            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())*/
         }
     }
 }

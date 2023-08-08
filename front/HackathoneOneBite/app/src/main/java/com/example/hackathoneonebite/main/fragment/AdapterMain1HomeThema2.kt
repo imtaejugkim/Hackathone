@@ -123,11 +123,11 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
                 postImageLayoutBack.postFrameBack.visibility = View.INVISIBLE
             }
 
-            var imgArray = data[position].imgArray
+            /*var imgArray = data[position].imgArray
             postImageLayout.imageView1frame2.setImageResource(imgArray[0].toInt())
             postImageLayout.imageView2frame2.setImageResource(imgArray[1].toInt())
             postImageLayout.imageView3frame2.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4frame2.setImageResource(imgArray[3].toInt())
+            postImageLayout.imageView4frame2.setImageResource(imgArray[3].toInt())*/
         }
     }
 

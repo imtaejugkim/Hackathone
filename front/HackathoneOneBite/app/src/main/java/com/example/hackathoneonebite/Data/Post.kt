@@ -6,9 +6,6 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Post(
-    @SerializedName("images")
-    var imgArray: Array<String> = Array(4) {""}, // 이미지 URI 또는 파일 경로의 배열
-
     @SerializedName("theme")
     var theme: Int = 0,
 

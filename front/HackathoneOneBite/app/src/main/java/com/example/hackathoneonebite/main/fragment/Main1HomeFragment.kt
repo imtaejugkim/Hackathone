@@ -1,5 +1,6 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -84,17 +86,17 @@ class Main1HomeFragment : Fragment() {
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
         for(i in 0..100) {
             data.add(Post())
-            data[i].id = "kakaka"
+            data[i].id = 123123
             data[i].likeCount = 10
             data[i].date = LocalDateTime.now()
             data[i].message = i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString()
-            for (j in 0..3) {
+            /*for (j in 0..3) {
                 if(j == i % 4) {
                     data[i].imgArray[j] = R.drawable.test_image1.toString()
                 } else {
                     data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
-            }
+            }*/
         }
     }
 
@@ -117,6 +119,7 @@ class Main1HomeFragment : Fragment() {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun initRecyclerView() { //리사이클러뷰 초기화
         //Thema1 RecyclerView
         binding.postImageLayoutThema1.apply {
@@ -230,22 +233,21 @@ class Main1HomeFragment : Fragment() {
                 viewGroup.visibility = View.INVISIBLE
             }
 
-            /*//item간에 간격 조정
-            recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    val itemHeight = recyclerView.height
-                    val itemDecoration = CenterItemDecoration(itemHeight)
-                    recyclerView.addItemDecoration(itemDecoration)
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        recyclerView.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    } else {
-                        recyclerView.viewTreeObserver.removeGlobalOnLayoutListener(this)
+            //item간에 간격 조정
+            recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+                override fun getItemOffsets(
+                    outRect: Rect,
+                    view: View,
+                    parent: RecyclerView,
+                    state: RecyclerView.State
+                ) {
+                    val position = parent.getChildAdapterPosition(view)
+                    if (position == 0) {
+                        outRect.bottom = (recyclerView.height * 0.8f).toInt()
                     }
                 }
             })
-            //----*/
+            //아이템들이 중앙에 오도록
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -272,36 +274,26 @@ class Main1HomeFragment : Fragment() {
         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
         val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
         val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
-/*
-        //TODO: 이 경우(새로 나오는 것만 밝기가 바뀌는 경우) adapter에서 alpha값을 1f로 초기화 시켜줘야 됨.
-        val itemView = layoutManager.findViewByPosition(lastVisibleItemPosition)
-        val distance = Math.abs(itemView!!.bottom - recyclerView.height)
-        val maxDistance = recyclerView.height
-        val alpha = 1 - (distance * 1f / maxDistance)
-        Log.d("정보", "distance:"+distance.toString()+"/alpha:"+alpha.toString())
-        val filmLayout:ConstraintLayout = itemView.findViewById(R.id.postImageLayout)
-        filmLayout.findViewById<ImageView>(R.id.imageView1).alpha = alpha
-        filmLayout.findViewById<ImageView>(R.id.imageView2).alpha = alpha
-        filmLayout.findViewById<ImageView>(R.id.imageView3).alpha = alpha
-        filmLayout.findViewById<ImageView>(R.id.imageView4).alpha = alpha*/
 
         for (i in firstVisibleItemPosition..lastVisibleItemPosition) {
             val itemView = layoutManager.findViewByPosition(i)
 
-            // 알파 값 계산
+            //투명도 계산 부분
             val distance = Math.abs(itemView!!.bottom - recyclerView.height)
-            val maxDistance = recyclerView.height * 0.6f
+            val maxDistance = recyclerView.height * 0.65f
             val alpha: Float
             if(distance > maxDistance)
                 alpha = 0f
             else
-                alpha = 1 - ((distance - 0.4f) / maxDistance)
+                alpha = 1 - ((distance - 0.35f) / maxDistance)
 
             val filmLayout:ConstraintLayout = itemView.findViewById(R.id.postImageLayout)
             filmLayout.findViewById<ImageView>(R.id.imageView1).alpha = alpha
             filmLayout.findViewById<ImageView>(R.id.imageView2).alpha = alpha
             filmLayout.findViewById<ImageView>(R.id.imageView3).alpha = alpha
             filmLayout.findViewById<ImageView>(R.id.imageView4).alpha = alpha
+            filmLayout.findViewById<ImageView>(R.id.RELAYImageView).alpha = alpha
+            filmLayout.findViewById<TextView>(R.id.dateTextView).alpha = alpha
         }
     }
 
@@ -397,7 +389,8 @@ class Main1HomeFragment : Fragment() {
     }
 }
 
-class CenterItemDecoration(private val itemHeight: Int) : RecyclerView.ItemDecoration() { //리사이클러뷰의 좌우 간격 설정을 위한 클래스
+/*//리사이클러뷰의 아이템간의 간격 설정을 위한 클래스
+class CenterItemDecoration(private val itemHeight: Int) : RecyclerView.ItemDecoration() {
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -424,4 +417,4 @@ class CenterItemDecoration(private val itemHeight: Int) : RecyclerView.ItemDecor
         //outRect.bottom = (-0.18 * itemHeight).toInt()
         //outRect.top = (-0.18 * itemHeight).toInt()
     }
-}
+}*/

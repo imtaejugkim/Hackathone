@@ -71,7 +71,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
+            val post = Post(0, 0, 0, LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -81,7 +81,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
+            val post = Post(0, 0, 0, LocalDateTime.now(), message,false)
 
             sendPost(post)
         }
@@ -100,7 +100,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("PostDebug", "Images: ${post.imgArray.joinToString()}")
                     Log.d("PostDebug", "ID: ${post.id}")
                     Log.d("PostDebug", "Like Count: ${post.likeCount}")
                     Log.d("PostDebug", "Date: ${post.date}")
