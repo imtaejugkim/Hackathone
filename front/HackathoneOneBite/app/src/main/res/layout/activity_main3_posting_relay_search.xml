@@ -32,13 +32,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="릴레이"
-        android:textSize="25dp"
+        android:textSize="25sp"
+        android:fontFamily="@font/font_bold"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"/>
-
+        android:layout_marginTop="50dp" />
     <ImageView
         android:id="@+id/leftArrow"
         android:layout_width="25sp"
@@ -73,6 +73,7 @@
         android:textColorHint="@color/light_gray"
         android:textSize="16sp"
         android:textColor="@color/black"
+
         app:layout_constraintWidth_percent="0.88"/>
 
     <androidx.recyclerview.widget.RecyclerView

@@ -71,7 +71,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, "", 0, LocalDateTime.now(), message,false)
+            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -81,7 +81,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         uploadButton.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, "", 0, LocalDateTime.now(), message,false)
+            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
 
             sendPost(post)
         }

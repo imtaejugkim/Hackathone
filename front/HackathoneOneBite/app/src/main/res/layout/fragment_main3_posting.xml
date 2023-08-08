@@ -3,19 +3,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/viewGroup">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94" />
+
+    <View
+        android:id="@+id/logoBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
+        app:layout_constraintTop_toTopOf="@id/topicTextView"
+        tools:layout_editor_absoluteX="0dp" />
 
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="게시물 선택"
-        android:textColor="@color/black"
+        android:text="테마 선택"
         android:textSize="25sp"
-        app:layout_constraintStart_toStartOf="@+id/GuideLineLeft"
-        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
+        android:fontFamily="@font/font_bold"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/GuideLineTop"
@@ -80,6 +105,15 @@
         app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
         app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"
         />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:text="필름형은 음악이 없습니다."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/filmImage"/>
 
     <TextView
         android:layout_width="wrap_content"

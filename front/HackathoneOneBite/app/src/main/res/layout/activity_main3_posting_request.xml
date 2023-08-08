@@ -50,17 +50,28 @@
         app:layout_constraintGuide_percent="0.94" />
 
 
+    <View
+        android:id="@+id/logoBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
+        app:layout_constraintTop_toTopOf="@id/topicTextView"
+        tools:layout_editor_absoluteX="0dp" />
+
+
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="릴레이"
-        android:textSize="25dp"
+        android:textSize="25sp"
+        android:fontFamily="@font/font_bold"
         android:textColor="@android:color/black"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"/>
+        android:layout_marginTop="50dp" />
 
     <ImageView
         android:id="@+id/leftArrow"
@@ -104,6 +115,7 @@
         android:layout_marginBottom="16dp">
 
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/relayGiverProfile"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@color/light_gray"
@@ -113,7 +125,17 @@
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:src="@drawable/img_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/relayGiverProfile"
+            app:layout_constraintEnd_toStartOf="@+id/relayTakerProfile"/>
+
         <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/relayTakerProfile"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@color/light_gray"
@@ -121,7 +143,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
