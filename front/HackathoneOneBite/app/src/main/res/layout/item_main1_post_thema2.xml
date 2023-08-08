@@ -29,7 +29,7 @@
         app:layout_constraintTop_toTopOf="@id/GuideLine1"
         app:layout_constraintBottom_toBottomOf="@id/GuideLine2"/>
 
-    <include layout="@layout/post_frame2_back"
+    <include layout="@layout/post_frame_back"
         android:id="@+id/postImageLayoutBack"
         android:layout_width="0dp"
         android:layout_height="0dp"

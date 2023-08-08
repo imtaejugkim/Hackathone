@@ -24,7 +24,6 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.postImageLayout.postFrame.setOnClickListener {
-                flipView(it)
                 itemClickListener?.OnItemClick(adapterPosition)
             }
         }
@@ -49,17 +48,5 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
             postImageLayout.imageView3.setImageResource(imgArray[2].toInt())
             postImageLayout.imageView4.setImageResource(imgArray[3].toInt())
         }
-    }
-
-    fun flipView(view: View) {
-        val scaleXAnimation = ObjectAnimator.ofFloat(view, "scaleX", 0f)
-        scaleXAnimation.duration = 350
-        scaleXAnimation.interpolator = DecelerateInterpolator()
-        scaleXAnimation.repeatMode = ValueAnimator.REVERSE
-        scaleXAnimation.repeatCount = 1
-
-        val animatorSet = AnimatorSet()
-        animatorSet.playSequentially(scaleXAnimation)
-        animatorSet.start()
     }
 }

@@ -120,15 +120,12 @@
         app:layout_constraintStart_toStartOf="@id/imageView4"
         app:layout_constraintBottom_toBottomOf="@+id/space"/>
 
-    <TextView
+    <ImageView
         android:id="@+id/RELAYTextView"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="RELAY"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        app:layout_constraintHeight_percent="0.126"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.022"
+        android:src="@drawable/img_logo_white"
         app:layout_constraintTop_toBottomOf="@id/imageView4"
         app:layout_constraintStart_toStartOf="@id/imageView4"
         app:layout_constraintEnd_toEndOf="@id/imageView4"
@@ -142,7 +139,6 @@
         android:text="2023.02.04"
         android:textSize="14sp"
         android:textColor="#7a7a7a"
-        app:layout_constraintBottom_toBottomOf="@id/space"
         app:layout_constraintStart_toStartOf="@+id/space"
         app:layout_constraintEnd_toEndOf="@id/space"
         app:layout_constraintTop_toBottomOf="@id/RELAYTextView"/>

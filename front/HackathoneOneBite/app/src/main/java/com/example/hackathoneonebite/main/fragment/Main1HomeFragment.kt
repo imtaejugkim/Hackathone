@@ -4,13 +4,19 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -142,6 +148,18 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         messageTextView.text = data_thema1[pos]?.message
+
+                        //music stop
+                        val playingViewHolder = adapter_thema1.currentlyPlayingViewHolder ?: return
+                        val position = playingViewHolder.adapterPosition
+                        val layoutManager2 = recyclerView.layoutManager
+
+                        if (!layoutManager2!!.isViewCompletelyVisible(position)) {
+                            if (position != pos) {
+                                playingViewHolder.stopMusicAnimation()
+                                adapter_thema1.currentlyPlayingViewHolder = null
+                            }
+                        }
                     }
                 }
             })
@@ -176,6 +194,18 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         messageTextView.text = data_thema2[pos]?.message
+
+                        //music stop
+                        val playingViewHolder = adapter_thema2.currentlyPlayingViewHolder ?: return
+                        val position = playingViewHolder.adapterPosition
+                        val layoutManager2 = recyclerView.layoutManager
+
+                        if (!layoutManager2!!.isViewCompletelyVisible(position)) {
+                            if (position != pos) {
+                                playingViewHolder.stopMusicAnimation()
+                                adapter_thema2.currentlyPlayingViewHolder = null
+                            }
+                        }
                     }
                 }
             })
@@ -190,10 +220,6 @@ class Main1HomeFragment : Fragment() {
                     data_film[position].isFliped = !data_film[position].isFliped
                 }
             }
-            val bottomPadding = (recyclerView.height * 0.64 * 0.88).toInt()  // 예시로 64%의 높이를 패딩으로 추가합니다.
-            recyclerView.setPadding(0, 0, 0, bottomPadding)
-            recyclerView.clipToPadding = false
-
             recyclerView.adapter = adapter_film
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
@@ -208,7 +234,7 @@ class Main1HomeFragment : Fragment() {
             recyclerView.viewTreeObserver.addOnGlobalLayoutListener(object :
                 ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    val itemHeight = (recyclerView.height * 0.64).toInt()
+                    val itemHeight = recyclerView.height
                     val itemDecoration = CenterItemDecoration(itemHeight)
                     recyclerView.addItemDecoration(itemDecoration)
 
@@ -233,8 +259,58 @@ class Main1HomeFragment : Fragment() {
                     }
                 }
             })
+            //스크롤 밝기 조절
+            recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    adjustBrightness(recyclerView)
+                }
+            })
         }
     }
+    //스크롤 밝기 조절을 위한 함수
+    private fun adjustBrightness(recyclerView: RecyclerView) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        val firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition()
+        val lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition()
+/*
+        //TODO: 이 경우(새로 나오는 것만 밝기가 바뀌는 경우) adapter에서 alpha값을 1f로 초기화 시켜줘야 됨.
+        val itemView = layoutManager.findViewByPosition(lastVisibleItemPosition)
+        val distance = Math.abs(itemView!!.bottom - recyclerView.height)
+        val maxDistance = recyclerView.height
+        val alpha = 1 - (distance * 1f / maxDistance)
+        Log.d("정보", "distance:"+distance.toString()+"/alpha:"+alpha.toString())
+        val filmLayout:ConstraintLayout = itemView.findViewById(R.id.postImageLayout)
+        filmLayout.findViewById<ImageView>(R.id.imageView1).alpha = alpha
+        filmLayout.findViewById<ImageView>(R.id.imageView2).alpha = alpha
+        filmLayout.findViewById<ImageView>(R.id.imageView3).alpha = alpha
+        filmLayout.findViewById<ImageView>(R.id.imageView4).alpha = alpha*/
+
+        for (i in firstVisibleItemPosition..lastVisibleItemPosition) {
+            val itemView = layoutManager.findViewByPosition(i)
+
+            // 알파 값 계산
+            val distance = Math.abs(itemView!!.bottom - recyclerView.height)
+            val maxDistance = recyclerView.height * 0.6f
+            val alpha: Float
+            if(distance > maxDistance)
+                alpha = 0f
+            else
+                alpha = 1 - ((distance - 0.4f) / maxDistance)
+
+            val filmLayout:ConstraintLayout = itemView.findViewById(R.id.postImageLayout)
+            filmLayout.findViewById<ImageView>(R.id.imageView1).alpha = alpha
+            filmLayout.findViewById<ImageView>(R.id.imageView2).alpha = alpha
+            filmLayout.findViewById<ImageView>(R.id.imageView3).alpha = alpha
+            filmLayout.findViewById<ImageView>(R.id.imageView4).alpha = alpha
+        }
+    }
+
+    //아예 안보이게 될 때를 체크
+    fun RecyclerView.LayoutManager.isViewCompletelyVisible(position: Int): Boolean {
+        val view = this.findViewByPosition(position)
+        return view != null && !this.isViewPartiallyVisible(view, true, true)
+    }
+
 
     //어떤 테마를 모아볼 지 선택하는 Dialog
     fun showThemaSelectDialog() {
@@ -247,6 +323,10 @@ class Main1HomeFragment : Fragment() {
         )
         dlg.window?.setGravity(Gravity.TOP)
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        bindingDialog.closeButton.setOnClickListener {
+            dlg.dismiss()
+        }
 
         //Dialog에서 thema1을 선택했을 경우
         bindingDialog.postFrame1.setOnClickListener {
@@ -317,7 +397,7 @@ class Main1HomeFragment : Fragment() {
     }
 }
 
-class CenterItemDecoration(private val itemWidth: Int) : RecyclerView.ItemDecoration() { //리사이클러뷰의 좌우 간격 설정을 위한 클래스
+class CenterItemDecoration(private val itemHeight: Int) : RecyclerView.ItemDecoration() { //리사이클러뷰의 좌우 간격 설정을 위한 클래스
     override fun getItemOffsets(
         outRect: Rect,
         view: View,
@@ -335,13 +415,13 @@ class CenterItemDecoration(private val itemWidth: Int) : RecyclerView.ItemDecora
 
     private fun initializeItemPosition(outRect: Rect, parent: RecyclerView) {
         val totalWidth = parent.width
-        outRect.bottom = (itemWidth * 0.88).toInt()
-        //outRect.right = (totalWidth - itemWidth) / 6
+        //outRect.bottom = (itemWidth * 0.88).toInt()
+        //outRect.top = (-0.18 * itemHeight).toInt()
     }
 
     private fun ensureItemPosition(outRect: Rect, parent: RecyclerView) {
         val totalWidth = parent.width
-        //outRect.left = (totalWidth - itemWidth) / 6
-        //outRect.right = (totalWidth - itemWidth) / 6
+        //outRect.bottom = (-0.18 * itemHeight).toInt()
+        //outRect.top = (-0.18 * itemHeight).toInt()
     }
 }
