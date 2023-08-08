@@ -6,22 +6,22 @@ import com.google.gson.annotations.SerializedName
 
 
 data class Post(
-    @SerializedName("imgArray")
+    @SerializedName("images")
     var imgArray: Array<String> = Array(4) {""}, // 이미지 URI 또는 파일 경로의 배열
 
     @SerializedName("theme")
     var theme: Int = 0,
 
     @SerializedName("id")
-    var id: String? = null,
+    var id: Long? = null,
 
-    @SerializedName("likeCount")
+    @SerializedName("likes")
     var likeCount: Int = 0,
 
-    @SerializedName("date")
+    @SerializedName("createdAt")
     var date: LocalDateTime? = null,
 
-    @SerializedName("message")
+    @SerializedName("text")
     var message: String? = null,
 
     @SerializedName("isFliped")
