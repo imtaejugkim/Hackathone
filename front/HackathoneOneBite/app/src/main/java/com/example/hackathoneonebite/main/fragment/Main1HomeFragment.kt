@@ -38,6 +38,7 @@ class Main1HomeFragment : Fragment() {
     val data_thema1: ArrayList<Post> = ArrayList()
     val data_thema2: ArrayList<Post> = ArrayList()
     val data_film: ArrayList<Post> = ArrayList()
+    val musicArray = resources.obtainTypedArray(R.array.music_array)
 
     enum class ThemaNumbering(val value: Int) {
         thema1(0),
@@ -90,13 +91,14 @@ class Main1HomeFragment : Fragment() {
             data[i].likeCount = 10
             data[i].date = LocalDateTime.now()
             data[i].message = i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString()
-            /*for (j in 0..3) {
+            data[i].musicNum = i % musicArray.length()
+            for (j in 0..3) {
                 if(j == i % 4) {
                     data[i].imgArray[j] = R.drawable.test_image1.toString()
                 } else {
                     data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
-            }*/
+            }
         }
     }
 
@@ -125,7 +127,7 @@ class Main1HomeFragment : Fragment() {
         binding.postImageLayoutThema1.apply {
             recyclerView.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter_thema1 = AdapterMain1HomeThema1(data_thema1)
+            adapter_thema1 = AdapterMain1HomeThema1(requireContext(), data_thema1)
             adapter_thema1.itemClickListener = object: AdapterMain1HomeThema1.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
                     data_thema1[position].isFliped = !data_thema1[position].isFliped
