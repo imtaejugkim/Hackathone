@@ -39,15 +39,6 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
             onBackPressedDispatcher.onBackPressed()
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
-        /*val rightArrow = binding.rightArrow
-        rightArrow.setOnClickListener {
-            val selectedName = binding.searchEdit.text.toString()
-
-            val nextIntent = Intent(this, Main3PostingTimeActivity::class.java)
-            nextIntent.putExtra("selected_name", selectedName)
-            nextIntent.putExtra("post_data", receivedPost)
-            startActivity(nextIntent)
-        }*/
 
         adapter = AdapterMain3PostingRelaySearch()
         binding.nameRecyclerView.adapter = adapter

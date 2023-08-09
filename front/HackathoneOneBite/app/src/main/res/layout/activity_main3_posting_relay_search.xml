@@ -49,17 +49,7 @@
         android:layout_marginTop="50dp"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
 
-    <ImageView
-        android:id="@+id/rightArrow"
-        android:layout_width="25sp"
-        android:layout_height="0dp"
-        android:src="@drawable/img_arrow_right"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"/>
-
-    <EditText
+      <EditText
         android:id="@+id/searchEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
