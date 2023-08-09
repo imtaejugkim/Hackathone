@@ -5,4 +5,8 @@
         <item name="cornerSize">50%</item>
         <item name="strokeColor">#000000</item>
     </style>
+    <style name="DialogSlideAnim" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowEnterAnimation">@anim/slide_out_down</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+    </style>
 </resources>

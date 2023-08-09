@@ -4,6 +4,8 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
+import android.media.MediaPlayer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +17,7 @@ import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.ItemMain1PostThema1Binding
 
-class AdapterMain1HomeThema1(val data:ArrayList<Post>)
+class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
     : RecyclerView.Adapter<AdapterMain1HomeThema1.ViewHolder>() {
     interface OnItemClickListener {
         fun OnItemClick(position: Int)
@@ -28,11 +30,16 @@ class AdapterMain1HomeThema1(val data:ArrayList<Post>)
     val rotationSpeed = 480f //초당 480도
     val cdOuterImageChangeTime = 400 // 0.4초
     var currentlyPlayingViewHolder: ViewHolder? = null
+    //music
+    val musicArray = context.resources.obtainTypedArray(R.array.music_array)
+    val musicNameArray = context.resources.obtainTypedArray(R.array.music_name)
+    val singerArray = context.resources.obtainTypedArray(R.array.singer)
 
     inner class ViewHolder(val binding: ItemMain1PostThema1Binding) :
         RecyclerView.ViewHolder(binding.root) {
 
         var isMusicPlaying: Boolean = false
+        var mediaPlayer: MediaPlayer? = null
         lateinit var continuousRotationAnimator: ValueAnimator
 
         init {
@@ -79,6 +86,15 @@ class AdapterMain1HomeThema1(val data:ArrayList<Post>)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
                 }
+
+                //음악 재생
+               /* if(mediaPlayer==null){
+                    mediaPlayer = MediaPlayer.create(this@AdapterMain1HomeThema1, musicArray[data[adapterPosition].musicNum])
+                    mediaPlayer?.setVolume(vol,vol)
+                }
+                mediaPlayer?.start()
+                flag = true*/
+
                 isMusicPlaying = !isMusicPlaying
             }
         }
@@ -123,11 +139,11 @@ class AdapterMain1HomeThema1(val data:ArrayList<Post>)
                 postImageLayoutBack.postFrameBack.visibility = View.INVISIBLE
             }
 
-            /*var imgArray = data[position].imgArray
+            var imgArray = data[position].imgArray
             postImageLayout.imageView1frame1.setImageResource(imgArray[0].toInt())
             postImageLayout.imageView2frame1.setImageResource(imgArray[1].toInt())
             postImageLayout.imageView3frame1.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4frame1.setImageResource(imgArray[3].toInt())*/
+            postImageLayout.imageView4frame1.setImageResource(imgArray[3].toInt())
         }
     }
 

@@ -19,12 +19,15 @@ import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide.init
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.Data.User
+import com.example.hackathoneonebite.api.LoginCheckEmailExistRequest
+import com.example.hackathoneonebite.api.LoginCheckEmailExistResponse
 import com.example.hackathoneonebite.api.Main1LoadPostRequest
 import com.example.hackathoneonebite.api.Main1LoadPostResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityStartBinding
 import com.example.hackathoneonebite.main.MainFrameActivity
 import com.example.hackathoneonebite.main.fragment.Main1HomeFirstFragment
+import com.example.hackathoneonebite.main.fragment.Main3PostingRelaySearchActivity
 import com.example.hackathoneonebite.main.fragment.Main3PostingTimeActivity
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -33,6 +36,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -63,9 +67,6 @@ class StartActivity : ComponentActivity() {
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //setResultSignUp()
-        //init()
-
         btnEmail = binding.btmEmail
         btnGoogle = binding.btnGoogle
 
@@ -74,7 +75,7 @@ class StartActivity : ComponentActivity() {
             val strEmail = binding.userID.toString()
             val strPwd = binding.userPW.toString()
             try{
-                signAndSignUp(strEmail, strPwd)
+                //signAndSignUp(strEmail, strPwd)
             } catch (e:java.lang.Exception) {
                 Toast.makeText(this, "아이디와 비밀번호를 제대로 입력하세요.", Toast.LENGTH_SHORT).show()
             }
@@ -123,7 +124,7 @@ class StartActivity : ComponentActivity() {
                 if (task.isSuccessful) {
                     val user = auth!!.currentUser
                     Log.d("TAG", "Signed in with Google: ${user?.displayName}")
-                    movePage(task.result?.user)
+                    //movePage(task.result?.user)
 
                     val account = GoogleSignIn.getLastSignedInAccount(this)
                     val email = account?.email
@@ -138,6 +139,10 @@ class StartActivity : ComponentActivity() {
                     Log.d("TAG", "Given Name: $givenName")
                     Log.d("TAG", "Display Name: $displayName")
                     Log.d("TAG", "Photo URL: $photoUrl")
+
+                    val request = LoginCheckEmailExistRequest(binding.userID.text.toString())
+                    checkEmailExist(request, account!!)
+                    //checkEmailExist(request, task.result?.user)
                 } else {
                     Log.e("TAG", "Google sign-in failed", task.exception)
                 }
@@ -145,8 +150,8 @@ class StartActivity : ComponentActivity() {
     }
 
 
-    private fun signAndSignUp(email:String, pwd:String) {
-       auth?.createUserWithEmailAndPassword(email, pwd)?.addOnCompleteListener(this) { task ->
+    /*private fun signAndSignUp(email:String, pwd:String) {
+        auth?.createUserWithEmailAndPassword(email, pwd)?.addOnCompleteListener(this) { task ->
             if (task.isSuccessful) { // 회원가입 성공
                 movePage(task.result?.user)
             } else { // 회원가입 실패
@@ -163,14 +168,24 @@ class StartActivity : ComponentActivity() {
                 Toast.makeText(this, "로그인 실패", Toast.LENGTH_SHORT).show()
             }
         }
-    }
+    }*/
 
 
 
-    private fun movePage(user:FirebaseUser?) {
-        if (user != null) {
-            Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
+    private fun movePage(isExist: Boolean, account: GoogleSignInAccount) {
+        if(isExist) {
             startActivity(Intent(this, MainFrameActivity::class.java))
+        } else {
+            val i = Intent(this, SignInActivity::class.java)
+            val email = account?.email
+            val familyName = account?.familyName
+            val givenName = account?.givenName
+            val displayName = account?.displayName
+
+            i.putExtra("email", email)
+            i.putExtra("displayName", displayName)
+
+            startActivity(i)
         }
     }
 
@@ -182,85 +197,24 @@ class StartActivity : ComponentActivity() {
 
     }
 
-    /*override fun onStart() {
-        super.onStart()
-        //로그인 되어 있는 상태면 null이 아닌것을 return
-        //로그인이 안 되어 있으면 null을 return
-        val account: GoogleSignInAccount? = GoogleSignIn.getLastSignedInAccount(this)
-        if(account == null) { //아직 앱에 로그인 하지 않음.
-            Toast.makeText(this,"아직 로그인 안됨.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(this,"이미 로그인 됨.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun setGoogleLogin(auth: FirebaseAuth) {
-
-
-
-    }
-
-    private fun setResultSignUp() {
-        resultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val task: Task<GoogleSignInAccount> = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-                handleSignInResult(task)
-            } else {
-                Toast.makeText(this,result.resultCode.toString(), Toast.LENGTH_LONG).show()
-
-            }
-        }
-    }
-
-    private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
-        try {
-            val account = completedTask.getResult(ApiException::class.java)
-            val email = account?.email.toString()
-            val familyName = account?.familyName.toString()
-            val givenName = account?.givenName.toString()
-            val displayName = account?.displayName.toString()
-            val photoUrl = account?.photoUrl.toString()
-            Toast.makeText(this@StartActivity, email, Toast.LENGTH_SHORT).show()
-            Log.d("이메일", email)
-            Log.d("성", familyName)
-            Log.d("이름", givenName)
-            Log.d("전체이름", displayName)
-            Log.d("프로필사진 주소", photoUrl)
-        } catch (e: ApiException) {
-            Log.w("failed", "signInResult: failed code = " + e.statusCode)
-        }
-    }*/
-
-    @SuppressLint("ResourceType")
-    fun init() {
-        binding.singInBtn.setOnClickListener {
-            val inputStream = this.resources.openRawResource(R.drawable.cd_outer_playing)
-            val byteArray = inputStream.readBytes()
-            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), byteArray)
-            val imagePart = MultipartBody.Part.createFormData("image", "your_image_name.jpg", requestFile)
-
-            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
-
-            Login(imagePart, themePart)
-        }
-    }
-
     private fun signIn() {
         val signInIntent: Intent = mGoogleSignInClient.getSignInIntent()
         resultLauncher.launch(signInIntent)
     }
 
-    fun Login(image: MultipartBody.Part, theme: RequestBody){
-        val call = RetrofitBuilder.api.main1LoadPost(image, theme)
-        call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
+    fun checkEmailExist(request: LoginCheckEmailExistRequest, account: GoogleSignInAccount){
+        val call = RetrofitBuilder.api.loginCheckEmailExistRequest(request)
+        call.enqueue(object : Callback<LoginCheckEmailExistResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
-                call: Call<Main1LoadPostResponse>,
-                response: Response<Main1LoadPostResponse>
+                call: Call<LoginCheckEmailExistResponse>,
+                response: Response<LoginCheckEmailExistResponse>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    Log.d("RESPONSE: ", "success")
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("RESPONSE: ", "ID: ${userResponse?.text}, Name: ${userResponse?.date.toString()}")
+                    Log.d("RESPONSE: ", "${userResponse?.isExist.toString()}")
+                    movePage(userResponse?.isExist!!, account)
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
@@ -279,7 +233,7 @@ class StartActivity : ComponentActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<Main1LoadPostResponse>, t: Throwable) {
+            override fun onFailure(call: Call<LoginCheckEmailExistResponse>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }

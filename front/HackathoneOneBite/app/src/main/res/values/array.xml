@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 음악 트랙 -->
+    <array name="music_array">
+        <item>@raw/music0_link_jim_yosef</item>
+        <item>@raw/music1_on_and_on_cartoon</item>
+        <item>@raw/music2_heroes_tonight_janji</item>
+        <item>@raw/music3_my_heart_different_heaven_ehde</item>
+        <item>@raw/music4_mortals_warriyo</item>
+        <item>@raw/music5_sky_high_elektronomia</item>
+        <item>@raw/music6_fearless_lost_sky</item>
+    </array>
+
+    <!-- 노래 제목 -->
+    <string-array name="music_name">
+        <item>Link</item>
+        <item>On and On</item>
+        <item>Heroes Tonight</item>
+        <item>My Heart</item>
+        <item>Mortals</item>
+        <item>Sky High</item>
+        <item>Fearless</item>
+    </string-array>
+
+    <!-- 가수 -->
+    <string-array name="singer">
+        <item>Jim Yosef</item>
+        <item>Cartoon</item>
+        <item>Janji</item>
+        <item>Differtent Heaven, EH!DE</item>
+        <item>Warriyo</item>
+        <item>Elektronomia</item>
+        <item>Lost Sky</item>
+    </string-array>
+</resources>
