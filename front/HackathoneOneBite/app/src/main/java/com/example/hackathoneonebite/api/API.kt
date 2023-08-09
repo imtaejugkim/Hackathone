@@ -19,9 +19,10 @@ public interface API {
 
     @Multipart
     @POST("/api/upload/create")
-    fun main1LoadPost(
-        @Part image: MultipartBody.Part,
-        @Part("theme") theme: RequestBody
+    fun uploadPost(
+        @Part images: ArrayList<MultipartBody.Part>,
+        @Part("theme") theme: RequestBody,
+        @Part("userId") userId: RequestBody
     ): Call<Main1LoadPostResponse>
 
     @POST("/api/user/check-email") //이메일 존재 여부 확인
@@ -33,6 +34,11 @@ public interface API {
     fun loginSignInRequest(
         @Body request: LoginSignInRequest
     ): Call<LoginSignInResponse>
+
+    @GET("/api/posts/{postId}") //이미지 로드
+    fun main1LoadPostRequest(
+        @Path("postId")  postId: Long
+    ): Call<Main1LoadPostResponse>
 
     /*@Multipart
     @POST("/api/upload/create")

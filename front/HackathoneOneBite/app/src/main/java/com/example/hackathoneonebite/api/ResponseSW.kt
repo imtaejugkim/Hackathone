@@ -1,6 +1,7 @@
 package com.example.hackathoneonebite.api
 
 import com.google.gson.annotations.SerializedName
+import java.time.LocalDateTime
 
 
 //Login화면
