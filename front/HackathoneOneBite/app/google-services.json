@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "560438120054",
+    "project_id": "hackathoneonebite-9778c",
+    "storage_bucket": "hackathoneonebite-9778c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:560438120054:android:7292b91b9d7e919448d957",
+        "android_client_info": {
+          "package_name": "com.example.hackathoneonebite"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "560438120054-rnv402ki4irh6enu7a55ilea8bvn98vp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRa63DLlW2WerW40lMtnOdSGN3swMfkDs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "560438120054-rnv402ki4irh6enu7a55ilea8bvn98vp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
