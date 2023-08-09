@@ -140,7 +140,7 @@ class StartActivity : ComponentActivity() {
                     Log.d("TAG", "Display Name: $displayName")
                     Log.d("TAG", "Photo URL: $photoUrl")
 
-                    val request = LoginCheckEmailExistRequest(binding.userID.text.toString())
+                    val request = LoginCheckEmailExistRequest(email!!)
                     checkEmailExist(request, account!!)
                     //checkEmailExist(request, task.result?.user)
                 } else {
