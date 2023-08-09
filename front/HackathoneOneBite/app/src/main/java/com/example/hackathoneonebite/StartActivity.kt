@@ -1,5 +1,6 @@
 package com.example.hackathoneonebite
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -13,17 +14,26 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.Data.User
+import com.example.hackathoneonebite.api.Main1LoadPostRequest
+import com.example.hackathoneonebite.api.Main1LoadPostResponse
+import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityStartBinding
-import com.example.hackathoneonebite.main.MainFrameActivity
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class StartActivity : ComponentActivity() {
@@ -93,18 +103,17 @@ class StartActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("ResourceType")
     fun init() {
-        binding.googleSignBtn.setOnClickListener {
-            signIn()
-        }
-        binding.loginBtn.setOnClickListener {
-            val i = Intent(this@StartActivity, MainFrameActivity::class.java)
-            startActivity(i)
-            /*val user = User()
-            user.id = binding.userID.text.toString()
-            user.pw = binding.userPW.text.toString()
-            Log.d("Login Button Clicked", "ID:" + user.id + " / PW:" + user.pw)
-            Login(user)*/
+        binding.singInBtn.setOnClickListener {
+            val inputStream = this.resources.openRawResource(R.drawable.cd_outer_playing)
+            val byteArray = inputStream.readBytes()
+            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), byteArray)
+            val imagePart = MultipartBody.Part.createFormData("image", "your_image_name.jpg", requestFile)
+
+            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
+
+            Login(imagePart, themePart)
         }
     }
 
@@ -113,17 +122,17 @@ class StartActivity : ComponentActivity() {
         resultLauncher.launch(signInIntent)
     }
 
-    /*fun Login(user: User){
-        val call = RetrofitBuilder.api.getLoginResponse(user)
-        call.enqueue(object : Callback<User> { // 비동기 방식 통신 메소드
-            override fun onResponse( // 통신에 성공한 경우
-                call: Call<User>,
-                response: Response<User>
+    fun Login(image: MultipartBody.Part, theme: RequestBody){
+        val call = RetrofitBuilder.api.main1LoadPost(image, theme)
+        call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<Main1LoadPostResponse>,
+                response: Response<Main1LoadPostResponse>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("RESPONSE: ", "ID: ${userResponse?.id}, Name: ${userResponse?.pw}")
+                    Log.d("RESPONSE: ", "ID: ${userResponse?.text}, Name: ${userResponse?.date.toString()}")
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
@@ -142,10 +151,10 @@ class StartActivity : ComponentActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
+            override fun onFailure(call: Call<Main1LoadPostResponse>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
-    }*/
+    }
 }
