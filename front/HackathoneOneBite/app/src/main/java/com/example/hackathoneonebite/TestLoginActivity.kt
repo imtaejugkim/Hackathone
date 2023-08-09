@@ -55,7 +55,7 @@ class TestLoginActivity : AppCompatActivity() {
             Login(imageParts, themePart, idPart)
         }
         binding.loadImage.setOnClickListener {
-            loadPost(1552)
+            loadPost(1652)
         }
     }
 
@@ -73,19 +73,22 @@ class TestLoginActivity : AppCompatActivity() {
                     Log.d("RESPONSE: ", "${userResponse?.date}")
                     binding.textView.text = userResponse?.text
                     Log.d("RESPONSE: ", userResponse!!.images[0])
-                    Glide.with(this@TestLoginActivity)
-                        .load("http://221.146.39.177:8081/"+userResponse!!.images[0].substring(userResponse!!.images[0].lastIndexOf("\\") + 1))
-                        .into(binding.image1)
-                    Log.d("RESPONSE: ", userResponse!!.images[0].substring(userResponse!!.images[0].lastIndexOf("\\") + 1))
-                    Glide.with(this@TestLoginActivity)
-                        .load("http://221.146.39.177:8081/"+userResponse!!.images[1].substring(userResponse!!.images[1].lastIndexOf("\\") + 1))
-                        .into(binding.image2)
-                    Glide.with(this@TestLoginActivity)
-                        .load("http://221.146.39.177:8081/"+userResponse!!.images[2].substring(userResponse!!.images[2].lastIndexOf("\\") + 1))
-                        .into(binding.image3)
-                    Glide.with(this@TestLoginActivity)
-                        .load("http://221.146.39.177:8081/"+userResponse!!.images[3].substring(userResponse!!.images[3].lastIndexOf("\\") + 1))
-                        .into(binding.image4)
+
+                    for(i in 0..3) {
+                        Glide.with(this@TestLoginActivity)
+                            .load(
+                                "http://221.146.39.177:8081/" + userResponse!!.images[i].substring(
+                                    userResponse!!.images[i].lastIndexOf("\\") + 1
+                                )
+                            )
+                            .into(binding.image1)
+                        Log.d(
+                            "RESPONSE: ",
+                            userResponse!!.images[i].substring(
+                                userResponse!!.images[i].lastIndexOf("\\") + 1
+                            )
+                        )
+                    }
                     Toast.makeText(this@TestLoginActivity,userResponse?.date,Toast.LENGTH_LONG).show()
                 }else{
                     // 통신 성공 but 응답 실패
