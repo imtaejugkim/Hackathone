@@ -40,10 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/highlight"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        app:layout_constraintTop_toTopOf="@id/topicTextView"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
         tools:layout_editor_absoluteX="0dp" />
-
 
     <TextView
         android:id="@+id/topicTextView"
@@ -53,10 +51,17 @@
         android:textSize="25sp"
         android:fontFamily="@font/font_bold"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
 
     <ImageView
         android:id="@+id/leftArrow"
@@ -154,7 +159,18 @@
         </TextView>
     </LinearLayout>
 
-
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@id/linear3"
+        app:layout_constraintStart_toEndOf="@id/leftArrow"
+        app:layout_constraintEnd_toStartOf="@id/rightArrow"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtonTop"
+        android:padding="4dp"
+        android:clipToPadding="false"
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:scrollbarTrackVertical="@android:color/transparent"
+        tools:listitem="@layout/item_music_button" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

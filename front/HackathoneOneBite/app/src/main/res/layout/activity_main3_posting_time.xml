@@ -25,7 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.36" />
+        app:layout_constraintGuide_percent="0.2" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineButtonLeft"
@@ -47,18 +47,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.59" />
+        app:layout_constraintGuide_percent="0.43" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
 
     <View
         android:id="@+id/logoBackground"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/highlight"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        app:layout_constraintTop_toTopOf="@id/topicTextView"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
         tools:layout_editor_absoluteX="0dp" />
-
 
     <TextView
         android:id="@+id/topicTextView"
@@ -68,10 +72,17 @@
         android:textSize="25sp"
         android:fontFamily="@font/font_bold"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
 
     <ImageView
         android:id="@+id/leftArrow"
@@ -111,49 +122,67 @@
         app:layout_constraintTop_toBottomOf="@id/selectName"
         app:layout_constraintBottom_toTopOf="@+id/guidelineTimeBottom">
 
-        <ImageView
-            android:id="@+id/imageView1"
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="0dp"
+            android:text="0"
+            android:textSize="100dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
-        <ImageView
-            android:id="@+id/imageView2"
+            android:layout_weight="2">
+        </TextView>
+        <TextView
+            android:id="@+id/textView2"
             android:layout_width="0dp"
+            android:text="0"
+            android:textSize="100dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
+            android:layout_weight="2">
+        </TextView>
         <TextView
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="match_parent">
 
         </TextView>
-        <ImageView
-            android:id="@+id/imageView3"
+        <TextView
+            android:id="@+id/textView3"
             android:layout_width="0dp"
+            android:text="0"
+            android:textSize="100dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
-        <ImageView
-            android:id="@+id/imageView4"
+            android:layout_weight="2">
+        </TextView>
+        <TextView
+            android:id="@+id/textView4"
             android:layout_width="0dp"
+            android:text="0"
+            android:textSize="100dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:src="@drawable/img_0">
-        </ImageView>
+            android:layout_weight="2">
+        </TextView>
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/timeTextLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toEndOf="@id/leftArrow"
         app:layout_constraintEnd_toStartOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@id/guidelineTimeBottom"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toTopOf="@id/timePickerLayout">
 
         <TextView
             android:text="시간"
@@ -161,7 +190,7 @@
             android:layout_width="0dp"
             android:layout_weight="4"
             android:gravity="center"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp">
         </TextView>
 
         <TextView
@@ -178,7 +207,27 @@
             android:gravity="center"
             android:layout_height="wrap_content">
         </TextView>
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/timePickerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toEndOf="@id/leftArrow"
+        app:layout_constraintEnd_toStartOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@id/guidelineTimePicker"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal">
+
+        <TimePicker
+            android:id="@+id/timePicker1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/selectName"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:timePickerMode="spinner"
+            android:format24Hour="HH:mm" />
 
     </LinearLayout>
 

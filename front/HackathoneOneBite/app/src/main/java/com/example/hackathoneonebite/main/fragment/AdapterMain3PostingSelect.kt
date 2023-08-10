@@ -14,10 +14,16 @@ class AdapterMain3PostingSelect(
     private val onItemClick: (String) -> Unit
 ) : RecyclerView.Adapter<AdapterMain3PostingSelect.PhotoViewHolder>() {
 
-    var selectedPosition: Int = RecyclerView.NO_POSITION // Variable to store the selected position, initially set to NO_POSITION
+    var selectedPosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_photo, parent, false)
+
+        val layoutParams = view.layoutParams
+        layoutParams.height = parent.width / 4 // 정사각형으로 표시되도록 설정
+        view.layoutParams = layoutParams
+
+
         return PhotoViewHolder(view)
     }
 

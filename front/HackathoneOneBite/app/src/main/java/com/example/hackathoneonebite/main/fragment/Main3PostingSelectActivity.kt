@@ -7,9 +7,15 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.provider.MediaStore
+import android.util.Log
+import android.view.ScaleGestureDetector
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +25,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.R
+import java.io.ByteArrayOutputStream
 
 class Main3PostingSelectActivity : AppCompatActivity() {
 
@@ -26,6 +33,9 @@ class Main3PostingSelectActivity : AppCompatActivity() {
         private const val REQUEST_READ_EXTERNAL_STORAGE = 1
     }
 
+    private lateinit var scaleGestureDetector: ScaleGestureDetector
+    private lateinit var matrix: Matrix
+    private var scaleFactor = 1.0f
     private lateinit var recyclerView: RecyclerView
     private lateinit var layoutManager: GridLayoutManager
     private lateinit var adapter: AdapterMain3PostingSelect
@@ -36,7 +46,51 @@ class Main3PostingSelectActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3_posting_select)
 
-        val clickedLayoutId = intent.getIntExtra("contents_id",0)
+        val clickedContentsId = intent.getIntExtra("contents_id", 0)
+        val clickedLayoutId = intent.getIntExtra("layout_id", 0)
+        Log.d("tag", clickedLayoutId.toString())
+
+        val imageTheme2Frame1 = findViewById<View>(R.id.selectedImageView2Frame1)
+        val imageTheme2Frame3 = findViewById<View>(R.id.selectedImageView2Frame3)
+        val imageTheme2Frame4 = findViewById<View>(R.id.selectedImageView2Frame4)
+        val imageThemeBasic = findViewById<View>(R.id.selectedImageViewBasic)
+
+
+        when (clickedLayoutId) {
+            in 0..1 -> {
+                imageThemeBasic.visibility = View.VISIBLE
+                imageTheme2Frame1.visibility = View.INVISIBLE
+                imageTheme2Frame3.visibility = View.INVISIBLE
+                imageTheme2Frame4.visibility = View.INVISIBLE
+                selectedImageView = findViewById(R.id.selectedImageViewBasic)
+            }
+            2 -> {
+                when (clickedContentsId) {
+                    in 0..1 -> {
+                        imageThemeBasic.visibility = View.INVISIBLE
+                        imageTheme2Frame1.visibility = View.VISIBLE
+                        imageTheme2Frame3.visibility = View.INVISIBLE
+                        imageTheme2Frame4.visibility = View.INVISIBLE
+                        selectedImageView = findViewById(R.id.selectedImageView2Frame1)
+
+                    }
+                    2 -> {
+                        imageThemeBasic.visibility = View.INVISIBLE
+                        imageTheme2Frame1.visibility = View.INVISIBLE
+                        imageTheme2Frame3.visibility = View.VISIBLE
+                        imageTheme2Frame4.visibility = View.INVISIBLE
+                        selectedImageView = findViewById(R.id.selectedImageView2Frame3)
+                    }
+                    3 -> {
+                        imageThemeBasic.visibility = View.INVISIBLE
+                        imageTheme2Frame1.visibility = View.INVISIBLE
+                        imageTheme2Frame3.visibility = View.INVISIBLE
+                        imageTheme2Frame4.visibility = View.VISIBLE
+                        selectedImageView = findViewById(R.id.selectedImageView2Frame4)
+                    }
+                }
+            }
+        }
 
         recyclerView = findViewById(R.id.recyclerView)
         layoutManager = GridLayoutManager(this, 4)
@@ -44,14 +98,11 @@ class Main3PostingSelectActivity : AppCompatActivity() {
 
         adapter = AdapterMain3PostingSelect(photoList) { photoPath ->
             // Item click handling
-
             Glide.with(this)
                 .load(photoPath)
                 .into(selectedImageView)
         }
         recyclerView.adapter = adapter
-
-        selectedImageView = findViewById(R.id.selectedImageView)
 
         val prefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         val isPermissionGranted = prefs.getBoolean("permission_granted", false)
@@ -73,15 +124,34 @@ class Main3PostingSelectActivity : AppCompatActivity() {
 
         val registerButton = findViewById<Button>(R.id.registerButton)
         registerButton.setOnClickListener {
-            val selectedImagePath = photoList.getOrNull(adapter.selectedPosition)
-            val resultIntent = Intent()
-            resultIntent.putExtra("selected_image_path", selectedImagePath)
-            resultIntent.putExtra("contents_id", clickedLayoutId)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            val selectedDrawable = selectedImageView.drawable as BitmapDrawable?
+            val selectedBitmap = selectedDrawable?.bitmap
 
-            setResult(Activity.RESULT_OK, resultIntent)
-            finish()
+            if (selectedBitmap != null) {
+                val stream = ByteArrayOutputStream()
+                selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+                val byteArray = stream.toByteArray()
+
+                val resultIntent = Intent()
+                resultIntent.putExtra("selected_image", byteArray)
+                Log.e("잘려진 사진 크기", byteArray.toString())
+
+                resultIntent.putExtra("contents_id", clickedContentsId)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            }
         }
+
+        scaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
+        matrix = Matrix()
+
+
+        selectedImageView.setOnTouchListener(View.OnTouchListener { v, event ->
+            scaleGestureDetector.onTouchEvent(event)
+            return@OnTouchListener true
+        })
 
         val leftArrow = findViewById<ImageView>(R.id.leftArrow)
         leftArrow.setOnClickListener {
@@ -89,6 +159,21 @@ class Main3PostingSelectActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
     }
+
+    private inner class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        override fun onScale(detector: ScaleGestureDetector): Boolean {
+            scaleFactor *= detector.scaleFactor
+            // 최대/최소 확대 비율 설정 (필요에 따라 조정)
+            scaleFactor = scaleFactor.coerceIn(0.1f, 5.0f)
+
+            // 확대/축소를 위한 Matrix 설정
+            matrix.setScale(scaleFactor, scaleFactor)
+            selectedImageView.imageMatrix = matrix
+
+            return true
+        }
+    }
+
 
     private fun requestExternalStoragePermission() {
         ActivityCompat.requestPermissions(
@@ -117,8 +202,11 @@ class Main3PostingSelectActivity : AppCompatActivity() {
                     imageId
                 ).toString()
                 photoList.add(0,imagePath)
+                Log.d("이미지 경로 값",imagePath)
+
             }
             adapter.notifyDataSetChanged()
+
         }
     }
 

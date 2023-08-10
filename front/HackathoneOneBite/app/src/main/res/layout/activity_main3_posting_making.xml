@@ -13,6 +13,20 @@
         app:layout_constraintGuide_percent="0.06" />
 
     <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButton1Left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.264" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButton1Right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.736" />
+
+    <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineEnd"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,23 +52,28 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:background="@color/highlight"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        app:layout_constraintTop_toTopOf="@id/topicTextView"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
         tools:layout_editor_absoluteX="0dp" />
-
 
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="게시물 편집"
+        android:text="게시물 업로드"
         android:textSize="25sp"
         android:fontFamily="@font/font_bold"
         android:textColor="@android:color/black"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
 
 
     <ImageView
@@ -105,20 +124,33 @@
         app:layout_constraintTop_toBottomOf="@id/guidelineContainer"/>
 
     <Button
-        android:id="@+id/unActiveButton"
+        android:id="@+id/unActiveButton1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintWidth_percent="0.8"
         android:text="릴레이"
         android:background="@color/light_gray"
         android:textSize="15dp"
         android:textColor="@color/gray"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineButton1Right"
+        app:layout_constraintStart_toStartOf="@+id/guidelineButton1Left"
         app:layout_constraintTop_toBottomOf="@id/guidelineButton"/>
 
     <Button
-        android:id="@+id/relayButton"
+        android:id="@+id/unActiveButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="릴레이"
+        android:background="@color/light_gray"
+        android:textSize="15dp"
+        android:textColor="@color/gray"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@+id/postImageLayout2"
+        app:layout_constraintStart_toStartOf="@+id/postImageLayout2"
+        app:layout_constraintTop_toBottomOf="@id/guidelineButton"/>
+
+    <Button
+        android:id="@+id/relayButton1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.8"
@@ -126,13 +158,27 @@
         android:textSize="15dp"
         android:background="@color/highlight"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineButton1Right"
+        app:layout_constraintStart_toStartOf="@+id/guidelineButton1Left"
         app:layout_constraintTop_toBottomOf="@id/guidelineButton"
         android:visibility="gone"/>
 
     <Button
-        android:id="@+id/uploadButton"
+        android:id="@+id/relayButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.8"
+        android:text="릴레이"
+        android:textSize="15dp"
+        android:background="@color/highlight"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/postImageLayout1"
+        app:layout_constraintStart_toStartOf="@+id/postImageLayout1"
+        app:layout_constraintTop_toBottomOf="@id/guidelineButton"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/uploadButton1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent="0.8"
@@ -140,8 +186,22 @@
         android:textSize="15dp"
         android:background="@color/highlight"
         android:textColor="@color/black"
-        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
-        app:layout_constraintStart_toStartOf="@+id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineButton1Right"
+        app:layout_constraintStart_toStartOf="@+id/guidelineButton1Left"
+        app:layout_constraintTop_toBottomOf="@id/guidelineButton"
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/uploadButton2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintWidth_percent="0.8"
+        android:text="게시"
+        android:textSize="15dp"
+        android:background="@color/highlight"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/postImageLayout1"
+        app:layout_constraintStart_toStartOf="@+id/postImageLayout1"
         app:layout_constraintTop_toBottomOf="@id/guidelineButton"
         android:visibility="gone"/>
 

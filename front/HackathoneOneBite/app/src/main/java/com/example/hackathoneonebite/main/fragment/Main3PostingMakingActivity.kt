@@ -2,6 +2,7 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -24,7 +25,7 @@ import retrofit2.Response
 class Main3PostingMakingActivity : AppCompatActivity() {
 
     private lateinit var images: Array<String>
-    private var currentLayoutId = 0
+    private var theme = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +34,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         images = Array(4) { "" }
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
-        currentLayoutId = intent.getIntExtra("layout_id", 0)
+        theme = intent.getIntExtra("layout_id", 0)
 
         val postImageLayoutFilm = findViewById<View>(R.id.postImageLayoutFilm)
         val postImageLayout1 = findViewById<View>(R.id.postImageLayout1)
@@ -43,17 +44,27 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         postImageLayout1.visibility = View.INVISIBLE
         postImageLayout2.visibility = View.INVISIBLE
 
-        when (currentLayoutId) {
+        val relayButton1 = findViewById<Button>(R.id.relayButton1)
+        val uploadButton1 = findViewById<Button>(R.id.uploadButton1)
+        val relayButton2 = findViewById<Button>(R.id.relayButton2)
+        val uploadButton2 = findViewById<Button>(R.id.uploadButton2)
+        val disabledButton1 = findViewById<Button>(R.id.unActiveButton1)
+        val disabledButton2 = findViewById<Button>(R.id.unActiveButton2)
+
+        when (theme) {
             0 -> {
                 postImageLayoutFilm.visibility = View.VISIBLE
+                disabledButton1.visibility = View.VISIBLE
                 contentFrameFilm()
             }
             1 -> {
                 postImageLayout1.visibility = View.VISIBLE
+                disabledButton1.visibility = View.VISIBLE
                 contentFrame1()
             }
             2 -> {
                 postImageLayout2.visibility = View.VISIBLE
+                disabledButton2.visibility = View.VISIBLE
                 contentFrame2()
             }
         }
@@ -64,12 +75,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
-        val relayButton = findViewById<Button>(R.id.relayButton)
-        val uploadButton = findViewById<Button>(R.id.uploadButton)
+        updateButtonsVisibility(theme)
 
-        updateButtonsVisibility()
-
-        relayButton.setOnClickListener {
+        relayButton1.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
             val post = Post(images, 0, 0, 0,LocalDateTime.now(), message,false)
 
@@ -78,8 +86,22 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             startActivity(intent)
 
         }
+        relayButton2.setOnClickListener {
+            val message = "백엔드야 메세지 받아라"
+            val post = Post(images, 0, 0, 0,LocalDateTime.now(), message,false)
 
-        uploadButton.setOnClickListener {
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
+            intent.putExtra("post_data", post)
+            startActivity(intent)
+
+        }
+        uploadButton1.setOnClickListener {
+            val message = "백엔드야 메세지 받아라"
+            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
+
+            sendPost(post)
+        }
+        uploadButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
             val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
 
@@ -126,26 +148,52 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         })
     }
 
-    private fun updateButtonsVisibility() {
-        val relayButton = findViewById<Button>(R.id.relayButton)
-        val uploadButton = findViewById<Button>(R.id.uploadButton)
-        val disabledButton = findViewById<Button>(R.id.unActiveButton)
+    private fun updateButtonsVisibility(currentId : Int) {
+        val relayButton1 = findViewById<Button>(R.id.relayButton1)
+        val uploadButton1 = findViewById<Button>(R.id.uploadButton1)
+        val disabledButton1 = findViewById<Button>(R.id.unActiveButton1)
+        val relayButton2 = findViewById<Button>(R.id.relayButton1)
+        val uploadButton2 = findViewById<Button>(R.id.uploadButton1)
+        val disabledButton2 = findViewById<Button>(R.id.unActiveButton1)
 
-        when (images.count { it.isNotBlank() }) {
-            0 -> {
-                relayButton.visibility = View.GONE
-                uploadButton.visibility = View.GONE
-                disabledButton.visibility = View.VISIBLE
+        when (theme) {
+            in 0..1 -> {
+                when (images.count { it.isNotBlank() }) {
+                    0 -> {
+                        relayButton1.visibility = View.GONE
+                        uploadButton1.visibility = View.GONE
+                        disabledButton1.visibility = View.VISIBLE
+                    }
+                    in 1..3 -> {
+                        relayButton1.visibility = View.VISIBLE
+                        uploadButton1.visibility = View.GONE
+                        disabledButton1.visibility = View.GONE
+                    }
+                    4 -> {
+                        relayButton1.visibility = View.GONE
+                        uploadButton1.visibility = View.VISIBLE
+                        disabledButton1.visibility = View.GONE
+                    }
+                }
             }
-            in 1..3 -> {
-                relayButton.visibility = View.VISIBLE
-                uploadButton.visibility = View.GONE
-                disabledButton.visibility = View.GONE
-            }
-            4 -> {
-                relayButton.visibility = View.GONE
-                uploadButton.visibility = View.VISIBLE
-                disabledButton.visibility = View.GONE
+            2 -> {
+                when (images.count { it.isNotBlank() }) {
+                    0 -> {
+                        relayButton2.visibility = View.GONE
+                        uploadButton2.visibility = View.GONE
+                        disabledButton2.visibility = View.VISIBLE
+                    }
+                    in 1..3 -> {
+                        relayButton2.visibility = View.VISIBLE
+                        uploadButton2.visibility = View.GONE
+                        disabledButton2.visibility = View.GONE
+                    }
+                    4 -> {
+                        relayButton2.visibility = View.GONE
+                        uploadButton2.visibility = View.VISIBLE
+                        disabledButton2.visibility = View.GONE
+                    }
+                }
             }
         }
     }
@@ -164,6 +212,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             layout.setOnClickListener {
                 val intent = Intent(this@Main3PostingMakingActivity, Main3PostingSelectActivity::class.java)
                 intent.putExtra("contents_id", index)
+                intent.putExtra("layout_id", theme)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 images[index] = true.toString()
@@ -184,6 +233,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             layout.setOnClickListener {
                 val intent = Intent(this@Main3PostingMakingActivity, Main3PostingSelectActivity::class.java)
                 intent.putExtra("contents_id", index)
+                intent.putExtra("layout_id", theme)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 images[index] = true.toString()
@@ -204,7 +254,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             layout.setOnClickListener {
                 val intent = Intent(this@Main3PostingMakingActivity, Main3PostingSelectActivity::class.java)
                 intent.putExtra("contents_id", index)
-                startActivity(intent)
+                intent.putExtra("layout_id", theme)
+                startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 images[index] = true.toString()
 
@@ -217,19 +268,17 @@ class Main3PostingMakingActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_SELECT_IMAGE && resultCode == Activity.RESULT_OK) {
-            val selectedImagePath = data?.getStringExtra("selected_image_path")
+            val selectedImageByteArray = data?.getByteArrayExtra("selected_image")
             val contentsId = data?.getIntExtra("contents_id", 2) ?: 2
-            if (selectedImagePath != null) {
-                images[contentsId] = selectedImagePath
-                val selectedImageView = findImageViewForCurrentContentFrame(contentsId, currentLayoutId)
-                Glide.with(this)
-                    .load(selectedImagePath)
-                    .into(selectedImageView)
 
-                updateButtonsVisibility()
+            if (selectedImageByteArray != null) {
+                val selectedImageView = findImageViewForCurrentContentFrame(contentsId, theme)
+                val selectedBitmap = BitmapFactory.decodeByteArray(selectedImageByteArray, 0, selectedImageByteArray.size)
+                selectedImageView.setImageBitmap(selectedBitmap)
+                images[contentsId] = true.toString()
+                updateButtonsVisibility(theme)
             }
         }
     }
