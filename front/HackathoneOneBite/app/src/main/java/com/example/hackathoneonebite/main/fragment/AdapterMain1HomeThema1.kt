@@ -58,6 +58,7 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
             binding.postImageLayoutBack.playButton.setOnClickListener {
                 val cdView: View = binding.postImageLayoutBack.cdImageView
                 if(!isMusicPlaying) {
+                    //cd 회전
                     continuousRotationAnimator = ValueAnimator.ofFloat(cdView.rotation, cdView.rotation + 360f).apply {
                         duration = (360f / rotationSpeed * 1000).toLong()
                         interpolator = LinearInterpolator()
@@ -75,25 +76,29 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
                         .alpha(1f)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
+
+                    //음악 재생
+                    if(mediaPlayer == null){
+                        mediaPlayer = MediaPlayer.create(context, musicArray.getResourceId(data[adapterPosition].musicNum, -1))
+                        mediaPlayer?.setOnPreparedListener {
+                            mediaPlayer?.start()
+                        }
+                    } else {
+                        mediaPlayer?.start()
+                    }
                 }
                 else {
                     continuousRotationAnimator.cancel()
-                    currentlyPlayingViewHolder = null
 
                     //stop 시 cd 테두리 색 변경
                     binding.postImageLayoutBack.cdOuterWhenPlaying.animate()
                         .alpha(0f)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
-                }
 
-                //음악 재생
-               /* if(mediaPlayer==null){
-                    mediaPlayer = MediaPlayer.create(this@AdapterMain1HomeThema1, musicArray[data[adapterPosition].musicNum])
-                    mediaPlayer?.setVolume(vol,vol)
+                    //음악 일시정지
+                    mediaPlayer?.pause()
                 }
-                mediaPlayer?.start()
-                flag = true*/
 
                 isMusicPlaying = !isMusicPlaying
             }
@@ -106,6 +111,9 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
                 binding.postImageLayoutBack.cdImageView.rotation = 0f
                 binding.postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
                 isMusicPlaying = false
+                mediaPlayer?.stop()
+                //mediaPlayer?.release()
+                mediaPlayer==null
             }
         }
     }
@@ -128,7 +136,6 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
             holder.stopMusicAnimation()
             postImageLayoutBack.cdImageView.rotation = 0f
             postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
-
 
             if(data[position].isFliped) {
                 postImageLayout.postFrame.visibility = View.INVISIBLE

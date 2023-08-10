@@ -55,7 +55,7 @@ class TestLoginActivity : AppCompatActivity() {
             Login(imageParts, themePart, idPart)
         }
         binding.loadImage.setOnClickListener {
-            loadPost(1652)
+            loadPost(1753)
         }
     }
 
@@ -72,8 +72,6 @@ class TestLoginActivity : AppCompatActivity() {
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
                     Log.d("RESPONSE: ", "${userResponse?.date}")
                     binding.textView.text = userResponse?.text
-                    Log.d("RESPONSE: ", userResponse!!.images[0])
-
                     for(i in 0..3) {
                         Glide.with(this@TestLoginActivity)
                             .load(

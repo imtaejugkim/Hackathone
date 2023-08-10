@@ -24,8 +24,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/black"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:layout_width="0dp"
@@ -34,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="@id/space"
         app:layout_constraintTop_toTopOf="@+id/space"
         app:layout_constraintBottom_toBottomOf="@id/space"
-        android:background="@color/black"/>
+        android:src="@drawable/img_thema1_background"/>
 
     <View
         android:id="@+id/emptyView1"

@@ -2,11 +2,13 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,11 +16,15 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.ui.input.key.Key.Companion.Copy
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.res.TypedArrayUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -38,7 +44,9 @@ class Main1HomeFragment : Fragment() {
     val data_thema1: ArrayList<Post> = ArrayList()
     val data_thema2: ArrayList<Post> = ArrayList()
     val data_film: ArrayList<Post> = ArrayList()
-    val musicArray = resources.obtainTypedArray(R.array.music_array)
+    var fragment_width: Int = 0
+    var fragment_height: Int = 0
+    lateinit var musicArray: TypedArray
 
     enum class ThemaNumbering(val value: Int) {
         thema1(0),
@@ -49,8 +57,9 @@ class Main1HomeFragment : Fragment() {
     var current_selected_thema: Int = ThemaNumbering.thema1.value
 
     override fun onAttach(context: Context) {
-        Log.d("onAttach", "onAttach called");
+        //Log.d("onAttach", "onAttach called");
         super.onAttach(context)
+        musicArray = resources.obtainTypedArray(R.array.music_array)
         initData(data_thema1)
         initData(data_thema2)
         initData(data_film)
@@ -60,28 +69,21 @@ class Main1HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d("onCreateView", "onCreateView called");
         binding = FragmentMain1HomeBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        Log.d("onViewCreated", "onViewCreated called");
         super.onViewCreated(view, savedInstanceState)
 
+        view.post {
+            fragment_width = view.width
+            fragment_height = view.height
+            initFilmRecyclerView()
+        }
         initSelectedThema()
         initRecyclerView()
         init()
-    }
-
-    override fun onStart() {
-        Log.d("onStart", "onStart called");
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.d("onResume", "onResume called");
-        super.onResume()
     }
 
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
@@ -90,7 +92,7 @@ class Main1HomeFragment : Fragment() {
             data[i].id = 123123
             data[i].likeCount = 10
             data[i].date = LocalDateTime.now()
-            data[i].message = i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString() + i.toString()
+            data[i].message = i.toString()+ "하하하하하하하" + i.toString() + "히히히히히히히" + i.toString() + "헤헤헤헤헤헤헤" + i.toString() + i.toString() + "키키키키키키키" + i.toString() + i.toString() + i.toString() + i.toString()
             data[i].musicNum = i % musicArray.length()
             for (j in 0..3) {
                 if(j == i % 4) {
@@ -154,6 +156,9 @@ class Main1HomeFragment : Fragment() {
                         val pos = layoutManager.getPosition(centerView!!)
                         messageTextView.text = data_thema1[pos]?.message
 
+                        //music play
+                        //centerView.findViewById<ConstraintLayout>(R.id.postImageLayoutBack).findViewById<Button>(R.id.playButton).performClick()
+
                         //music stop
                         val playingViewHolder = adapter_thema1.currentlyPlayingViewHolder ?: return
                         val position = playingViewHolder.adapterPosition
@@ -215,11 +220,16 @@ class Main1HomeFragment : Fragment() {
                 }
             })
         }
+    }
+
+    private fun initFilmRecyclerView() {
         //Film RecyclerView
         binding.postImageLayoutFilm.apply {
             recyclerView.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, true)
             adapter_film = AdapterMain1HomeFilm(data_film)
+            adapter_film.width = fragment_width
+            adapter_film.height = ((fragment_height - 105) * 0.64).toInt()
             adapter_film.itemClickListener = object: AdapterMain1HomeFilm.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
                     data_film[position].isFliped = !data_film[position].isFliped
@@ -234,9 +244,30 @@ class Main1HomeFragment : Fragment() {
             } else {
                 viewGroup.visibility = View.INVISIBLE
             }
-
-            //item간에 간격 조정
-            recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
+            //리사이클러뷰 터치 리스터
+            var totalDy: Int = 0
+            var isTouching: Boolean = false
+            val touchListener = object : RecyclerView.SimpleOnItemTouchListener() {
+                override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
+                    when (e.action) {
+                        MotionEvent.ACTION_DOWN -> {
+                            totalDy = 0
+                            isTouching = true
+                            Log.e("eee", totalDy.toString())
+                        }
+                        MotionEvent.ACTION_UP -> {
+                            // 사용자가 아이템 터치를 끝냈을 때 수행할 동작
+                            isTouching = false
+                        }
+                    }
+                    return super.onInterceptTouchEvent(rv, e)
+                }
+            }
+            recyclerView.addOnItemTouchListener(touchListener)
+            //처음 아이템이 조금만 보이도록 item간에 간격 조정
+            val thresholdDistance = adapter_film.height * 0.4f
+            var itemDecorationApplied = true
+            val itemDecoration = object : RecyclerView.ItemDecoration() {
                 override fun getItemOffsets(
                     outRect: Rect,
                     view: View,
@@ -245,10 +276,11 @@ class Main1HomeFragment : Fragment() {
                 ) {
                     val position = parent.getChildAdapterPosition(view)
                     if (position == 0) {
-                        outRect.bottom = (recyclerView.height * 0.8f).toInt()
+                        outRect.bottom = (recyclerView.height * 0.88f).toInt()
                     }
                 }
-            })
+            }
+            recyclerView.addItemDecoration(itemDecoration)
             //아이템들이 중앙에 오도록
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
@@ -267,6 +299,26 @@ class Main1HomeFragment : Fragment() {
             recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     adjustBrightness(recyclerView)
+
+                    //첫 항목 스크롤
+                    if(itemDecorationApplied) {
+                        totalDy -= dy
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        val centerView = snapHelper.findSnapView(layoutManager)
+                        val pos = layoutManager.getPosition(centerView!!)
+
+                        if (pos == 0) {
+                            if (totalDy > thresholdDistance) {
+                                itemDecorationApplied = false
+                                recyclerView.removeItemDecoration(itemDecoration)
+                                recyclerView.scrollBy(0, (recyclerView.height * 0.88f).toInt())
+                                totalDy = 0
+                            } else if (totalDy > 0 && !isTouching) {
+                                layoutManager.scrollToPositionWithOffset(0, 0)
+                                totalDy = 0
+                            }
+                        }
+                    }
                 }
             })
         }
@@ -282,12 +334,12 @@ class Main1HomeFragment : Fragment() {
 
             //투명도 계산 부분
             val distance = Math.abs(itemView!!.bottom - recyclerView.height)
-            val maxDistance = recyclerView.height * 0.65f
+            val maxDistance = recyclerView.height * 0.7f
             val alpha: Float
             if(distance > maxDistance)
                 alpha = 0f
             else
-                alpha = 1 - ((distance - 0.35f) / maxDistance)
+                alpha = 1 - ((distance - 0.3f) / maxDistance)
 
             val filmLayout:ConstraintLayout = itemView.findViewById(R.id.postImageLayout)
             filmLayout.findViewById<ImageView>(R.id.imageView1).alpha = alpha

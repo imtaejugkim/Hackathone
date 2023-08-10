@@ -11,13 +11,11 @@
         android:background="@color/white"/>
 
     <View
-        android:id="@+id/emptyView1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.05"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:id="@+id/logoBackgound"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -28,8 +26,15 @@
         android:fontFamily="@font/font_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginTop="50dp"/>
+        app:layout_constraintTop_toTopOf="@+id/logoBackgound"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackgound"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/GuideLineTop"
@@ -67,8 +72,7 @@
         android:fontFamily="@font/font_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/filmImage"
-        android:layout_marginBottom="15dp"/>
+        app:layout_constraintBottom_toTopOf="@id/filmImage" />
 
     <ImageView
         android:id="@+id/filmImage"
@@ -99,8 +103,7 @@
         android:fontFamily="@font/font_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/thema1Image"
-        android:layout_marginBottom="15dp"/>
+        app:layout_constraintBottom_toTopOf="@id/thema1Image"/>
 
     <ImageView
         android:id="@+id/thema1Image"

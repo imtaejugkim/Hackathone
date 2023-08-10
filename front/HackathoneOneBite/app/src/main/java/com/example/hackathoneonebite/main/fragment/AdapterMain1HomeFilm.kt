@@ -19,6 +19,8 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
         fun OnItemClick(position: Int)
     }
     var itemClickListener: OnItemClickListener? = null
+    var width: Int = 0
+    var height: Int = 0
 
     inner class ViewHolder(val binding: ItemMain1PostFilmBinding) :
         RecyclerView.ViewHolder(binding.root) {
@@ -30,8 +32,15 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = ItemMain1PostFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(view)
+        val binding = ItemMain1PostFilmBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+
+        // 너비와 높이 설정
+        val params = binding.root.layoutParams
+        params.width = this.width
+        params.height = this.height
+        binding.root.layoutParams = params
+
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -42,11 +51,11 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
         holder.binding.apply {
             postImageLayout.postFrame.rotationY = if(data[position].isFliped) 180f else 0f
 
-            /*var imgArray = data[position].imgArray
+            var imgArray = data[position].imgArray
             postImageLayout.imageView1.setImageResource(imgArray[0].toInt())
             postImageLayout.imageView2.setImageResource(imgArray[1].toInt())
             postImageLayout.imageView3.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())*/
+            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())
         }
     }
 }

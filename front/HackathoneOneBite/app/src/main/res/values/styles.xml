@@ -9,4 +9,8 @@
         <item name="android:windowEnterAnimation">@anim/slide_out_down</item>
         <item name="android:windowExitAnimation">@anim/slide_out_down</item>
     </style>
+    <style name="Theme.HackathoneOneBite.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#000</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/img_black</item>
+    </style>
 </resources>
