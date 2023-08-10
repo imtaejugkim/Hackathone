@@ -2,6 +2,7 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -10,20 +11,27 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
+import com.google.android.gms.common.util.IOUtils.toByteArray
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import java.time.LocalDateTime
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
+
 
 
 class Main3PostingMakingActivity : AppCompatActivity() {
 
+    private lateinit var imagesFill: Array<String>
     private lateinit var images: Array<String>
     private var theme = 0
 
@@ -31,7 +39,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3_posting_making)
 
+        imagesFill = Array(4) { "" }
         images = Array(4) { "" }
+
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
         theme = intent.getIntExtra("layout_id", 0)
@@ -79,7 +89,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton1.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, 0, 0, 0,LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -88,7 +98,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
         relayButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, 0, 0, 0,LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -96,38 +106,45 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         }
         uploadButton1.setOnClickListener {
-            val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
+            val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0].toByteArray())
+            val requestFile2 = RequestBody.create("image/*".toMediaTypeOrNull(), images[1].toByteArray())
+            val requestFile3 = RequestBody.create("image/*".toMediaTypeOrNull(), images[2].toByteArray())
+            val requestFile4 = RequestBody.create("image/*".toMediaTypeOrNull(), images[3].toByteArray())
 
-            sendPost(post)
+            val imagePart = MultipartBody.Part.createFormData("image", "image1.jpg", requestFile1)
+            val imagePart2 = MultipartBody.Part.createFormData("image", "image2.jpg", requestFile2)
+            val imagePart3 = MultipartBody.Part.createFormData("image", "image3.jpg", requestFile3)
+            val imagePart4 = MultipartBody.Part.createFormData("image", "image4.jpg", requestFile4)
+            val imageParts = ArrayList<MultipartBody.Part>()
+
+            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "tae0803")
+
+            imageParts.add(imagePart)
+            imageParts.add(imagePart2)
+            imageParts.add(imagePart3)
+            imageParts.add(imagePart4)
+            Upload(imageParts, themePart, idPart)
         }
         uploadButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(images, 0, 0, 0, LocalDateTime.now(), message,false)
 
-            sendPost(post)
+            //sendPost(post)
         }
 
     }
 
-    private fun sendPost(post : Post) {
-        val call = RetrofitBuilder.api.getPostResponse(post)
-        call.enqueue(object : Callback<Post> { // 비동기 방식 통신 메소드
-            override fun onFailure(call: Call<Post>, t: Throwable) {
-                // 통신에 실패한 경우
-                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
-            }
-
-            override fun onResponse(call: Call<Post>, response: Response<Post>) {
+    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, theme ,userId)
+        call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<Main3UploadPostIsComplete>,
+                response: Response<Main3UploadPostIsComplete>
+            ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("PostDebug", "ID: ${post.id}")
-                    Log.d("PostDebug", "Like Count: ${post.likeCount}")
-                    Log.d("PostDebug", "Date: ${post.date}")
-                    Log.d("PostDebug", "Message: ${post.message}")
-                    Log.d("PostDebug", "Theme: ${post.theme}")
-                    Log.d("PostDebug", "Is Flipped: ${post.isFliped}")
+                    Log.d("RESPONSE: ", "Success")
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
@@ -145,6 +162,10 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                     }
                 }
             }
+
+            override fun onFailure(call: Call<Main3UploadPostIsComplete>, t: Throwable) {
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+            }
         })
     }
 
@@ -158,7 +179,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         when (theme) {
             in 0..1 -> {
-                when (images.count { it.isNotBlank() }) {
+                when (imagesFill.count { it.isNotBlank() }) {
                     0 -> {
                         relayButton1.visibility = View.GONE
                         uploadButton1.visibility = View.GONE
@@ -177,7 +198,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 }
             }
             2 -> {
-                when (images.count { it.isNotBlank() }) {
+                when (imagesFill.count { it.isNotBlank() }) {
                     0 -> {
                         relayButton2.visibility = View.GONE
                         uploadButton2.visibility = View.GONE
@@ -215,7 +236,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("layout_id", theme)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                images[index] = true.toString()
+                imagesFill[index] = true.toString()
 
             }
         }
@@ -236,7 +257,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("layout_id", theme)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                images[index] = true.toString()
+                imagesFill[index] = true.toString()
 
             }
         }
@@ -257,7 +278,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("layout_id", theme)
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
-                images[index] = true.toString()
+                imagesFill[index] = true.toString()
 
             }
         }
@@ -277,7 +298,13 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 val selectedImageView = findImageViewForCurrentContentFrame(contentsId, theme)
                 val selectedBitmap = BitmapFactory.decodeByteArray(selectedImageByteArray, 0, selectedImageByteArray.size)
                 selectedImageView.setImageBitmap(selectedBitmap)
-                images[contentsId] = true.toString()
+
+                imagesFill[contentsId] = true.toString()
+                Log.d("tag", selectedBitmap.toString())
+
+                images[contentsId] = selectedImageByteArray.toString()
+                Log.d("tag", selectedImageByteArray.toString())
+
                 updateButtonsVisibility(theme)
             }
         }
