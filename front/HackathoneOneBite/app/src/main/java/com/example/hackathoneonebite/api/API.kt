@@ -3,7 +3,6 @@ package com.example.hackathoneonebite.api
 
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.Data.User
-import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.*
@@ -22,7 +21,9 @@ public interface API {
     fun uploadPost(
         @Part images: ArrayList<MultipartBody.Part>,
         @Part("theme") theme: RequestBody,
-        @Part("userId") userId: RequestBody
+        @Part("userId") userId: RequestBody,
+        @Part("musicNum") musicNum: RequestBody?,
+        @Part("text") message: String
     ): Call<Main1LoadPostResponse>
 
     @POST("/api/user/check-email") //이메일 존재 여부 확인
@@ -53,4 +54,6 @@ public interface API {
         @Part("theme") theme: RequestBody, //Int
         @Part("user_id") user_id: RequestBody //String
     ): Call<Main1LoadPostResponse>
+
+
 }
