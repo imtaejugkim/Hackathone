@@ -130,7 +130,7 @@
 
     <ImageView
         android:id="@+id/RELAYTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.022"
         android:src="@drawable/img_logo_white"

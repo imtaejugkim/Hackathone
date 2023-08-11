@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="테마선택"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="19sp"
         android:fontFamily="@font/font_bold"
         app:layout_constraintStart_toStartOf="parent"

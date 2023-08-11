@@ -114,6 +114,8 @@ class StartActivity : ComponentActivity() {
                 } catch (e: ApiException) {
                     Log.e("TAG", "Google sign-in failed", e)
                 }
+            } else {
+                Log.e("TAG", "Result is not OK")
             }
         }
 
@@ -142,7 +144,6 @@ class StartActivity : ComponentActivity() {
 
                     val request = LoginCheckEmailExistRequest(email!!)
                     checkEmailExist(request, account!!)
-                    //checkEmailExist(request, task.result?.user)
                 } else {
                     Log.e("TAG", "Google sign-in failed", task.exception)
                 }
@@ -172,10 +173,14 @@ class StartActivity : ComponentActivity() {
 
 
 
-    private fun movePage(isExist: Boolean, account: GoogleSignInAccount) {
+    private fun movePage(isExist: Boolean, account: GoogleSignInAccount, id: Long) {
         if(isExist) {
-            startActivity(Intent(this, MainFrameActivity::class.java))
+            Log.d("LOGIN: ", "서버에 해당 계정이 존재합니다. 로그인합니다.")
+            val nextIntent = Intent(this, MainFrameActivity::class.java)
+            nextIntent.putExtra("id", id)
+            startActivity(nextIntent)
         } else {
+            Log.d("LOGIN: ", "서버에 해당 계정이 존재하지 않습니다. 회원가입합니다.")
             val i = Intent(this, SignInActivity::class.java)
             val email = account?.email
             val familyName = account?.familyName
@@ -210,11 +215,10 @@ class StartActivity : ComponentActivity() {
                 response: Response<LoginCheckEmailExistResponse>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
-                    Log.d("RESPONSE: ", "success")
+                    Toast.makeText(this@StartActivity, "응답 성공", Toast.LENGTH_SHORT).show()
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("RESPONSE: ", "${userResponse?.isExist.toString()}")
-                    movePage(userResponse?.isExist!!, account)
+                    movePage(userResponse?.isExist!!, account, userResponse.id)
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
@@ -235,6 +239,7 @@ class StartActivity : ComponentActivity() {
 
             override fun onFailure(call: Call<LoginCheckEmailExistResponse>, t: Throwable) {
                 // 통신에 실패한 경우
+                Toast.makeText(this@StartActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
