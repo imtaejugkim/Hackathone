@@ -10,7 +10,7 @@
         <item name="android:windowExitAnimation">@anim/slide_out_down</item>
     </style>
     <style name="Theme.HackathoneOneBite.Splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#000</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/img_black</item>
+        <item name="windowSplashScreenBackground">@color/highlight</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/img_splash_highlight_color</item>
     </style>
 </resources>

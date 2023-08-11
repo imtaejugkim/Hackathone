@@ -74,4 +74,27 @@
         app:layout_constraintStart_toStartOf="@id/emptyView1"
         app:layout_constraintTop_toBottomOf="@id/emptyView3"
         android:textColor="@color/black"/>
+
+    <!--여기부터는 음악-->
+    <TextView
+        android:id="@+id/musicNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:fontFamily="@font/font_light"/>
+    <TextView
+        android:id="@+id/singerNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/musicNameTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/black"
+        android:textSize="12sp"
+        android:fontFamily="@font/font_light"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

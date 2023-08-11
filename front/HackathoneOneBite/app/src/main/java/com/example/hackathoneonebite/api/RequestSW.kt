@@ -16,5 +16,6 @@ data class LoginCheckEmailExistRequest( //구글 로그인 시 계정 정보 존
 
 //메인화면
 data class Main1LoadPostRequest(
-    @SerializedName("theme")var theme: Int = 0
+    @SerializedName("theme")var theme: Int = 0,
+    @SerializedName("id")var id: Long = 0
 )

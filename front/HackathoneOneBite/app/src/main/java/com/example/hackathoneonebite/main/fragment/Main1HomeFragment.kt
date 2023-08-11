@@ -19,6 +19,7 @@ import android.view.ViewTreeObserver
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.ui.input.key.Key.Companion.Copy
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -29,11 +30,24 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.Main1LoadPostRequest
+import com.example.hackathoneonebite.api.Main1LoadPostResponse
+import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.DialogMain1TopBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeBinding
+import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
+import com.example.hackathoneonebite.main.MainFrameActivity
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 
 class Main1HomeFragment : Fragment() {
@@ -41,12 +55,18 @@ class Main1HomeFragment : Fragment() {
     lateinit private var adapter_thema1: AdapterMain1HomeThema1
     lateinit private var adapter_thema2: AdapterMain1HomeThema2
     lateinit private var adapter_film: AdapterMain1HomeFilm
+    var userId: Long = 0
+    val baseUrl = "http://221.146.39.177:8081/"
     val data_thema1: ArrayList<Post> = ArrayList()
     val data_thema2: ArrayList<Post> = ArrayList()
     val data_film: ArrayList<Post> = ArrayList()
     var fragment_width: Int = 0
     var fragment_height: Int = 0
     lateinit var musicArray: TypedArray
+
+    //music
+    lateinit var musicNameArray: Array<String>
+    lateinit var singerArray: Array<String>
 
     enum class ThemaNumbering(val value: Int) {
         thema1(0),
@@ -59,6 +79,9 @@ class Main1HomeFragment : Fragment() {
     override fun onAttach(context: Context) {
         //Log.d("onAttach", "onAttach called");
         super.onAttach(context)
+        val activity = requireActivity() as MainFrameActivity
+        this.userId = activity.id
+        Log.d("ID", "메인 Fragment Attached / ID : ${this.id}")
         musicArray = resources.obtainTypedArray(R.array.music_array)
         initData(data_thema1)
         initData(data_thema2)
@@ -81,6 +104,11 @@ class Main1HomeFragment : Fragment() {
             fragment_height = view.height
             initFilmRecyclerView()
         }
+
+        //arrays.xml정보 가져오기
+        musicNameArray = resources.getStringArray(R.array.music_name)
+        singerArray = resources.getStringArray(R.array.singer)
+
         initSelectedThema()
         initRecyclerView()
         init()
@@ -110,9 +138,18 @@ class Main1HomeFragment : Fragment() {
         if (themaNum != null) {
             current_selected_thema = themaNum
             when(themaNum) {
-                0 -> binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
-                1 -> binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
-                2 -> binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
+                0 -> {
+                    binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
+                    loadPosts(0)
+                }
+                1 -> {
+                    binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
+                    loadPosts(1)
+                }
+                2 -> {
+                    binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
+                    loadPosts(2)
+                }
             }
         }
     }
@@ -133,6 +170,26 @@ class Main1HomeFragment : Fragment() {
             adapter_thema1.itemClickListener = object: AdapterMain1HomeThema1.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
                     data_thema1[position].isFliped = !data_thema1[position].isFliped
+                    if (data_thema1[position].isFliped) {
+                        try {
+                            val musicNum = data_thema1[position].musicNum
+                            musicNameTextView.text = musicNameArray[musicNum]
+                            singerNameTextView.text = singerArray[musicNum]
+                        } catch (e: ArrayIndexOutOfBoundsException) {
+                            Log.e("ExampleFragment", "없는 인덱스 곡입니다. : ${e.message}")
+                        }
+                        messageTextView.visibility = View.INVISIBLE
+                        likeButton.visibility = View.INVISIBLE
+                        shareButton.visibility = View.INVISIBLE
+                        musicNameTextView.visibility = View.VISIBLE
+                        singerNameTextView.visibility = View.VISIBLE
+                    } else {
+                        messageTextView.visibility = View.VISIBLE
+                        likeButton.visibility = View.VISIBLE
+                        shareButton.visibility = View.VISIBLE
+                        musicNameTextView.visibility = View.INVISIBLE
+                        singerNameTextView.visibility = View.INVISIBLE
+                    }
                 }
             }
             recyclerView.adapter = adapter_thema1
@@ -155,6 +212,27 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         messageTextView.text = data_thema1[pos]?.message
+                        if (data_thema1[pos].isFliped) {
+                            try {
+                                val musicNum = data_thema1[pos].musicNum
+                                musicNameTextView.text = musicNameArray[musicNum]
+                                singerNameTextView.text = singerArray[musicNum]
+                            } catch (e: ArrayIndexOutOfBoundsException) {
+                                Log.e("ExampleFragment", "없는 인덱스 곡입니다. : ${e.message}")
+                            }
+                            messageTextView.visibility = View.INVISIBLE
+                            likeButton.visibility = View.INVISIBLE
+                            shareButton.visibility = View.INVISIBLE
+                            musicNameTextView.visibility = View.VISIBLE
+                            singerNameTextView.visibility = View.VISIBLE
+                        } else {
+                            Log.d("position",pos.toString())
+                            messageTextView.visibility = View.VISIBLE
+                            likeButton.visibility = View.VISIBLE
+                            shareButton.visibility = View.VISIBLE
+                            musicNameTextView.visibility = View.INVISIBLE
+                            singerNameTextView.visibility = View.INVISIBLE
+                        }
 
                         //music play
                         //centerView.findViewById<ConstraintLayout>(R.id.postImageLayoutBack).findViewById<Button>(R.id.playButton).performClick()
@@ -182,6 +260,26 @@ class Main1HomeFragment : Fragment() {
             adapter_thema2.itemClickListener = object: AdapterMain1HomeThema2.OnItemClickListener {
                 override fun OnItemClick(position: Int) {
                     data_thema2[position].isFliped = !data_thema2[position].isFliped
+                    if (data_thema2[position].isFliped) {
+                        try {
+                            val musicNum = data_thema2[position].musicNum
+                            musicNameTextView.text = musicNameArray[musicNum]
+                            singerNameTextView.text = singerArray[musicNum]
+                        } catch (e: ArrayIndexOutOfBoundsException) {
+                            Log.e("ExampleFragment", "없는 인덱스 곡입니다. : ${e.message}")
+                        }
+                        messageTextView.visibility = View.INVISIBLE
+                        likeButton.visibility = View.INVISIBLE
+                        shareButton.visibility = View.INVISIBLE
+                        musicNameTextView.visibility = View.VISIBLE
+                        singerNameTextView.visibility = View.VISIBLE
+                    } else {
+                        messageTextView.visibility = View.VISIBLE
+                        likeButton.visibility = View.VISIBLE
+                        shareButton.visibility = View.VISIBLE
+                        musicNameTextView.visibility = View.INVISIBLE
+                        singerNameTextView.visibility = View.INVISIBLE
+                    }
                 }
             }
             recyclerView.adapter = adapter_thema2
@@ -204,6 +302,27 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         messageTextView.text = data_thema2[pos]?.message
+                        if (data_thema2[pos].isFliped) {
+                            try {
+                                val musicNum = data_thema2[pos].musicNum
+                                musicNameTextView.text = musicNameArray[musicNum]
+                                singerNameTextView.text = singerArray[musicNum]
+                            } catch (e: ArrayIndexOutOfBoundsException) {
+                                Log.e("ExampleFragment", "없는 인덱스 곡입니다. : ${e.message}")
+                            }
+                            messageTextView.visibility = View.INVISIBLE
+                            likeButton.visibility = View.INVISIBLE
+                            shareButton.visibility = View.INVISIBLE
+                            musicNameTextView.visibility = View.VISIBLE
+                            singerNameTextView.visibility = View.VISIBLE
+                        } else {
+                            Log.d("position",pos.toString())
+                            messageTextView.visibility = View.VISIBLE
+                            likeButton.visibility = View.VISIBLE
+                            shareButton.visibility = View.VISIBLE
+                            musicNameTextView.visibility = View.INVISIBLE
+                            singerNameTextView.visibility = View.INVISIBLE
+                        }
 
                         //music stop
                         val playingViewHolder = adapter_thema2.currentlyPlayingViewHolder ?: return
@@ -440,6 +559,75 @@ class Main1HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    //네에에에트으으으으으워어어어어크으으으으으으
+    private fun loadPosts(themaNum: Int) {
+        //TODO: 통신시 이거 주석해놓은거 없애야 함.
+        //loadPostRequest(this.userId, themaNum)
+    }
+    fun loadPostRequest(userId: Long, theme: Int){
+        val call = RetrofitBuilder.api.main1LoadPostRequest(0,0,"eeee",20)
+        call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<Main1LoadPostResponse>,
+                response: Response<Main1LoadPostResponse>
+            ) {
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    if (userResponse == null)
+                        return
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "응답 성공")
+
+                    val post = Post()
+                    post.id = userResponse.postId
+                    post.imgArray[0] = baseUrl + userResponse.images[0]
+                    post.theme = userResponse.theme
+                    post.likeCount = userResponse.likeCount
+                    post.date = LocalDateTime.parse(userResponse.date, ISO_LOCAL_DATE_TIME)
+                    post.message = userResponse.text
+                    post.musicNum = userResponse.musicNum
+
+                    when(theme) {
+                        0 -> {
+                            data_thema1.add(post)
+                            adapter_thema1.notifyDataSetChanged()
+                        }
+                        1 -> {
+                            data_thema2.add(post)
+                            adapter_thema2.notifyDataSetChanged()
+                        }
+                        2 -> {
+                            data_film.add(post)
+                            adapter_film.notifyDataSetChanged()
+                        }
+                    }
+
+                    Toast.makeText(requireContext(),userResponse?.date.toString(), Toast.LENGTH_LONG).show()
+                }else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<Main1LoadPostResponse>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 }
 

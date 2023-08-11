@@ -15,6 +15,7 @@ import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
 import com.example.hackathoneonebite.databinding.ItemMain1PostThema1Binding
 
 class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)

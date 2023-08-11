@@ -28,15 +28,17 @@ public interface API {
         @Part("theme") theme: RequestBody,
         @Part("userId") userId: RequestBody,
         @Part("musicNum") musicNum: RequestBody?,
-        @Part("text") message: String
-    ): Call<Main1LoadPostResponse>
+        @Part("text") message: RequestBody
+    ): Call<Main3UploadPostIsComplete>
 
     //이미지 로드
     @GET("/api/posts/{postId}") //이미지 로드
     fun main1LoadPostRequest(
-        @Path("postId")  postId: Long
+        @Query("id") id: Long,
+        @Query("theme") theme: Int,
+        @Query("lastPostDate") lastPostDate: String?,  // LocalDateTime을 문자열로 변환
+        @Query("limit") limit: Int
     ): Call<Main1LoadPostResponse>
-
     @Multipart
     @POST("/api/load")
     fun main1LoadPost1231231(
@@ -48,5 +50,5 @@ public interface API {
 
 
     //프로필
-    
+
 }

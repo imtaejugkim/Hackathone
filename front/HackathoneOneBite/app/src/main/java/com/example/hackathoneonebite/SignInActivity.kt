@@ -39,8 +39,9 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 
-    private fun movePage() {
+    private fun movePage(id: Long) {
         val nextIntent = Intent(this, MainFrameActivity::class.java)
+        nextIntent.putExtra("id", id)
         startActivity(nextIntent)
     }
 
@@ -57,7 +58,8 @@ class SignInActivity : AppCompatActivity() {
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
                     Log.d("RESPONSE: ", "${userResponse?.isSuccess.toString()}")
                     if(userResponse?.isSuccess!!) {
-                        movePage()
+                        Log.d("SIGN IN: ", "가입 성공. 로그인합니다. id:${userResponse.id}")
+                        movePage(userResponse.id)
                     }
                 }else{
                     // 통신 성공 but 응답 실패
@@ -80,6 +82,7 @@ class SignInActivity : AppCompatActivity() {
             override fun onFailure(call: Call<LoginSignInResponse>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+                Toast.makeText(this@SignInActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
         })
     }

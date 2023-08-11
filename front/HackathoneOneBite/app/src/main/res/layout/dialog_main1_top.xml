@@ -4,8 +4,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/highlight"
-    android:paddingTop="20dp"
-    android:paddingBottom="20dp">
+    android:paddingBottom="17dp">
 
     <Button
         android:id="@+id/closeButton"
@@ -13,6 +12,7 @@
         android:layout_height="17dp"
         android:background="@drawable/img_icon_close"
         android:layout_marginLeft="15dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -32,18 +32,8 @@
         app:layout_constraintWidth_percent="0.21"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/emptyView1"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/closeButton"
         android:src="@drawable/img_thema1"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기본형1"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/post_frame1"
-        app:layout_constraintStart_toStartOf="@id/post_frame1"
-        app:layout_constraintEnd_toEndOf="@id/post_frame1"
-        android:layout_marginTop="5dp"/>
 
     <View
         android:id="@+id/emptyView2"
@@ -61,18 +51,8 @@
         app:layout_constraintWidth_percent="0.21"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/emptyView2"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/closeButton"
         android:src="@drawable/img_thema2"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기본형2"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/post_frame2"
-        app:layout_constraintStart_toStartOf="@id/post_frame2"
-        app:layout_constraintEnd_toEndOf="@id/post_frame2"
-        android:layout_marginTop="5dp"/>
 
     <View
         android:id="@+id/emptyView3"
@@ -90,17 +70,7 @@
         app:layout_constraintWidth_percent="0.21"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/emptyView3"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/closeButton"
         android:src="@drawable/img_thema_film"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="필름형"
-        android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@+id/post_frame_film"
-        app:layout_constraintStart_toStartOf="@id/post_frame_film"
-        app:layout_constraintEnd_toEndOf="@id/post_frame_film"
-        android:layout_marginTop="5dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,12 +13,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 class MainFrameActivity : AppCompatActivity(), ViewPageAdapter.OnFragmentButtonClickListener {
     lateinit var binding: ActivityMainFrameBinding
     lateinit var adapter: ViewPageAdapter
+    var id: Long = 0
     val imgArray = arrayListOf<Int>(
         R.drawable.tab_main,R.drawable.tab_search,R.drawable.tab_post,R.drawable.tab_rank,R.drawable.tab_profile)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainFrameBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        id = intent.getLongExtra("id", 0)
 
         initLayout()
     }

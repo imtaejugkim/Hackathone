@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:text="테마선택"
         android:textColor="@color/black"
-        android:textSize="25sp"
+        android:textSize="19sp"
         android:fontFamily="@font/font_bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,10 +76,9 @@
 
     <ImageView
         android:id="@+id/filmImage"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.26"
-        app:layout_constraintDimensionRatio="7:18"
+        app:layout_constraintHeight_percent="0.25"
         android:src="@drawable/img_thema_film"
         app:layout_constraintTop_toTopOf="@id/GuideLineTop"
         app:layout_constraintStart_toStartOf="parent"
@@ -109,8 +108,8 @@
         android:id="@+id/thema1Image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.27"
-        app:layout_constraintDimensionRatio="7:18"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintDimensionRatio="657:1545"
         android:src="@drawable/img_thema1"
         app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
         app:layout_constraintStart_toStartOf="@id/GuideLineLeft"/>
@@ -119,8 +118,8 @@
         android:id="@+id/thema2Image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.26"
-        app:layout_constraintDimensionRatio="13:18"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintDimensionRatio="1002:1370"
         android:src="@drawable/img_thema2"
         app:layout_constraintBottom_toBottomOf="@id/GuideLineBottom"
         app:layout_constraintEnd_toEndOf="@id/GuideLineRight"/>
