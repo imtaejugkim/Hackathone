@@ -66,20 +66,9 @@ class StartActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        btnEmail = binding.btmEmail
         btnGoogle = binding.btnGoogle
 
         auth = FirebaseAuth.getInstance()
-        btnEmail.setOnClickListener {
-            val strEmail = binding.userID.toString()
-            val strPwd = binding.userPW.toString()
-            try{
-                //signAndSignUp(strEmail, strPwd)
-            } catch (e:java.lang.Exception) {
-                Toast.makeText(this, "아이디와 비밀번호를 제대로 입력하세요.", Toast.LENGTH_SHORT).show()
-            }
-        }
 
         btnGoogle.setOnClickListener {
             googleLogin()

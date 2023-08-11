@@ -30,9 +30,9 @@ class SplashActivity : AppCompatActivity() {
         binding.splashLogo.startAnimation(animation)
 
         Handler(Looper.getMainLooper()).postDelayed({
-            val intent = Intent(this, MainFrameActivity::class.java)
+            val intent = Intent(this, StartActivity::class.java)
             startActivity(intent)
             finish()  // 현재 액티비티 종료
-        }, 1300L)
+        }, 1100L)
     }
 }
