@@ -14,6 +14,7 @@ class MainFrameActivity : AppCompatActivity(), ViewPageAdapter.OnFragmentButtonC
     lateinit var binding: ActivityMainFrameBinding
     lateinit var adapter: ViewPageAdapter
     var id: Long = 0
+    var userId: String = ""
     val imgArray = arrayListOf<Int>(
         R.drawable.tab_main,R.drawable.tab_search,R.drawable.tab_post,R.drawable.tab_rank,R.drawable.tab_profile)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +23,7 @@ class MainFrameActivity : AppCompatActivity(), ViewPageAdapter.OnFragmentButtonC
         setContentView(binding.root)
 
         id = intent.getLongExtra("id", 0)
+        userId = intent.getStringExtra("userId") + ""
 
         initLayout()
     }

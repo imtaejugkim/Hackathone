@@ -11,7 +11,8 @@ data class LoginSignInResponse(
 )
 data class LoginCheckEmailExistResponse(
     @SerializedName("exist")val isExist: Boolean, //true이면 email이 이미 존재함.
-    @SerializedName("id")val id: Long //exist false인 경우에는 -1을 담아준다.
+    @SerializedName("id")val id: Long, //exist false인 경우에는 -1을 담아준다.
+    @SerializedName("userId")val userId: String
 )
 
 //메인화면

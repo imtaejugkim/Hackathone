@@ -32,9 +32,9 @@ class SignInActivity : AppCompatActivity() {
 
     private fun init() {
         binding.email.text =  intent.getStringExtra("email")
-        binding.username.text =  intent.getStringExtra("displayName")
+        binding.username.setText(intent.getStringExtra("displayName"))
         binding.singInBtn.setOnClickListener {
-            val request = LoginSignInRequest(binding.username.text.toString(), binding.userId.text.toString(), binding.password.text.toString(), binding.email.text.toString())
+            val request = LoginSignInRequest(binding.username.text.toString(), binding.userId.text.toString(), binding.email.text.toString())
             signIn(request)
         }
     }
@@ -42,7 +42,22 @@ class SignInActivity : AppCompatActivity() {
     private fun movePage(id: Long) {
         val nextIntent = Intent(this, MainFrameActivity::class.java)
         nextIntent.putExtra("id", id)
+        nextIntent.putExtra("userId", binding.userId.text.toString())
         startActivity(nextIntent)
+    }
+
+    fun handleSignInResponse(response: LoginSignInResponse) {
+        if(response.isSuccess) { //가입 성공
+            movePage(response.id)
+        } else { //가입 실패
+            if(response.id == -1L) { //아이디 중복
+                Toast.makeText(this, "아이디가 존재합니다.", Toast.LENGTH_SHORT).show()
+                binding.userId.setText("")
+                binding.userId.requestFocus()
+            } else { //그 외의 문제 (response.id == 0)
+                Toast.makeText(this, "가입이 완료되지 않았습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     fun signIn(request: LoginSignInRequest){
@@ -57,9 +72,8 @@ class SignInActivity : AppCompatActivity() {
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
                     Log.d("RESPONSE: ", "${userResponse?.isSuccess.toString()}")
-                    if(userResponse?.isSuccess!!) {
-                        Log.d("SIGN IN: ", "가입 성공. 로그인합니다. id:${userResponse.id}")
-                        movePage(userResponse.id)
+                    if(userResponse != null) {
+                        handleSignInResponse(userResponse)
                     }
                 }else{
                     // 통신 성공 but 응답 실패

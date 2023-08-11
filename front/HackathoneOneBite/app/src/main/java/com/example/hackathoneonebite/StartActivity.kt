@@ -162,11 +162,12 @@ class StartActivity : ComponentActivity() {
 
 
 
-    private fun movePage(isExist: Boolean, account: GoogleSignInAccount, id: Long) {
+    private fun movePage(isExist: Boolean, account: GoogleSignInAccount, id: Long, userId: String) {
         if(isExist) {
             Log.d("LOGIN: ", "서버에 해당 계정이 존재합니다. 로그인합니다.")
             val nextIntent = Intent(this, MainFrameActivity::class.java)
             nextIntent.putExtra("id", id)
+            nextIntent.putExtra("userId", userId)
             startActivity(nextIntent)
         } else {
             Log.d("LOGIN: ", "서버에 해당 계정이 존재하지 않습니다. 회원가입합니다.")
@@ -207,7 +208,7 @@ class StartActivity : ComponentActivity() {
                     Toast.makeText(this@StartActivity, "응답 성공", Toast.LENGTH_SHORT).show()
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    movePage(userResponse?.isExist!!, account, userResponse.id)
+                    movePage(userResponse?.isExist!!, account, userResponse.id, userResponse.userId)
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
