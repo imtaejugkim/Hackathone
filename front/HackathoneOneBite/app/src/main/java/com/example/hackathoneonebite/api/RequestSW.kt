@@ -7,7 +7,6 @@ import okhttp3.MultipartBody
 data class LoginSignInRequest( //최초 가입 시 정보 등록
     @SerializedName("username") val username: String = "",
     @SerializedName("userId") val userId: String = "",
-    @SerializedName("password") val password: String = "",
     @SerializedName("email") val email: String = ""
 )
 data class LoginCheckEmailExistRequest( //구글 로그인 시 계정 정보 존재 여부 확인

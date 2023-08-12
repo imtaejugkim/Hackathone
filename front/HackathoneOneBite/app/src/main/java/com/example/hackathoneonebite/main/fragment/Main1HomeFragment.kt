@@ -6,6 +6,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
@@ -62,11 +63,12 @@ class Main1HomeFragment : Fragment() {
     val data_film: ArrayList<Post> = ArrayList()
     var fragment_width: Int = 0
     var fragment_height: Int = 0
-    lateinit var musicArray: TypedArray
 
     //music
+    lateinit var musicArray: TypedArray
     lateinit var musicNameArray: Array<String>
     lateinit var singerArray: Array<String>
+    var mediaPlayer: MediaPlayer? = null
 
     enum class ThemaNumbering(val value: Int) {
         thema1(0),
@@ -192,6 +194,27 @@ class Main1HomeFragment : Fragment() {
                     }
                 }
             }
+            //음악 재생 버튼 클릭 시
+            adapter_thema1.musicPlayButtonClickListener = object: AdapterMain1HomeThema1.MusicPlayButtonClickListener{
+                override fun OnItemClick(position: Int, isMusicPlaying: Boolean, musicNum: Int) {
+                    if (isMusicPlaying) {
+                        if(mediaPlayer==null){
+                            val musicResourceID = musicArray.getResourceId(musicNum, -1)
+                            if (musicResourceID != -1) {
+                                mediaPlayer = MediaPlayer.create(requireContext(), musicResourceID)
+                                mediaPlayer?.setVolume(1f, 1f)
+                            } else {
+                                Log.e("Main1Home", "해당하는 음악이 없습니다.")
+                            }
+                        }
+                        mediaPlayer?.start()
+                        Log.d("Music", "음악 재생!")
+                    } else {
+                        mediaPlayer?.pause()
+                        Log.d("Music", "음악 일시정지!")
+                    }
+                }
+            }
             recyclerView.adapter = adapter_thema1
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
@@ -244,6 +267,10 @@ class Main1HomeFragment : Fragment() {
 
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
                             if (position != pos) {
+                                mediaPlayer?.stop()
+                                mediaPlayer?.release()
+                                Log.d("Music", "음악 정지!")
+                                mediaPlayer = null
                                 playingViewHolder.stopMusicAnimation()
                                 adapter_thema1.currentlyPlayingViewHolder = null
                             }
@@ -279,6 +306,27 @@ class Main1HomeFragment : Fragment() {
                         shareButton.visibility = View.VISIBLE
                         musicNameTextView.visibility = View.INVISIBLE
                         singerNameTextView.visibility = View.INVISIBLE
+                    }
+                }
+            }
+            //음악 재생 버튼 클릭 시
+            adapter_thema2.musicPlayButtonClickListener = object: AdapterMain1HomeThema2.MusicPlayButtonClickListener{
+                override fun OnItemClick(position: Int, isMusicPlaying: Boolean, musicNum: Int) {
+                    if (isMusicPlaying) {
+                        if(mediaPlayer==null){
+                            val musicResourceID = musicArray.getResourceId(musicNum, -1)
+                            if (musicResourceID != -1) {
+                                mediaPlayer = MediaPlayer.create(requireContext(), musicResourceID)
+                                mediaPlayer?.setVolume(1f, 1f)
+                            } else {
+                                Log.e("Main1Home", "해당하는 음악이 없습니다.")
+                            }
+                        }
+                        mediaPlayer?.start()
+                        Log.d("Music", "음악 재생!")
+                    } else {
+                        mediaPlayer?.pause()
+                        Log.d("Music", "음악 일시정지!")
                     }
                 }
             }
@@ -331,6 +379,10 @@ class Main1HomeFragment : Fragment() {
 
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
                             if (position != pos) {
+                                mediaPlayer?.stop()
+                                mediaPlayer?.release()
+                                Log.d("Music", "음악 정지!")
+                                mediaPlayer = null
                                 playingViewHolder.stopMusicAnimation()
                                 adapter_thema2.currentlyPlayingViewHolder = null
                             }
