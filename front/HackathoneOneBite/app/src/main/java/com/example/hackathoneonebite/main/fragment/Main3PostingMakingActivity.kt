@@ -34,6 +34,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
     private lateinit var imagesFill: Array<String>
     private lateinit var images: Array<ByteArray>
+    private lateinit var userIdArray : Array<Long?>
     private var theme = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +43,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         imagesFill = Array(4) { "" }
         images = Array(4) { ByteArray(0) }
+        userIdArray = arrayOfNulls(4)
+
+
 
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
@@ -90,7 +94,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton1.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(imagesFill, 0, 0, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -99,7 +103,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
         relayButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(imagesFill, 0, 0, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
@@ -118,14 +122,15 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val imagePart4 = MultipartBody.Part.createFormData("image", "image4.jpg", requestFile4)
             val imageParts = ArrayList<MultipartBody.Part>()
 
-            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
-            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "tae0803")
+            //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "huhaaa")
+            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
 
             imageParts.add(imagePart)
             imageParts.add(imagePart2)
             imageParts.add(imagePart3)
             imageParts.add(imagePart4)
-            Upload(imageParts, themePart, idPart)
+            Upload(imageParts, theme, idPart, message)
         }
         uploadButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
@@ -135,8 +140,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
     }
 
-    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
-        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, theme ,userId)
+    fun Upload(image: ArrayList<MultipartBody.Part>, theme: Int, userId: RequestBody, message : RequestBody){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, 0 , message)
         call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<Main3UploadPostIsComplete>,
