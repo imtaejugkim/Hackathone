@@ -42,6 +42,7 @@ import com.example.hackathoneonebite.databinding.DialogMain1TopBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
 import com.example.hackathoneonebite.main.MainFrameActivity
+import com.google.gson.Gson
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -143,15 +144,15 @@ class Main1HomeFragment : Fragment() {
             when(themaNum) {
                 0 -> {
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
-                    loadPosts(0)
+                    //loadPosts(0)
                 }
                 1 -> {
                     binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
-                    loadPosts(1)
+                    //loadPosts(1)
                 }
                 2 -> {
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
-                    loadPosts(2)
+                    //loadPosts(2)
                 }
             }
         }
@@ -615,32 +616,41 @@ class Main1HomeFragment : Fragment() {
     }
 
     //네에에에트으으으으으워어어어어크으으으으으으
-    private fun loadPosts(themaNum: Int) {
+    /*private fun loadPosts(themaNum: Int) {
         //TODO: 통신시 이거 주석해놓은거 없애야 함.
         //loadPostRequest(this.userId, themaNum)
     }
     fun loadPostRequest(userId: Long, theme: Int){
         val call = RetrofitBuilder.api.main1LoadPostRequest(0,0,"eeee",20)
-        call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
+        call.enqueue(object : Callback<ArrayList<Main1LoadPostResponse>> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<Main1LoadPostResponse>,
                 response: Response<Main1LoadPostResponse>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
-                    if (userResponse == null)
+                    if (userResponse == null) {
+                        Log.e("MAIN1HOME", "응답이 null입니다.")
                         return
+                    }
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
                     Log.d("RESPONSE: ", "응답 성공")
-
-                    val post = Post()
-                    post.id = userResponse.postId
-                    post.imgArray[0] = baseUrl + userResponse.images[0]
-                    post.theme = userResponse.theme
-                    post.likeCount = userResponse.likeCount
-                    post.date = LocalDateTime.parse(userResponse.date, ISO_LOCAL_DATE_TIME)
-                    post.message = userResponse.text
-                    post.musicNum = userResponse.musicNum
+                    val gson = Gson()
+                    val personList: List<Post> = gson.fromJson(userResponse, Array<Person>::class.java).toList()
+                    //데이터 처리
+                    for(postInfo in userResponse) {
+                        val post = Post()
+                        post.id = userResponse.postId
+                        post.imgArray[0] = baseUrl + userResponse.images[0]
+                        post.imgArray[1] = baseUrl + userResponse.images[1]
+                        post.imgArray[2] = baseUrl + userResponse.images[2]
+                        post.imgArray[3] = baseUrl + userResponse.images[3]
+                        post.theme = userResponse.theme
+                        post.likeCount = userResponse.likeCount
+                        post.date = LocalDateTime.parse(userResponse.date, ISO_LOCAL_DATE_TIME)
+                        post.message = userResponse.text
+                        post.musicNum = userResponse.musicNum
+                    }
 
                     when(theme) {
                         0 -> {
@@ -681,7 +691,7 @@ class Main1HomeFragment : Fragment() {
                 Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
             }
         })
-    }
+    }*/
 }
 
 /*//리사이클러뷰의 아이템간의 간격 설정을 위한 클래스
