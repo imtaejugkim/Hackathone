@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Glide.init
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main1LoadPostRequest
@@ -119,7 +120,7 @@ class Main1HomeFragment : Fragment() {
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
         for(i in 0..100) {
             data.add(Post())
-            data[i].id = 123123
+            data[i].id = arrayListOf(1,2,3,4)
             data[i].likeCount = 10
             data[i].date = LocalDateTime.now()
             data[i].message = i.toString()+ "하하하하하하하" + i.toString() + "히히히히히히히" + i.toString() + "헤헤헤헤헤헤헤" + i.toString() + i.toString() + "키키키키키키키" + i.toString() + i.toString() + i.toString() + i.toString()
