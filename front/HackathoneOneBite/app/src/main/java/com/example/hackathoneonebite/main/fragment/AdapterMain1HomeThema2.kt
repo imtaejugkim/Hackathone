@@ -21,7 +21,11 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
     interface OnItemClickListener {
         fun OnItemClick(position: Int)
     }
+    interface MusicPlayButtonClickListener {
+        fun OnItemClick(position: Int, isMusicPlaying: Boolean, musicNum: Int)
+    }
     var itemClickListener: OnItemClickListener? = null
+    var musicPlayButtonClickListener: AdapterMain1HomeThema2.MusicPlayButtonClickListener? = null
     val rotateTime: Long = 600 //0.6초
     var isRotating: Boolean = false
     //cd 회전
@@ -51,6 +55,7 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
             binding.postImageLayoutBack.playButton.setOnClickListener {
                 val cdView: View = binding.postImageLayoutBack.cdImageView
                 if(!isMusicPlaying) {
+                    isMusicPlaying = !isMusicPlaying
                     continuousRotationAnimator = ValueAnimator.ofFloat(cdView.rotation, cdView.rotation + 360f).apply {
                         duration = (360f / rotationSpeed * 1000).toLong()
                         interpolator = LinearInterpolator()
@@ -68,8 +73,15 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
                         .alpha(1f)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
+
+                    //음악 재생
+                    musicPlayButtonClickListener?.OnItemClick(adapterPosition, isMusicPlaying, data[adapterPosition].musicNum)
                 }
                 else {
+                    isMusicPlaying = !isMusicPlaying
+                    //음악 재생
+                    musicPlayButtonClickListener?.OnItemClick(adapterPosition, isMusicPlaying, data[adapterPosition].musicNum)
+
                     continuousRotationAnimator.cancel()
                     currentlyPlayingViewHolder = null
 
@@ -79,7 +91,6 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
                 }
-                isMusicPlaying = !isMusicPlaying
             }
         }
 

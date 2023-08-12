@@ -49,13 +49,16 @@ class SignInActivity : AppCompatActivity() {
     fun handleSignInResponse(response: LoginSignInResponse) {
         if(response.isSuccess) { //가입 성공
             movePage(response.id)
+            Log.d("SIGN IN: ", "회원가입 성공 로그인 합니다.")
         } else { //가입 실패
             if(response.id == -1L) { //아이디 중복
                 Toast.makeText(this, "아이디가 존재합니다.", Toast.LENGTH_SHORT).show()
+                Log.d("SIGN IN: ", "아이디가 존재합니다.")
                 binding.userId.setText("")
                 binding.userId.requestFocus()
             } else { //그 외의 문제 (response.id == 0)
                 Toast.makeText(this, "가입이 완료되지 않았습니다. 다시 시도해주세요.", Toast.LENGTH_LONG).show()
+                Log.d("SIGN IN: ", "오류 발생")
             }
         }
     }

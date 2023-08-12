@@ -23,7 +23,11 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
     interface OnItemClickListener {
         fun OnItemClick(position: Int)
     }
+    interface MusicPlayButtonClickListener {
+        fun OnItemClick(position: Int, isMusicPlaying: Boolean, musicNum: Int)
+    }
     var itemClickListener: OnItemClickListener? = null
+    var musicPlayButtonClickListener: MusicPlayButtonClickListener? = null
     //frame 회전
     val rotateTime: Long = 600 //0.6초
     var isRotating: Boolean = false
@@ -31,16 +35,11 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
     val rotationSpeed = 480f //초당 480도
     val cdOuterImageChangeTime = 400 // 0.4초
     var currentlyPlayingViewHolder: ViewHolder? = null
-    //music
-    val musicArray = context.resources.obtainTypedArray(R.array.music_array)
-    val musicNameArray = context.resources.obtainTypedArray(R.array.music_name)
-    val singerArray = context.resources.obtainTypedArray(R.array.singer)
 
     inner class ViewHolder(val binding: ItemMain1PostThema1Binding) :
         RecyclerView.ViewHolder(binding.root) {
 
         var isMusicPlaying: Boolean = false
-        var mediaPlayer: MediaPlayer? = null
         lateinit var continuousRotationAnimator: ValueAnimator
 
         init {
@@ -59,6 +58,7 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
             binding.postImageLayoutBack.playButton.setOnClickListener {
                 val cdView: View = binding.postImageLayoutBack.cdImageView
                 if(!isMusicPlaying) {
+                    isMusicPlaying = !isMusicPlaying
                     //cd 회전
                     continuousRotationAnimator = ValueAnimator.ofFloat(cdView.rotation, cdView.rotation + 360f).apply {
                         duration = (360f / rotationSpeed * 1000).toLong()
@@ -79,16 +79,13 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
                         .setListener(null)
 
                     //음악 재생
-                    if(mediaPlayer == null){
-                        mediaPlayer = MediaPlayer.create(context, musicArray.getResourceId(data[adapterPosition].musicNum, -1))
-                        mediaPlayer?.setOnPreparedListener {
-                            mediaPlayer?.start()
-                        }
-                    } else {
-                        mediaPlayer?.start()
-                    }
+                    musicPlayButtonClickListener?.OnItemClick(adapterPosition, isMusicPlaying, data[adapterPosition].musicNum)
                 }
                 else {
+                    isMusicPlaying = !isMusicPlaying
+                    //음악 재생
+                    musicPlayButtonClickListener?.OnItemClick(adapterPosition, isMusicPlaying, data[adapterPosition].musicNum)
+
                     continuousRotationAnimator.cancel()
 
                     //stop 시 cd 테두리 색 변경
@@ -96,12 +93,7 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
                         .alpha(0f)
                         .setDuration(cdOuterImageChangeTime.toLong())
                         .setListener(null)
-
-                    //음악 일시정지
-                    mediaPlayer?.pause()
                 }
-
-                isMusicPlaying = !isMusicPlaying
             }
         }
 
@@ -112,9 +104,6 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
                 binding.postImageLayoutBack.cdImageView.rotation = 0f
                 binding.postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
                 isMusicPlaying = false
-                mediaPlayer?.stop()
-                //mediaPlayer?.release()
-                mediaPlayer==null
             }
         }
     }
