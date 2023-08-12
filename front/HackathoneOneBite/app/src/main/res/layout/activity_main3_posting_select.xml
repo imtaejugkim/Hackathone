@@ -54,9 +54,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="테마 선택"
-        android:textSize="25sp"
+        android:textSize="19sp"
         android:fontFamily="@font/font_bold"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/logoBackground"
@@ -74,9 +74,8 @@
         android:layout_width="25sp"
         android:layout_height="0dp"
         android:src="@drawable/img_arrow_left"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        android:layout_marginTop="50dp"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
 
 
@@ -145,6 +144,22 @@
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintBottom_toTopOf ="@id/guidelineRecent"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/selectedImageViewBasic"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/selectedImageViewBasic"
+        app:layout_constraintBottom_toBottomOf="@id/selectedImageViewBasic"
+        app:layout_constraintStart_toStartOf="@id/selectedImageViewBasic" />
 
     <TextView
         android:id="@+id/recentTextView"

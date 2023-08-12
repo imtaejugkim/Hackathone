@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/highlight"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -58,14 +59,23 @@
         app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
         tools:layout_editor_absoluteX="0dp" />
 
+    <ImageView
+        android:id="@+id/leftArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_left"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
+
     <TextView
         android:id="@+id/topicTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="릴레이"
-        android:textSize="25sp"
+        android:textSize="19sp"
         android:fontFamily="@font/font_bold"
-        android:textColor="@android:color/black"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/logoBackground"
@@ -77,16 +87,6 @@
         android:layout_height="0dp"
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.045"/>
-
-    <ImageView
-        android:id="@+id/leftArrow"
-        android:layout_width="25sp"
-        android:layout_height="0dp"
-        android:src="@drawable/img_arrow_left"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
-        android:layout_marginTop="50dp"
-        app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
 
 
     <ImageView
@@ -102,19 +102,21 @@
     <TextView
         android:text="Null님에게 릴레이 수락 요청을 보내시겠습니까?"
         android:id="@+id/selectName"
+        android:fontFamily="@font/font_bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/white"
         app:layout_constraintDimensionRatio="H,2.75:1"
         app:layout_constraintBottom_toTopOf="@+id/guidelineName"
-        app:layout_constraintStart_toEndOf="@+id/leftArrow"
-        app:layout_constraintEnd_toStartOf="@+id/rightArrow"/>
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rankingMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintStart_toEndOf="@+id/leftArrow"
-        app:layout_constraintEnd_toStartOf="@+id/rightArrow"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@id/selectName"
         app:layout_constraintBottom_toTopOf="@id/guidelineButtonTop"
         android:layout_marginBottom="16dp">
@@ -154,8 +156,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@+id/leftArrow"
-        app:layout_constraintEnd_toStartOf="@+id/rightArrow"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@+id/guidelineButtonTop">
         <Button
             android:id="@+id/cancelBtn"
@@ -163,7 +165,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/light_gray"
+            android:textColor="#35867E"
+            android:background="@drawable/button_background_highlight"
             android:layout_marginRight="10dp">
         </Button>
 
@@ -173,7 +176,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@color/highlight"
+            android:textColor="@color/black"
+            android:background="@drawable/button_background_white"
             android:layout_marginLeft="10dp">
         </Button>
 

@@ -1,6 +1,7 @@
 package com.example.hackathoneonebite.main.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -32,7 +33,7 @@ import java.io.ByteArrayOutputStream
 class Main3PostingMakingActivity : AppCompatActivity() {
 
     private lateinit var imagesFill: Array<String>
-    private lateinit var images: Array<String>
+    private lateinit var images: Array<ByteArray>
     private var theme = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,7 +41,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main3_posting_making)
 
         imagesFill = Array(4) { "" }
-        images = Array(4) { "" }
+        images = Array(4) { ByteArray(0) }
 
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
@@ -106,10 +107,10 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         }
         uploadButton1.setOnClickListener {
-            val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0].toByteArray())
-            val requestFile2 = RequestBody.create("image/*".toMediaTypeOrNull(), images[1].toByteArray())
-            val requestFile3 = RequestBody.create("image/*".toMediaTypeOrNull(), images[2].toByteArray())
-            val requestFile4 = RequestBody.create("image/*".toMediaTypeOrNull(), images[3].toByteArray())
+            val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0])
+            val requestFile2 = RequestBody.create("image/*".toMediaTypeOrNull(), images[1])
+            val requestFile3 = RequestBody.create("image/*".toMediaTypeOrNull(), images[2])
+            val requestFile4 = RequestBody.create("image/*".toMediaTypeOrNull(), images[3])
 
             val imagePart = MultipartBody.Part.createFormData("image", "image1.jpg", requestFile1)
             val imagePart2 = MultipartBody.Part.createFormData("image", "image2.jpg", requestFile2)
@@ -302,7 +303,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 imagesFill[contentsId] = true.toString()
                 Log.d("tag", selectedBitmap.toString())
 
-                images[contentsId] = selectedImageByteArray.toString()
+                images[contentsId] = selectedImageByteArray
                 Log.d("tag", selectedImageByteArray.toString())
 
                 updateButtonsVisibility(theme)

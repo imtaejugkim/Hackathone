@@ -18,6 +18,7 @@ import android.view.ScaleGestureDetector
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -50,10 +51,10 @@ class Main3PostingSelectActivity : AppCompatActivity() {
         val clickedLayoutId = intent.getIntExtra("layout_id", 0)
         Log.d("tag", clickedLayoutId.toString())
 
-        val imageTheme2Frame1 = findViewById<View>(R.id.selectedImageView2Frame1)
-        val imageTheme2Frame3 = findViewById<View>(R.id.selectedImageView2Frame3)
-        val imageTheme2Frame4 = findViewById<View>(R.id.selectedImageView2Frame4)
-        val imageThemeBasic = findViewById<View>(R.id.selectedImageViewBasic)
+        val imageTheme2Frame1 = findViewById<ImageView>(R.id.selectedImageView2Frame1)
+        val imageTheme2Frame3 = findViewById<ImageView>(R.id.selectedImageView2Frame3)
+        val imageTheme2Frame4 = findViewById<ImageView>(R.id.selectedImageView2Frame4)
+        val imageThemeBasic = findViewById<ImageView>(R.id.selectedImageViewBasic)
 
 
         when (clickedLayoutId) {
@@ -124,10 +125,10 @@ class Main3PostingSelectActivity : AppCompatActivity() {
 
         val registerButton = findViewById<Button>(R.id.registerButton)
         registerButton.setOnClickListener {
-            val selectedDrawable = selectedImageView.drawable as BitmapDrawable?
-            val selectedBitmap = selectedDrawable?.bitmap
+            try {
+                val selectedDrawable = selectedImageView.drawable as BitmapDrawable
+                val selectedBitmap = selectedDrawable.bitmap
 
-            if (selectedBitmap != null) {
                 val stream = ByteArrayOutputStream()
                 selectedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
                 val byteArray = stream.toByteArray()
@@ -141,6 +142,9 @@ class Main3PostingSelectActivity : AppCompatActivity() {
 
                 setResult(Activity.RESULT_OK, resultIntent)
                 finish()
+            } catch (e: ClassCastException) {
+                // 이미지가 선택되지 않은 경우 처리
+                Toast.makeText(this, "이미지를 선택하세요.", Toast.LENGTH_SHORT).show()
             }
         }
 

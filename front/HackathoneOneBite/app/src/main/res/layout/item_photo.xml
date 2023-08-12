@@ -10,6 +10,7 @@
         android:id="@+id/photoImageView"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_gravity="center"
         android:scaleType="centerCrop"
         android:src="@color/light_gray" />
 

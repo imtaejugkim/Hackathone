@@ -35,8 +35,9 @@ class Main3PostingRequestActivity : AppCompatActivity() {
 
         cancelButton.setOnClickListener {
             val nextIntent = Intent(this, Main3PostingRelaySearchActivity::class.java)
-            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
             nextIntent.putExtra("post_data",receivedPost)
+            startActivity(nextIntent)
+            overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
         okBtn.setOnClickListener {
