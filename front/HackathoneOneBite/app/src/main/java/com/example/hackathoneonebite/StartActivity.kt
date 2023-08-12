@@ -208,6 +208,10 @@ class StartActivity : ComponentActivity() {
                     Toast.makeText(this@StartActivity, "응답 성공", Toast.LENGTH_SHORT).show()
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    if(userResponse == null) {
+                        Log.e("LOGIN","response가 null입니다.")
+                        return
+                    }
                     movePage(userResponse?.isExist!!, account, userResponse.id, userResponse.userId)
                 }else{
                     // 통신 성공 but 응답 실패
