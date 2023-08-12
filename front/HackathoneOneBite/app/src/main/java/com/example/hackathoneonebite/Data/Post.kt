@@ -10,7 +10,7 @@ data class Post(
 
     var theme: Int = 0,
 
-    var id: Long? = null,
+    var id: ArrayList<Long>? = null,
 
     var likeCount: Int = 0,
 
