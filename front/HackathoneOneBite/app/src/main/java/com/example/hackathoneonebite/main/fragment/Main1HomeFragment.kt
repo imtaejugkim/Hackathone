@@ -9,6 +9,8 @@ import android.graphics.drawable.ColorDrawable
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.util.Log
 import android.view.Gravity
@@ -58,13 +60,17 @@ class Main1HomeFragment : Fragment() {
     lateinit private var adapter_thema1: AdapterMain1HomeThema1
     lateinit private var adapter_thema2: AdapterMain1HomeThema2
     lateinit private var adapter_film: AdapterMain1HomeFilm
-    var userId: Long = 0
+    var userId: String = ""
+    var id: Long = 0
     val baseUrl = "http://221.146.39.177:8081/"
     val data_thema1: ArrayList<Post> = ArrayList()
     val data_thema2: ArrayList<Post> = ArrayList()
     val data_film: ArrayList<Post> = ArrayList()
     var fragment_width: Int = 0
     var fragment_height: Int = 0
+
+    //handler
+    lateinit var theme1LoadHandler: Handler
 
     //music
     lateinit var musicArray: TypedArray
@@ -84,7 +90,8 @@ class Main1HomeFragment : Fragment() {
         //Log.d("onAttach", "onAttach called");
         super.onAttach(context)
         val activity = requireActivity() as MainFrameActivity
-        this.userId = activity.id
+        this.id = activity.id
+        this.userId = activity.userId
         Log.d("ID", "메인 Fragment Attached / ID : ${this.id}")
         musicArray = resources.obtainTypedArray(R.array.music_array)
         initData(data_thema1)
@@ -121,7 +128,7 @@ class Main1HomeFragment : Fragment() {
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
         for(i in 0..100) {
             data.add(Post())
-            data[i].id = arrayListOf(1,2,3,4)
+            data[i].userId = "ee"
             data[i].likeCount = 10
             data[i].date = LocalDateTime.now()
             data[i].message = i.toString()+ "하하하하하하하" + i.toString() + "히히히히히히히" + i.toString() + "헤헤헤헤헤헤헤" + i.toString() + i.toString() + "키키키키키키키" + i.toString() + i.toString() + i.toString() + i.toString()
@@ -144,15 +151,15 @@ class Main1HomeFragment : Fragment() {
             when(themaNum) {
                 0 -> {
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
-                    //loadPosts(0)
+                    loadPosts(0)
                 }
                 1 -> {
                     binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
-                    //loadPosts(1)
+                    loadPosts(1)
                 }
                 2 -> {
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
-                    //loadPosts(2)
+                    loadPosts(2)
                 }
             }
         }
@@ -221,11 +228,27 @@ class Main1HomeFragment : Fragment() {
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
             //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
-            if (data_thema1.isNotEmpty()) {
-                messageTextView.text = data_thema1[0]?.message
-            } else {
+            if (data_thema1.isEmpty()) {
                 viewGroup.visibility = View.INVISIBLE
             }
+            /*if (data_thema1.isNotEmpty()) {
+                messageTextView.text = data_thema1[0]?.message
+            } else {
+                theme1LoadHandler = Handler(Looper.getMainLooper())
+                val runnable = object : Runnable {
+                    override fun run() {
+                        Log.d("Main1Theme1", "Theme1 데이터 로드 시행")
+
+                        if (!data_thema1.isNotEmpty()) {
+                            loadPosts(0)
+                            theme1LoadHandler.postDelayed(this, 3000)
+                        } else {
+                            adapter_thema1.notifyDataSetChanged()
+                        }
+                    }
+                }
+                theme1LoadHandler.post(runnable)
+            }*/
 
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
@@ -336,9 +359,7 @@ class Main1HomeFragment : Fragment() {
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
             //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
-            if (data_thema2.isNotEmpty()) {
-                messageTextView.text = data_thema2[0]?.message
-            } else {
+            if (data_thema2.isEmpty()) {
                 viewGroup.visibility = View.INVISIBLE
             }
 
@@ -412,12 +433,10 @@ class Main1HomeFragment : Fragment() {
 
             //TODO: 나중에 백엔드 연결했을 때 수정해야됨.
             //TODO: 다른 리사이클러뷰(다른 테마)로 변경할 때 데이터가 없어도 VISIBLE로 됨. 이것도 고려해야됨.
-            if (data_film.isNotEmpty()) {
-                messageTextView.text = data_film[0]?.message
-            } else {
+            if (data_film.isEmpty()) {
                 viewGroup.visibility = View.INVISIBLE
             }
-            //리사이클러뷰 터치 리스터
+            //리사이클러뷰 터치 리스너
             var totalDy: Int = 0
             var isTouching: Boolean = false
             val touchListener = object : RecyclerView.SimpleOnItemTouchListener() {
@@ -530,7 +549,6 @@ class Main1HomeFragment : Fragment() {
         return view != null && !this.isViewPartiallyVisible(view, true, true)
     }
 
-
     //어떤 테마를 모아볼 지 선택하는 Dialog
     fun showThemaSelectDialog() {
         val bindingDialog = DialogMain1TopBinding.inflate(layoutInflater)
@@ -616,59 +634,100 @@ class Main1HomeFragment : Fragment() {
     }
 
     //네에에에트으으으으으워어어어어크으으으으으으
-    /*private fun loadPosts(themaNum: Int) {
-        //TODO: 통신시 이거 주석해놓은거 없애야 함.
-        //loadPostRequest(this.userId, themaNum)
+    private fun loadPosts(themaNum: Int) {
+        val lastPostDate = LocalDateTime.now()
+        loadPostRequest(this.id, themaNum, lastPostDate.toString())
+        when(themaNum) {
+            0 -> {
+                if (data_thema1.isEmpty())
+                    binding.postImageLayoutThema1.viewGroup.visibility =
+                    View.INVISIBLE
+            }
+            1 -> {
+                if (data_thema2.isEmpty())
+                    binding.postImageLayoutThema2.viewGroup.visibility =
+                    View.INVISIBLE
+            }
+            2 -> if(data_film.isEmpty()) binding.postImageLayoutFilm.viewGroup.visibility = View.INVISIBLE
+        }
     }
-    fun loadPostRequest(userId: Long, theme: Int){
-        val call = RetrofitBuilder.api.main1LoadPostRequest(0,0,"eeee",20)
-        call.enqueue(object : Callback<ArrayList<Main1LoadPostResponse>> { // 비동기 방식 통신 메소드
+    fun loadPostRequest(id: Long, theme: Int, lastPostDate: String){
+        val call = RetrofitBuilder.api.main1LoadPostRequest(id,theme)
+        call.enqueue(object : Callback<List<Main1LoadPostResponse>> { // 비동기 방식 통신 메소드
             override fun onResponse(
-                call: Call<Main1LoadPostResponse>,
-                response: Response<Main1LoadPostResponse>
+                call: Call<List<Main1LoadPostResponse>>,
+                response: Response<List<Main1LoadPostResponse>>
             ) {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
-                    val userResponse = response.body()
-                    if (userResponse == null) {
+                    val postList  = response.body()
+                    Log.d("fff",postList.toString())
+                    if (postList == null) {
                         Log.e("MAIN1HOME", "응답이 null입니다.")
+
+                        reload(theme)
                         return
                     }
-                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
-                    Log.d("RESPONSE: ", "응답 성공")
-                    val gson = Gson()
-                    val personList: List<Post> = gson.fromJson(userResponse, Array<Person>::class.java).toList()
-                    //데이터 처리
-                    for(postInfo in userResponse) {
-                        val post = Post()
-                        post.id = userResponse.postId
-                        post.imgArray[0] = baseUrl + userResponse.images[0]
-                        post.imgArray[1] = baseUrl + userResponse.images[1]
-                        post.imgArray[2] = baseUrl + userResponse.images[2]
-                        post.imgArray[3] = baseUrl + userResponse.images[3]
-                        post.theme = userResponse.theme
-                        post.likeCount = userResponse.likeCount
-                        post.date = LocalDateTime.parse(userResponse.date, ISO_LOCAL_DATE_TIME)
-                        post.message = userResponse.text
-                        post.musicNum = userResponse.musicNum
-                    }
 
+                    Log.d("RESPONSE: ", "응답 성공. post 개수 : " + postList.size.toString())
+                    //데이터 처리
+                    postList?.forEach { post ->
+                        val newPost = Post()
+                        newPost.imgArray[0] = baseUrl + post.images[0]
+                        newPost.imgArray[1] = baseUrl + post.images[1]
+                        newPost.imgArray[2] = baseUrl + post.images[2]
+                        newPost.imgArray[3] = baseUrl + post.images[3]
+                        newPost.theme = post.theme
+                        //TODO: postId랑 userIds랑 구별해야됨.
+                        //newPost.id = post.postId
+                        newPost.likeCount = post.likeCount
+                        val dateString = post.date
+                        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss")
+                        //newPost.date = LocalDateTime.parse(dateString, formatter)
+                        newPost.message = post.text
+                        newPost.musicNum = post.musicNum
+
+                        when(theme) {
+                            0 -> {
+                                data_thema1.add(newPost)
+                                if (data_thema1.isEmpty()) {
+                                    loadPosts(0)
+                                    return
+                                }
+                            }
+                            1 -> {
+                                data_thema2.add(newPost)
+                                if (data_thema2.isEmpty()) {
+                                    loadPosts(1)
+                                    return
+                                }
+                            }
+                            2 -> {
+                                data_film.add(newPost)
+                                if (data_film.isEmpty()) {
+                                    loadPosts(2)
+                                    return
+                                }
+                            }
+                        }
+                    }
                     when(theme) {
                         0 -> {
-                            data_thema1.add(post)
+                            Log.d("게시물 로드 알림", "theme1 게시물이 로드되었습니다.")
                             adapter_thema1.notifyDataSetChanged()
+                            binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                         }
                         1 -> {
-                            data_thema2.add(post)
+                            Log.d("게시물 로드 알림", "theme2 게시물이 로드되었습니다.")
                             adapter_thema2.notifyDataSetChanged()
+                            binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                         }
                         2 -> {
-                            data_film.add(post)
+                            Log.d("게시물 로드 알림", "theme_film 게시물이 로드되었습니다.")
                             adapter_film.notifyDataSetChanged()
+                            binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                         }
                     }
-
-                    Toast.makeText(requireContext(),userResponse?.date.toString(), Toast.LENGTH_LONG).show()
-                }else{
+                } else {
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
                     if (!errorBody.isNullOrEmpty()) {
@@ -676,22 +735,40 @@ class Main1HomeFragment : Fragment() {
                             val jsonObject = JSONObject(errorBody)
                             val errorMessage = jsonObject.getString("error_message")
                             Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                            reload(theme)
                         } catch (e: JSONException) {
                             Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
                             Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                            reload(theme)
                         }
                     } else {
                         Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        reload(theme)
                     }
                 }
             }
-            override fun onFailure(call: Call<Main1LoadPostResponse>, t: Throwable) {
+            override fun onFailure(call: Call<List<Main1LoadPostResponse>>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
                 Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                reload(theme)
             }
         })
-    }*/
+    }
+    fun reload(thema: Int) {
+        Log.d("게시물 로드 알림", "theme ${thema}를 다시 로드합니다.")
+        when(thema) {
+            0 -> {
+                loadPosts(0)
+            }
+            1 -> {
+                loadPosts(1)
+            }
+            2 -> {
+                loadPosts(2)
+            }
+        }
+    }
 }
 
 /*//리사이클러뷰의 아이템간의 간격 설정을 위한 클래스
