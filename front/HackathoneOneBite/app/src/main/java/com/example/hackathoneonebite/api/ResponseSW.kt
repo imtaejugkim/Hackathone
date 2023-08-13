@@ -17,11 +17,13 @@ data class LoginCheckEmailExistResponse(
 
 //메인화면
 data class Main1LoadPostResponse(
-    @SerializedName("id") val postId: ArrayList<Long>,
+    @SerializedName("id") val postId: Long,
+    @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
     @SerializedName("images") val images: ArrayList<String>,
     @SerializedName("theme") val theme: Int,
     @SerializedName("likeCount") val likeCount: Int,
     @SerializedName("date") val date: String,
     @SerializedName("text") val text: String,
-    @SerializedName("musicNum") val musicNum: Int
+    @SerializedName("musicNum") val musicNum: Int,
+    //@SerializedName("isLikeClicked") val isLikeClicked: Boolean
 )
