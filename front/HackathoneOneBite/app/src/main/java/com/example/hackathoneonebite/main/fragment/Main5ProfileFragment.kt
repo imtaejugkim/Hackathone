@@ -109,7 +109,12 @@ class Main5ProfileFragment : Fragment() {
         for (i in 0 until data_thema1.size) {
             val layoutParams = FrameLayout.LayoutParams(itemSize, itemSize)
             val itemBinding = ItemMain5PostsBinding.inflate(layoutInflater)
-            itemBinding.imageView.setImageResource(data_thema1[i].imgArray[0].toInt())
+            val imageResourceId = data_thema1[i].imgArray[0]
+            if (imageResourceId.isNotEmpty() && imageResourceId.matches(Regex("\\d+"))) {
+                itemBinding.imageView.setImageResource(imageResourceId.toInt())
+            } else {
+                Log.d("PROFILE", "이미지 할당 실패. ${i+1}번째 게시글")
+            }
             val view = itemBinding.root
             layoutParams.width = itemSize
             layoutParams.height = itemSize
