@@ -117,11 +117,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <include layout="@layout/fragment_main4_ranking_bottom"
-            android:id="@+id/rankingBottomLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

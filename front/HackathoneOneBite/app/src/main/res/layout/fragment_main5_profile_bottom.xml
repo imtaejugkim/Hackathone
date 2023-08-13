@@ -81,7 +81,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-        android:columnCount="4"
-        android:background="@color/highlight"/>
+        android:columnCount="4"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

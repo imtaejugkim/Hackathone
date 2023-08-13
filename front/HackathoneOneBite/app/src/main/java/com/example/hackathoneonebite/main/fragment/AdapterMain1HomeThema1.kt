@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
@@ -137,10 +138,18 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
             }
 
             var imgArray = data[position].imgArray
-            postImageLayout.imageView1frame1.setImageResource(imgArray[0].toInt())
-            postImageLayout.imageView2frame1.setImageResource(imgArray[1].toInt())
-            postImageLayout.imageView3frame1.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4frame1.setImageResource(imgArray[3].toInt())
+            Glide.with(context)
+                .load(imgArray[0])
+                .into(postImageLayout.imageView1frame1)
+            Glide.with(context)
+                .load(imgArray[1])
+                .into(postImageLayout.imageView2frame1)
+            Glide.with(context)
+                .load(imgArray[2])
+                .into(postImageLayout.imageView3frame1)
+            Glide.with(context)
+                .load(imgArray[3])
+                .into(postImageLayout.imageView4frame1)
         }
     }
 

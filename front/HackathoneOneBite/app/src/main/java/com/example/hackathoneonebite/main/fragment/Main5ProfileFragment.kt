@@ -2,20 +2,29 @@ package com.example.hackathoneonebite.main.fragment
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Color
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.GridLayout
+import android.widget.FrameLayout
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.setMargins
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.databinding.DialogMain1TopBinding
+import com.example.hackathoneonebite.databinding.DialogMain5PostBinding
 import com.example.hackathoneonebite.databinding.FragmentMain5ProfileBinding
 import com.example.hackathoneonebite.databinding.ItemMain5PostsBinding
+import kotlinx.coroutines.NonDisposableHandle.parent
 import java.time.LocalDateTime
 
 class Main5ProfileFragment : Fragment() {
@@ -42,7 +51,7 @@ class Main5ProfileFragment : Fragment() {
         initData(data_film)
     }
     private fun initData(data: ArrayList<Post>) { //백엔드와 연결 전 단계에 테스트를 위해 데이터 생성하는 함수
-        for(i in 0..100) {
+        for(i in 0..197) {
             data.add(Post())
             data[i].userId = "eee"
             data[i].likeCount = 10
@@ -55,7 +64,7 @@ class Main5ProfileFragment : Fragment() {
                 } else {
                     data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
-                 
+
             }
         }
     }
@@ -85,29 +94,30 @@ class Main5ProfileFragment : Fragment() {
     private fun initGridView() {
         val gridLayout = binding.profileBottomLayout.gridLayout
 
+        val itemMargin = 2
         val columnCount = 4
         val displayMetrics = resources.displayMetrics
-        val itemSize = displayMetrics.widthPixels * 0.9f / columnCount
+        val itemSize = ((displayMetrics.widthPixels * 0.9f - itemMargin * columnCount * dpToPx(2)) / columnCount).toInt()
         val rowCount = data_thema1.size / columnCount + if (data_thema1.size % columnCount > 0) 1 else 0
-
         //대소 비교 후 bottom layout 높이 조절
-        if (rowCount * itemSize > bottomLayoutHeight) {
+        if (rowCount * (itemSize + dpToPx(2) * itemMargin) > bottomLayoutHeight) {
             val paramsProfileBottom = binding.profileBottomLayout.viewGroupProfileBottom.layoutParams
-            paramsProfileBottom.height = (rowCount * itemSize).toInt()
+            paramsProfileBottom.height = rowCount * (itemSize + dpToPx(2) * itemMargin) + dpToPx(20)
             binding.profileBottomLayout.viewGroupProfileBottom.layoutParams = paramsProfileBottom
         }
-
+        //아이템 동적 추가
         for (i in 0 until data_thema1.size) {
+            val layoutParams = FrameLayout.LayoutParams(itemSize, itemSize)
             val itemBinding = ItemMain5PostsBinding.inflate(layoutInflater)
+            itemBinding.imageView.setImageResource(data_thema1[i].imgArray[0].toInt())
             val view = itemBinding.root
-
-            val layoutParams = view.layoutParams
-            layoutParams.width = (itemSize).toInt()
-            layoutParams.height = (itemSize).toInt()
+            layoutParams.width = itemSize
+            layoutParams.height = itemSize
+            layoutParams.setMargins(dpToPx(2))
             view.layoutParams = layoutParams
 
             view.setOnClickListener {
-
+                showPostDialog()
             }
 
             gridLayout.addView(view)
@@ -143,5 +153,17 @@ class Main5ProfileFragment : Fragment() {
             dp.toFloat(),
             resources.displayMetrics
         ).toInt()
+    }
+
+    private fun showPostDialog() {
+        val bindingDialog = DialogMain5PostBinding.inflate(layoutInflater)
+        val builder = AlertDialog.Builder(requireContext())
+        val dlg = builder.setView(bindingDialog.root).show()
+        dlg.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dlg.window?.setGravity(Gravity.BOTTOM)
+        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 }

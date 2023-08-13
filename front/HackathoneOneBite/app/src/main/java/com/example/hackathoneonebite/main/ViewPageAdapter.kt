@@ -1,6 +1,8 @@
 package com.example.hackathoneonebite.main
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
@@ -36,6 +38,7 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
     }
 
     override fun getItemId(position: Int): Long {
+        Log.d("ee", position.toString()+"/"+fragments[position].hashCode())
         return fragments[position].hashCode().toLong() // Use hashCode as the unique ID
     }
 

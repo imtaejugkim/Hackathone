@@ -27,6 +27,35 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.93"/>
 
+    <include layout="@layout/fragment_main1_home_thema1"
+        android:id="@+id/postImageLayout_thema1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include layout="@layout/fragment_main1_home_thema2"
+        android:id="@+id/postImageLayout_thema2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <include layout="@layout/fragment_main1_home_film"
+        android:id="@+id/postImageLayout_film"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="105px"
+        android:layout_marginBottom="0dp"/>
+
     <View
         android:id="@+id/emptyViewForLogo"
         android:layout_width="match_parent"
@@ -70,34 +99,5 @@
         app:layout_constraintTop_toTopOf="@id/logo"
         app:layout_constraintBottom_toBottomOf="@id/logo"
         android:background="@drawable/img_icon_notification"/>
-
-    <include layout="@layout/fragment_main1_home_thema1"
-        android:id="@+id/postImageLayout_thema1"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <include layout="@layout/fragment_main1_home_thema2"
-        android:id="@+id/postImageLayout_thema2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <include layout="@layout/fragment_main1_home_film"
-        android:id="@+id/postImageLayout_film"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginTop="105px"
-        android:layout_marginBottom="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

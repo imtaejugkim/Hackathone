@@ -43,9 +43,13 @@ import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main1LoadPostRequest
 import com.example.hackathoneonebite.api.Main1LoadPostResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
+import com.example.hackathoneonebite.databinding.DialogMain1CommentBinding
 import com.example.hackathoneonebite.databinding.DialogMain1TopBinding
+import com.example.hackathoneonebite.databinding.DialogMain5PostBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeBinding
+import com.example.hackathoneonebite.databinding.FragmentMain1HomeFilmBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
+import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema2Binding
 import com.example.hackathoneonebite.main.MainFrameActivity
 import com.google.gson.Gson
 import org.json.JSONException
@@ -60,6 +64,9 @@ import java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME
 
 class Main1HomeFragment : Fragment() {
     lateinit var binding: FragmentMain1HomeBinding
+    lateinit var thema1Binding: FragmentMain1HomeThema1Binding
+    lateinit var thema2Binding: FragmentMain1HomeThema2Binding
+    lateinit var filmBinding: FragmentMain1HomeFilmBinding
     lateinit private var adapter_thema1: AdapterMain1HomeThema1
     lateinit private var adapter_thema2: AdapterMain1HomeThema2
     lateinit private var adapter_film: AdapterMain1HomeFilm
@@ -79,6 +86,8 @@ class Main1HomeFragment : Fragment() {
     lateinit var musicArray: TypedArray
     lateinit var musicNameArray: Array<String>
     lateinit var singerArray: Array<String>
+    var playingViewHolderTheme1: AdapterMain1HomeThema1.ViewHolder? = null
+    var playingViewHolderTheme2: AdapterMain1HomeThema2.ViewHolder? = null
     var mediaPlayer: MediaPlayer? = null
 
     enum class ThemaNumbering(val value: Int) {
@@ -107,6 +116,9 @@ class Main1HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMain1HomeBinding.inflate(layoutInflater, container, false)
+        thema1Binding = FragmentMain1HomeThema1Binding.inflate(layoutInflater)
+        thema2Binding = FragmentMain1HomeThema2Binding.inflate(layoutInflater)
+        filmBinding = FragmentMain1HomeFilmBinding.inflate(layoutInflater)
         return binding.root
     }
 
@@ -172,6 +184,21 @@ class Main1HomeFragment : Fragment() {
         binding.changeThemaButton.setOnClickListener {
             showThemaSelectDialog()
         }
+        binding.postImageLayoutThema1.messageTextView.setOnClickListener {
+            val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
+            val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+            showCommentDialog(firstVisiblePosition, 0)
+        }
+        binding.postImageLayoutThema2.messageTextView.setOnClickListener {
+            val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
+            val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+            showCommentDialog(firstVisiblePosition, 1)
+        }
+        binding.postImageLayoutFilm.messageTextView.setOnClickListener {
+            val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
+            val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
+            showCommentDialog(firstVisiblePosition, 2)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -207,7 +234,7 @@ class Main1HomeFragment : Fragment() {
                 }
             }
             //음악 재생 버튼 클릭 시
-            adapter_thema1.musicPlayButtonClickListener = object: AdapterMain1HomeThema1.MusicPlayButtonClickListener{
+            adapter_thema1.musicPlayButtonClickListener = object: AdapterMain1HomeThema1.MusicPlayButtonClickListener {
                 override fun OnItemClick(position: Int, isMusicPlaying: Boolean, musicNum: Int) {
                     if (isMusicPlaying) {
                         if(mediaPlayer==null){
@@ -215,26 +242,36 @@ class Main1HomeFragment : Fragment() {
                             if (musicResourceID != -1) {
                                 mediaPlayer = MediaPlayer.create(requireContext(), musicResourceID)
                                 mediaPlayer?.setVolume(1f, 1f)
-
-                                //배경 색 변경
-                                val colorFade = ObjectAnimator.ofObject(
-                                    viewGroup,
-                                    "backgroundColor",
-                                    ArgbEvaluator(),
-                                    (viewGroup.background as ColorDrawable).color,
-                                    ContextCompat.getColor(requireContext(), R.color.highlight)
-                                )
-                                colorFade.duration = 1000
-                                colorFade.start()
                             } else {
                                 Log.e("Main1Home", "해당하는 음악이 없습니다.")
                             }
                         }
+                        playingViewHolderTheme1 = adapter_thema1.currentlyPlayingViewHolder ?: return
                         mediaPlayer?.start()
                         Log.d("Music", "음악 재생!")
+                        //배경 색 변경
+                        val colorFade = ObjectAnimator.ofObject(
+                            viewGroup,
+                            "backgroundColor",
+                            ArgbEvaluator(),
+                            (viewGroup.background as ColorDrawable).color,
+                            ContextCompat.getColor(requireContext(), R.color.highlight)
+                        )
+                        colorFade.duration = 400
+                        colorFade.start()
                     } else {
                         mediaPlayer?.pause()
                         Log.d("Music", "음악 일시정지!")
+                        //배경 색 변경
+                        val colorFade = ObjectAnimator.ofObject(
+                            viewGroup,
+                            "backgroundColor",
+                            ArgbEvaluator(),
+                            (viewGroup.background as ColorDrawable).color,
+                            ContextCompat.getColor(requireContext(), R.color.white)
+                        )
+                        colorFade.duration = 400
+                        colorFade.start()
                     }
                 }
             }
@@ -245,24 +282,6 @@ class Main1HomeFragment : Fragment() {
             if (data_thema1.isEmpty()) {
                 viewGroup.visibility = View.INVISIBLE
             }
-            /*if (data_thema1.isNotEmpty()) {
-                messageTextView.text = data_thema1[0]?.message
-            } else {
-                theme1LoadHandler = Handler(Looper.getMainLooper())
-                val runnable = object : Runnable {
-                    override fun run() {
-                        Log.d("Main1Theme1", "Theme1 데이터 로드 시행")
-
-                        if (!data_thema1.isNotEmpty()) {
-                            loadPosts(0)
-                            theme1LoadHandler.postDelayed(this, 3000)
-                        } else {
-                            adapter_thema1.notifyDataSetChanged()
-                        }
-                    }
-                }
-                theme1LoadHandler.post(runnable)
-            }*/
 
             val snapHelper = PagerSnapHelper()
             snapHelper.attachToRecyclerView(recyclerView)
@@ -300,18 +319,28 @@ class Main1HomeFragment : Fragment() {
                         //centerView.findViewById<ConstraintLayout>(R.id.postImageLayoutBack).findViewById<Button>(R.id.playButton).performClick()
 
                         //music stop
-                        val playingViewHolder = adapter_thema1.currentlyPlayingViewHolder ?: return
-                        val position = playingViewHolder.adapterPosition
+                        playingViewHolderTheme1 = adapter_thema1.currentlyPlayingViewHolder ?: return
+                        val position = playingViewHolderTheme1!!.adapterPosition
                         val layoutManager2 = recyclerView.layoutManager
-
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
                             if (position != pos) {
                                 mediaPlayer?.stop()
                                 mediaPlayer?.release()
                                 Log.d("Music", "음악 정지!")
                                 mediaPlayer = null
-                                playingViewHolder.stopMusicAnimation()
+                                playingViewHolderTheme1?.stopMusicAnimation() ?: Log.d("eee","it's null")
+                                playingViewHolderTheme1 = null
                                 adapter_thema1.currentlyPlayingViewHolder = null
+                                //배경 색 변경
+                                val colorFade = ObjectAnimator.ofObject(
+                                    viewGroup,
+                                    "backgroundColor",
+                                    ArgbEvaluator(),
+                                    (viewGroup.background as ColorDrawable).color,
+                                    ContextCompat.getColor(requireContext(), R.color.white)
+                                )
+                                colorFade.duration = 400
+                                colorFade.start()
                             }
                         }
                     }
@@ -361,11 +390,32 @@ class Main1HomeFragment : Fragment() {
                                 Log.e("Main1Home", "해당하는 음악이 없습니다.")
                             }
                         }
+                        playingViewHolderTheme2 = adapter_thema2.currentlyPlayingViewHolder ?: return
                         mediaPlayer?.start()
                         Log.d("Music", "음악 재생!")
+                        //배경 색 변경
+                        val colorFade = ObjectAnimator.ofObject(
+                            viewGroup,
+                            "backgroundColor",
+                            ArgbEvaluator(),
+                            (viewGroup.background as ColorDrawable).color,
+                            ContextCompat.getColor(requireContext(), R.color.highlight)
+                        )
+                        colorFade.duration = 400
+                        colorFade.start()
                     } else {
                         mediaPlayer?.pause()
                         Log.d("Music", "음악 일시정지!")
+                        //배경 색 변경
+                        val colorFade = ObjectAnimator.ofObject(
+                            viewGroup,
+                            "backgroundColor",
+                            ArgbEvaluator(),
+                            (viewGroup.background as ColorDrawable).color,
+                            ContextCompat.getColor(requireContext(), R.color.white)
+                        )
+                        colorFade.duration = 400
+                        colorFade.start()
                     }
                 }
             }
@@ -410,18 +460,28 @@ class Main1HomeFragment : Fragment() {
                         }
 
                         //music stop
-                        val playingViewHolder = adapter_thema2.currentlyPlayingViewHolder ?: return
-                        val position = playingViewHolder.adapterPosition
+                        playingViewHolderTheme2 = adapter_thema2.currentlyPlayingViewHolder ?: return
+                        val position = playingViewHolderTheme2!!.adapterPosition
                         val layoutManager2 = recyclerView.layoutManager
-
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
                             if (position != pos) {
                                 mediaPlayer?.stop()
                                 mediaPlayer?.release()
                                 Log.d("Music", "음악 정지!")
                                 mediaPlayer = null
-                                playingViewHolder.stopMusicAnimation()
+                                playingViewHolderTheme2?.stopMusicAnimation()
+                                playingViewHolderTheme2 = null
                                 adapter_thema2.currentlyPlayingViewHolder = null
+                                //배경 색 변경
+                                val colorFade = ObjectAnimator.ofObject(
+                                    viewGroup,
+                                    "backgroundColor",
+                                    ArgbEvaluator(),
+                                    (viewGroup.background as ColorDrawable).color,
+                                    ContextCompat.getColor(requireContext(), R.color.white)
+                                )
+                                colorFade.duration = 400
+                                colorFade.start()
                             }
                         }
                     }
@@ -587,6 +647,17 @@ class Main1HomeFragment : Fragment() {
                 }
 
                 ThemaNumbering.thema2.value -> {
+                    //음악 정지
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    Log.d("Music", "음악 정지!")
+                    mediaPlayer = null
+                    playingViewHolderTheme2?.stopMusicAnimation()
+                    playingViewHolderTheme2 = null
+                    adapter_thema2.currentlyPlayingViewHolder = null
+                    //배경 색 변경
+                    binding.postImageLayoutThema2.viewGroup.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
                     binding.postImageLayoutThema2.viewGroup.visibility = View.INVISIBLE
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                     current_selected_thema = ThemaNumbering.thema1.value
@@ -605,6 +676,17 @@ class Main1HomeFragment : Fragment() {
         bindingDialog.postFrame2.setOnClickListener {
             when (current_selected_thema) {
                 ThemaNumbering.thema1.value -> {
+                    //음악 정지
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    Log.d("Music", "음악 정지!")
+                    mediaPlayer = null
+                    playingViewHolderTheme1?.stopMusicAnimation() ?: Log.d("ee","it's null")
+                    playingViewHolderTheme1 = null
+                    adapter_thema1.currentlyPlayingViewHolder = null
+                    //배경 색 변경
+                    binding.postImageLayoutThema1.viewGroup.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
                     binding.postImageLayoutThema1.viewGroup.visibility = View.INVISIBLE
                     binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                     current_selected_thema = ThemaNumbering.thema2.value
@@ -627,6 +709,17 @@ class Main1HomeFragment : Fragment() {
         bindingDialog.postFrameFilm.setOnClickListener {
             when (current_selected_thema) {
                 ThemaNumbering.thema1.value -> {
+                    //음악 정지
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    Log.d("Music", "음악 정지!")
+                    mediaPlayer = null
+                    playingViewHolderTheme1?.stopMusicAnimation()
+                    playingViewHolderTheme1 = null
+                    adapter_thema1.currentlyPlayingViewHolder = null
+                    //배경 색 변경
+                    binding.postImageLayoutThema1.viewGroup.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
                     binding.postImageLayoutThema1.viewGroup.visibility = View.INVISIBLE
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                     current_selected_thema = ThemaNumbering.film.value
@@ -634,6 +727,17 @@ class Main1HomeFragment : Fragment() {
                 }
 
                 ThemaNumbering.thema2.value -> {
+                    //음악 정지
+                    mediaPlayer?.stop()
+                    mediaPlayer?.release()
+                    Log.d("Music", "음악 정지!")
+                    mediaPlayer = null
+                    playingViewHolderTheme2?.stopMusicAnimation()
+                    playingViewHolderTheme2 = null
+                    adapter_thema2.currentlyPlayingViewHolder = null
+                    //배경 색 변경
+                    binding.postImageLayoutThema2.viewGroup.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+
                     binding.postImageLayoutThema2.viewGroup.visibility = View.INVISIBLE
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                     current_selected_thema = ThemaNumbering.film.value
@@ -645,6 +749,24 @@ class Main1HomeFragment : Fragment() {
                 }
             }
         }
+    }
+    //댓글 Dialog
+    private fun showCommentDialog(position: Int, theme: Int) {
+        val bindingDialog = DialogMain1CommentBinding.inflate(layoutInflater)
+        bindingDialog.text.text = when(position) {
+            0 -> data_thema1[position].message
+            1 -> data_thema2[position].message
+            2 -> data_film[position].message
+            else -> ""
+        }
+        val builder = AlertDialog.Builder(requireContext())
+        val dlg = builder.setView(bindingDialog.root).show()
+        dlg.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dlg.window?.setGravity(Gravity.BOTTOM)
+        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     //네에에에트으으으으으워어어어어크으으으으으으
@@ -764,7 +886,7 @@ class Main1HomeFragment : Fragment() {
             override fun onFailure(call: Call<List<Main1LoadPostResponse>>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
-                Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "서버와의 통신에 문제가 있습니다.", Toast.LENGTH_SHORT).show()
                 reload(theme)
             }
         })
