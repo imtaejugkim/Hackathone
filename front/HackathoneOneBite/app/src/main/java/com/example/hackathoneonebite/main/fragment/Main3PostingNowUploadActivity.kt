@@ -8,17 +8,14 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
-import com.example.hackathoneonebite.databinding.ActivityMain3PostingRequestBinding
-import com.example.hackathoneonebite.databinding.ActivityMain3PostingUploadBinding
+import com.example.hackathoneonebite.databinding.ActivityMain3PostingNowUploadBinding
 
-class Main3PostingUploadActivity : AppCompatActivity(),
+class Main3PostingNowUploadActivity : AppCompatActivity(),
     AdapterMain3PostingUpload.OnButtonClickListener {
 
     private var isRotating = false
@@ -27,7 +24,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
     private var mediaPlayer: MediaPlayer? = null
     private var selectedMusicPosition = 0
 
-    lateinit var binding: ActivityMain3PostingUploadBinding
+    lateinit var binding: ActivityMain3PostingNowUploadBinding
     private val imageResources = arrayOf(
         R.drawable.cd_music0,
         R.drawable.cd_music1,
@@ -50,7 +47,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMain3PostingUploadBinding.inflate(layoutInflater)
+        binding = ActivityMain3PostingNowUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // 전달받은 데이터 가져오기
@@ -63,7 +60,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
 
-        val adapter = AdapterMain3PostingUpload(this)
+        val adapter = AdapterMain3PostingNowUpload(this)
         recyclerView.adapter = adapter
 
         val editText = binding.editText
@@ -105,7 +102,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
     }
 
     private fun startRotation() {
-        rotationAnimator = ValueAnimator.ofFloat(0f, 480f).apply {
+        rotationAnimator = ValueAnimator.ofFloat(0f, 360f).apply {
             duration = 2000
             interpolator = LinearInterpolator()
             repeatCount = ValueAnimator.INFINITE
@@ -142,7 +139,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
                 stop()
                 reset()
                 release()
-                this@Main3PostingUploadActivity.isPlaying = false
+                this@Main3PostingNowUploadActivity.isPlaying = false
             }
         }
     }

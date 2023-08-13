@@ -6,8 +6,9 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.R
-class AdapterMain3PostingUpload(private val buttonClickListener: OnButtonClickListener) :
-    RecyclerView.Adapter<AdapterMain3PostingUpload.ButtonViewHolder>() {
+
+class AdapterMain3PostingNowUpload(private val buttonClickListener: Main3PostingNowUploadActivity) :
+    RecyclerView.Adapter<AdapterMain3PostingNowUpload.ButtonViewHolder>() {
 
     private val buttonCount = 7
     private val buttonStates = Array(buttonCount) { false } // 초기 상태는 모두 false
@@ -30,7 +31,7 @@ class AdapterMain3PostingUpload(private val buttonClickListener: OnButtonClickLi
             3 -> "my_heart_different_heaven ehde"
             4 -> "mortals warriyo"
             5 -> "sky high elektronomia"
-            6 -> "fearless lost sky"
+            6 -> "fearless lost sky.mp3"
             else -> "기본 버튼 이름"
         }
         holder.bind(buttonName, position)

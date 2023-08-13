@@ -16,6 +16,7 @@ import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
+import com.example.hackathoneonebite.main.MainFrameActivity
 import com.google.android.gms.common.util.IOUtils.toByteArray
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -36,6 +37,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
     private lateinit var images: Array<ByteArray>
     private lateinit var userIdArray : Array<Long?>
     private var theme = 0
+    var id : Long = 0
+    var userId: String = ""
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,11 +49,13 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         images = Array(4) { ByteArray(0) }
         userIdArray = arrayOfNulls(4)
 
-
-
-
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
+        id = intent.getLongExtra("id", 0)
         theme = intent.getIntExtra("layout_id", 0)
+        userId = intent.getStringExtra("userId") + ""
+        Log.d("id",id.toString())
+        Log.d("userId",userId)
+
 
         val postImageLayoutFilm = findViewById<View>(R.id.postImageLayoutFilm)
         val postImageLayout1 = findViewById<View>(R.id.postImageLayout1)
@@ -96,7 +102,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val message = "백엔드야 메세지 받아라"
             val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
 
-            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             intent.putExtra("post_data", post)
             startActivity(intent)
 
@@ -105,7 +111,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val message = "백엔드야 메세지 받아라"
             val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
 
-            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             intent.putExtra("post_data", post)
             startActivity(intent)
 
@@ -123,7 +129,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val imageParts = ArrayList<MultipartBody.Part>()
 
             //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
-            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "huhaaa")
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
             val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
 
             imageParts.add(imagePart)
@@ -131,13 +137,37 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             imageParts.add(imagePart3)
             imageParts.add(imagePart4)
             Upload(imageParts, theme, idPart, message)
+
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
+            startActivity(intent)
+            Toast.makeText(this@Main3PostingMakingActivity, "게시물 업로드 완료", Toast.LENGTH_SHORT).show()
         }
         uploadButton2.setOnClickListener {
-            val message = "백엔드야 메세지 받아라"
+            val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0])
+            val requestFile2 = RequestBody.create("image/*".toMediaTypeOrNull(), images[1])
+            val requestFile3 = RequestBody.create("image/*".toMediaTypeOrNull(), images[2])
+            val requestFile4 = RequestBody.create("image/*".toMediaTypeOrNull(), images[3])
 
-            //sendPost(post)
+            val imagePart = MultipartBody.Part.createFormData("image", "image1.jpg", requestFile1)
+            val imagePart2 = MultipartBody.Part.createFormData("image", "image2.jpg", requestFile2)
+            val imagePart3 = MultipartBody.Part.createFormData("image", "image3.jpg", requestFile3)
+            val imagePart4 = MultipartBody.Part.createFormData("image", "image4.jpg", requestFile4)
+            val imageParts = ArrayList<MultipartBody.Part>()
+
+            //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
+
+            imageParts.add(imagePart)
+            imageParts.add(imagePart2)
+            imageParts.add(imagePart3)
+            imageParts.add(imagePart4)
+            Upload(imageParts, theme, idPart, message)
+
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
+            startActivity(intent)
+            Toast.makeText(this@Main3PostingMakingActivity, "게시물 업로드 완료", Toast.LENGTH_SHORT).show()
         }
-
     }
 
     fun Upload(image: ArrayList<MultipartBody.Part>, theme: Int, userId: RequestBody, message : RequestBody){

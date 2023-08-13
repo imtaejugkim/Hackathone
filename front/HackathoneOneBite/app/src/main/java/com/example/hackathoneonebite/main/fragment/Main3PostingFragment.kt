@@ -17,6 +17,8 @@ class Main3PostingFragment : Fragment() {
 
     private val mainHandler = Handler(Looper.getMainLooper())
     private val circleViews = mutableListOf<View>()
+    var id : Long = 0
+    var userId: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,6 +30,10 @@ class Main3PostingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val intent = requireActivity().intent
+        id = intent.getLongExtra("id", 0)
+        userId = intent.getStringExtra("userId") + ""
 
         val postImageLayoutFilm = view.findViewById<View>(R.id.filmImage)
         val postImageLayout1 = view.findViewById<View>(R.id.thema1Image)
@@ -43,18 +49,19 @@ class Main3PostingFragment : Fragment() {
         for ((index, layout) in postImageLayouts.withIndex()) {
             layout.setOnClickListener {
                 Log.d("index", index.toString())
-                Log.d("layout",layout.toString())
 
                 when(index){
                     0 -> film.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     1 -> theme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                     2 -> theme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
-
                 }
 
                 mainHandler.postDelayed({
                     val intent = Intent(requireContext(), Main3PostingMakingActivity::class.java)
                     intent.putExtra("layout_id", index)
+                    intent.putExtra("id", id)
+                    intent.putExtra("userId",userId)
+                    Log.d("id", id.toString())
                     startActivity(intent)
                     activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                     film.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))

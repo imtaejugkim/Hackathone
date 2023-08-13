@@ -53,7 +53,7 @@ class TestLoginActivity : AppCompatActivity() {
             imageParts.add(imagePart2)
             imageParts.add(imagePart3)
             imageParts.add(imagePart4)
-            Login(imageParts, themePart, idPart)
+            //Login(imageParts, themePart, idPart)
         }
         binding.loadImage.setOnClickListener {
             val request = Main1LoadPostRequest(0)
@@ -114,7 +114,7 @@ class TestLoginActivity : AppCompatActivity() {
         })
     }
 
-    fun Login(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
+    /*fun Login(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
         val call = RetrofitBuilder.api.uploadPost(image, theme, userId, theme, userId)
         call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(
@@ -147,5 +147,5 @@ class TestLoginActivity : AppCompatActivity() {
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
-    }
+    }*/
 }
