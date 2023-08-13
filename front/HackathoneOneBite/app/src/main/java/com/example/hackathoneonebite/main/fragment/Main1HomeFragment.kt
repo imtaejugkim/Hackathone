@@ -1,5 +1,7 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.animation.ArgbEvaluator
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.TypedArray
@@ -28,6 +30,7 @@ import androidx.compose.ui.input.key.Key.Companion.Copy
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet.Layout
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.TypedArrayUtils
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -212,6 +215,17 @@ class Main1HomeFragment : Fragment() {
                             if (musicResourceID != -1) {
                                 mediaPlayer = MediaPlayer.create(requireContext(), musicResourceID)
                                 mediaPlayer?.setVolume(1f, 1f)
+
+                                //배경 색 변경
+                                val colorFade = ObjectAnimator.ofObject(
+                                    viewGroup,
+                                    "backgroundColor",
+                                    ArgbEvaluator(),
+                                    (viewGroup.background as ColorDrawable).color,
+                                    ContextCompat.getColor(requireContext(), R.color.highlight)
+                                )
+                                colorFade.duration = 1000
+                                colorFade.start()
                             } else {
                                 Log.e("Main1Home", "해당하는 음악이 없습니다.")
                             }
@@ -641,12 +655,12 @@ class Main1HomeFragment : Fragment() {
             0 -> {
                 if (data_thema1.isEmpty())
                     binding.postImageLayoutThema1.viewGroup.visibility =
-                    View.INVISIBLE
+                        View.INVISIBLE
             }
             1 -> {
                 if (data_thema2.isEmpty())
                     binding.postImageLayoutThema2.viewGroup.visibility =
-                    View.INVISIBLE
+                        View.INVISIBLE
             }
             2 -> if(data_film.isEmpty()) binding.postImageLayoutFilm.viewGroup.visibility = View.INVISIBLE
         }

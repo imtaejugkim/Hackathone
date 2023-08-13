@@ -25,8 +25,10 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
         val receivedIntent = intent
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
 
+        Log.d("post",receivedPost.toString())
+
         if (receivedPost != null) {
-            Log.d("PostDebug", "ID: ${receivedPost.id}")
+            Log.d("PostDebug", "ID: ${receivedPost.userId}")
             Log.d("PostDebug", "Like Count: ${receivedPost.likeCount}")
             Log.d("PostDebug", "Date: ${receivedPost.date}")
             Log.d("PostDebug", "Message: ${receivedPost.message}")

@@ -5,24 +5,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.viewpager2.widget.ViewPager2
 import com.example.hackathoneonebite.R
-import com.example.hackathoneonebite.databinding.FragmentMain4RankingBinding
 import com.example.hackathoneonebite.databinding.FragmentMain4RankingBottomBinding
+import com.example.hackathoneonebite.databinding.FragmentMain4RankingTopBinding
 
-class Main4RankingFragment : Fragment() {
+class Main4RankingFragmentTop : Fragment() {
 
-    lateinit var binding : FragmentMain4RankingBinding
+    lateinit var binding : FragmentMain4RankingTopBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = FragmentMain4RankingBinding.inflate(layoutInflater, container, false)
-
-        val viewPager: ViewPager2 = binding.viewPager
-        val adapter = AdapterMain4RankingFragment(requireActivity())
-        viewPager.adapter = adapter
-
+        binding = FragmentMain4RankingTopBinding.inflate(layoutInflater, container, false)
         return binding.root
+
     }
 }

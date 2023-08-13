@@ -1,17 +1,10 @@
 package com.example.hackathoneonebite.main
 
 import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.example.hackathoneonebite.R
-import com.example.hackathoneonebite.databinding.FragmentMain1HomeFirstBinding
-import com.example.hackathoneonebite.main.fragment.AdapterMain1HomeThema1
 import com.example.hackathoneonebite.main.fragment.Main1HomeFirstFragment
-import com.example.hackathoneonebite.main.fragment.Main1HomeFragment
 import com.example.hackathoneonebite.main.fragment.Main2SearchFragment
 import com.example.hackathoneonebite.main.fragment.Main3PostingFragment
 import com.example.hackathoneonebite.main.fragment.Main4RankingFragment
@@ -42,18 +35,18 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
         return fragments[position]
     }
 
+    override fun getItemId(position: Int): Long {
+        return fragments[position].hashCode().toLong() // Use hashCode as the unique ID
+    }
+
+    override fun containsItem(itemId: Long): Boolean {
+        return fragments.any { it.hashCode().toLong() == itemId }
+    }
+
     private var currentListIds = mutableListOf<Long>()
     init {
         // Assign unique IDs for each initial fragments
         currentListIds = MutableList(fragments.size) { it.toLong() }
-    }
-
-    override fun getItemId(position: Int): Long {
-        return currentListIds[position]
-    }
-
-    override fun containsItem(itemId: Long): Boolean {
-        return currentListIds.contains(itemId)
     }
 
     fun replaceFragment(position: Int, newFragment: Fragment, themaNum: Int) {

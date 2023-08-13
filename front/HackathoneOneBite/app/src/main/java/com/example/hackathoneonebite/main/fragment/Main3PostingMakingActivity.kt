@@ -8,18 +8,12 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
-import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
-import com.example.hackathoneonebite.api.RetrofitBuilder
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import org.json.JSONException
-import org.json.JSONObject
-import retrofit2.Call
 import java.time.LocalDateTime
 import retrofit2.Callback
 import retrofit2.Response
@@ -43,6 +37,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         imagesFill = Array(4) { "" }
         images = Array(4) { ByteArray(0) }
+        imgArray = Array(4){ "" }
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
         id = intent.getLongExtra("id", 0)
@@ -124,8 +119,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val imageParts = ArrayList<MultipartBody.Part>()
 
             //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
-            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
-            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
+            //val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+            //val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
 
             imageParts.add(imagePart)
             imageParts.add(imagePart2)
@@ -133,17 +128,15 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             imageParts.add(imagePart4)
 
             //Upload(imageParts, theme, userId, message)
-
+            val post = Post(imagesFill, theme, userId, 0,LocalDateTime.now(), "",false)
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
-            startActivity(intent)
-            val post = Post(imgArray, theme, userId, 0,LocalDateTime.now(), "",false , -1, 0, false, participantUserIds)
-
-            intent.putExtra("post",post)
+            intent.putExtra("post_data", post)
+            intent.putExtra("imagePartSize", imagePartSize)
             for (i in 0 until imageParts.size) {
                 val part = imageParts[i]
                 intent.putExtra("imagePart$i", part.headers?.get("Content-Disposition"))
             }
-
+            startActivity(intent)
         }
         uploadButton2.setOnClickListener {
             val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0])
@@ -158,8 +151,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val imageParts = ArrayList<MultipartBody.Part>()
 
             //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
-            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
-            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
+            //val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+            //val message = RequestBody.create("text/plain".toMediaTypeOrNull(), "hello")
 
             imageParts.add(imagePart)
             imageParts.add(imagePart2)
@@ -167,9 +160,17 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             imageParts.add(imagePart4)
             //Upload(imageParts, theme, userId, message)
 
+            val message = "백엔드야 메세지 받아라"
+            val post = Post(imagesFill, theme, userId, 0,LocalDateTime.now(), message,false)
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
+            intent.putExtra("post_data", post)
+            intent.putExtra("imagePartSize", imagePartSize)
+            for (i in 0 until imagePartSize) {
+                val part = imageParts[i]
+                intent.putExtra("imagePart$i", part.headers?.get("Content-Disposition"))
+                Log.d("파트",part.toString())
+            }
             startActivity(intent)
-            Toast.makeText(this@Main3PostingMakingActivity, "게시물 업로드 완료", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -276,7 +277,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
-                imagePartSize += 1
 
             }
         }
@@ -298,7 +298,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
-                imagePartSize += 1
             }
         }
     }
@@ -320,7 +319,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
-                imagePartSize += 1
             }
         }
     }
@@ -342,6 +340,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
                 imagesFill[contentsId] = true.toString()
                 images[contentsId] = selectedImageByteArray
+                imagePartSize++
                 Log.d("다시 받은 layoutid",theme.toString())
                 updateButtonsVisibility(theme)
             }

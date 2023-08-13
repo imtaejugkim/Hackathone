@@ -63,9 +63,23 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         // 전달받은 데이터 가져오기
-        val selectedName = intent.getStringExtra("selected_name")
-        val receivedPost = intent.getSerializableExtra("receivedPost") as? Post
+        val receivedIntent = intent
+        val selectedName = receivedIntent.getStringExtra("selected_name")
+        val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
+
+        Log.d("post",receivedPost.toString())
+
         val imageSize = intent.getIntExtra("imagePartSize", 0)
+        //Log.d("imagePartSize",imageSize.toString())
+
+        /*if (receivedPost != null) {
+            Log.d("PostDebug", "ID: ${receivedPost.userId}")
+            Log.d("PostDebug", "Like Count: ${receivedPost.likeCount}")
+            Log.d("PostDebug", "Date: ${receivedPost.date}")
+            Log.d("PostDebug", "Message: ${receivedPost.message}")
+            Log.d("PostDebug", "Theme: ${receivedPost.theme}")
+            Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
+        }*/
 
         val imageParts = ArrayList<MultipartBody.Part>()
         for (i in 0 until imageSize) {
@@ -73,20 +87,19 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
             val part = partName?.let { MultipartBody.Part.createFormData(it, null.toString()) }
             if (part != null) {
                 imageParts.add(part)
+                Log.d("이미지 파트 들어옴", part.toString())
             }
         }
+        Log.d("이미지 파트",imageParts.toString())
 
         val imgArray = receivedPost?.imgArray
         val theme = receivedPost?.theme
         val userId = receivedPost?.userId
         val likeCount = receivedPost?.likeCount
         val date = receivedPost?.date
-        var message = receivedPost?.message
         val isFliped = receivedPost?.isFliped
-        var musicNum = receivedPost?.musicNum
         val likeClicked = receivedPost?.likeClicked
         val participantUserIds = receivedPost?.participantUserIds
-
 
         binding.relayName.text = "$selectedName"
 
@@ -98,7 +111,7 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
 
         val editText = binding.editText
         editText.background = null;
-        message = editText.text.toString()
+        val message = editText.text.toString()
 
 
         val leftArrow = binding.leftArrow
@@ -110,14 +123,20 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         val rightArrow = binding.rightArrow
         rightArrow.setOnClickListener {
             //val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
-            if(musicIsExist){
-                musicNum = selectedMusicPosition
-            }
+            val musicNum = if(musicIsExist){
+                selectedMusicPosition
+            }else{ -1 }
 
             Upload(imageParts, theme!!, userId!!, musicNum, message)
             val intent = Intent(this@Main3PostingNowUploadActivity, MainFrameActivity::class.java)
             startActivity(intent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
+            Log.d("이미지",imageParts.toString())
+            Log.d("테마",theme.toString())
+            Log.d("유저 아이디",userId.toString())
+            Log.d("음악",musicNum.toString())
+            Log.d("글",message.toString())
         }
 
         binding.playButton.setOnClickListener {
@@ -173,6 +192,11 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
 
         binding.mp3Song.visibility = View.VISIBLE
         binding.cdImageView.setImageResource(imageResources[position])
+
+        if(!musicIsExist) {
+            musicIsExist
+        }
+        else !musicIsExist
     }
 
     private fun startRotation() {
@@ -196,7 +220,6 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
     private fun stopRotation() {
         rotationAnimator?.cancel()
         binding.cdImageView.rotation = 0f
-        isRotating = false
     }
 
     private fun startMusic(selectedPosition : Int) {

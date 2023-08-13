@@ -10,7 +10,7 @@ data class Post(
 
     var theme: Int = 0,
 
-    var id: ArrayList<Long>? = null,
+    var userId: String? = "",
 
     var likeCount: Int = 0,
 
@@ -24,5 +24,7 @@ data class Post(
 
     var postId: Long = 0,
 
-    var likeClicked: Boolean = false
+    var likeClicked: Boolean = false,
+
+    var participantUserIds: ArrayList<Long> = arrayListOf()
 ) : Serializable
