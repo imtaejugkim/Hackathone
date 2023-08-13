@@ -1,9 +1,7 @@
 package com.example.hackathoneonebite.main.fragment
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -16,8 +14,6 @@ import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
-import com.example.hackathoneonebite.main.MainFrameActivity
-import com.google.android.gms.common.util.IOUtils.toByteArray
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,15 +23,15 @@ import retrofit2.Call
 import java.time.LocalDateTime
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.ByteArrayOutputStream
-
 
 
 class Main3PostingMakingActivity : AppCompatActivity() {
 
-    private lateinit var imagesFill: Array<String>
-    private lateinit var images: Array<ByteArray>
-    private lateinit var userIdArray : Array<Long?>
+    private lateinit var imagesFill: Array<String> // 사진 채워있는 유무 true/false
+    private lateinit var images: Array<ByteArray> // image 변환 전 byteArray들
+    private lateinit var imgArray : Array<String>
+    private var participantUserIds: ArrayList<Long> = arrayListOf(0)
+    private var imagePartSize = 0
     private var theme = 0
     var id : Long = 0
     var userId: String = ""
@@ -47,7 +43,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         imagesFill = Array(4) { "" }
         images = Array(4) { ByteArray(0) }
-        userIdArray = arrayOfNulls(4)
 
         // Intent에서 클릭된 레이아웃의 ID를 가져옴
         id = intent.getLongExtra("id", 0)
@@ -100,18 +95,18 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
         relayButton1.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, theme, userId, 0,LocalDateTime.now(), message,false)
 
-            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
             startActivity(intent)
 
         }
         relayButton2.setOnClickListener {
             val message = "백엔드야 메세지 받아라"
-            val post = Post(imagesFill, 0, null, 0,LocalDateTime.now(), message,false)
+            val post = Post(imagesFill, theme, userId, 0,LocalDateTime.now(), message,false)
 
-            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
+            val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
             startActivity(intent)
 
@@ -136,11 +131,19 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             imageParts.add(imagePart2)
             imageParts.add(imagePart3)
             imageParts.add(imagePart4)
-            Upload(imageParts, theme, idPart, message)
+
+            //Upload(imageParts, theme, userId, message)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             startActivity(intent)
-            Toast.makeText(this@Main3PostingMakingActivity, "게시물 업로드 완료", Toast.LENGTH_SHORT).show()
+            val post = Post(imgArray, theme, userId, 0,LocalDateTime.now(), "",false , -1, 0, false, participantUserIds)
+
+            intent.putExtra("post",post)
+            for (i in 0 until imageParts.size) {
+                val part = imageParts[i]
+                intent.putExtra("imagePart$i", part.headers?.get("Content-Disposition"))
+            }
+
         }
         uploadButton2.setOnClickListener {
             val requestFile1 = RequestBody.create("image/*".toMediaTypeOrNull(), images[0])
@@ -162,7 +165,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             imageParts.add(imagePart2)
             imageParts.add(imagePart3)
             imageParts.add(imagePart4)
-            Upload(imageParts, theme, idPart, message)
+            //Upload(imageParts, theme, userId, message)
 
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             startActivity(intent)
@@ -170,8 +173,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
     }
 
-    fun Upload(image: ArrayList<MultipartBody.Part>, theme: Int, userId: RequestBody, message : RequestBody){
-        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, 0 , message)
+    /*fun Upload(image: ArrayList<MultipartBody.Part>, theme: Int, userId: String, message : String){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, 0 , message!!)
         call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<Main3UploadPostIsComplete>,
@@ -203,15 +206,15 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
-    }
+    }*/
 
-    private fun updateButtonsVisibility(currentId : Int) {
+    private fun updateButtonsVisibility(theme : Int) {
         val relayButton1 = findViewById<Button>(R.id.relayButton1)
         val uploadButton1 = findViewById<Button>(R.id.uploadButton1)
         val disabledButton1 = findViewById<Button>(R.id.unActiveButton1)
-        val relayButton2 = findViewById<Button>(R.id.relayButton1)
-        val uploadButton2 = findViewById<Button>(R.id.uploadButton1)
-        val disabledButton2 = findViewById<Button>(R.id.unActiveButton1)
+        val relayButton2 = findViewById<Button>(R.id.relayButton2)
+        val uploadButton2 = findViewById<Button>(R.id.uploadButton2)
+        val disabledButton2 = findViewById<Button>(R.id.unActiveButton2)
 
         when (theme) {
             in 0..1 -> {
@@ -273,6 +276,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
+                imagePartSize += 1
 
             }
         }
@@ -294,7 +298,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
-
+                imagePartSize += 1
             }
         }
     }
@@ -312,10 +316,11 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 val intent = Intent(this@Main3PostingMakingActivity, Main3PostingSelectActivity::class.java)
                 intent.putExtra("contents_id", index)
                 intent.putExtra("layout_id", theme)
+                Log.d("layout_id",theme.toString())
                 startActivityForResult(intent, REQUEST_CODE_SELECT_IMAGE)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 imagesFill[index] = true.toString()
-
+                imagePartSize += 1
             }
         }
     }
@@ -336,11 +341,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 selectedImageView.setImageBitmap(selectedBitmap)
 
                 imagesFill[contentsId] = true.toString()
-                Log.d("tag", selectedBitmap.toString())
-
                 images[contentsId] = selectedImageByteArray
-                Log.d("tag", selectedImageByteArray.toString())
-
+                Log.d("다시 받은 layoutid",theme.toString())
                 updateButtonsVisibility(theme)
             }
         }

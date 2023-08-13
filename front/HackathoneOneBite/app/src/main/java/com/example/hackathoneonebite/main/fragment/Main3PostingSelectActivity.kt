@@ -135,7 +135,6 @@ class Main3PostingSelectActivity : AppCompatActivity() {
 
                 val resultIntent = Intent()
                 resultIntent.putExtra("selected_image", byteArray)
-                Log.e("잘려진 사진 크기", byteArray.toString())
 
                 resultIntent.putExtra("contents_id", clickedContentsId)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)

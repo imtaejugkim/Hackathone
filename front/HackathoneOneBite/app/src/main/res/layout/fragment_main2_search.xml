@@ -80,6 +80,7 @@
         android:padding="10dp"
         android:drawablePadding="8dp"
         android:hint="프로필 입력"
+        android:focusableInTouchMode="true"
         android:textColorHint="@color/light_gray"
         android:drawableRight="@drawable/baseline_search_24"
         android:textSize="12sp"
