@@ -55,6 +55,7 @@ class Main5ProfileFragment : Fragment() {
                 } else {
                     data[i].imgArray[j] = R.drawable.test_image2.toString()
                 }
+                 
             }
         }
     }
