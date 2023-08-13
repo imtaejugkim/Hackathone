@@ -37,7 +37,7 @@
         android:id="@+id/emptyView1"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.024"
+        app:layout_constraintHeight_percent="0.035"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="@id/space"
         app:layout_constraintStart_toStartOf="@id/space"/>
@@ -46,7 +46,7 @@
         android:id="@+id/emptyView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.024"
+        app:layout_constraintHeight_percent="0.035"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="@id/space"
         app:layout_constraintEnd_toEndOf="@id/space"/>
@@ -65,10 +65,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-        app:layout_constraintHeight_percent="0.264"
+        app:layout_constraintHeight_percent="0.266"
         app:layout_constraintTop_toBottomOf="@id/emptyView1"
         app:layout_constraintStart_toEndOf="@id/emptyView1"
-        app:layout_constraintDimensionRatio="327:264"
+        app:layout_constraintDimensionRatio="314:266"
         android:scaleType="centerCrop"/>
 
     <ImageView
@@ -76,10 +76,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/light_gray"
-        app:layout_constraintHeight_percent="0.281"
+        app:layout_constraintHeight_percent="0.269"
         app:layout_constraintTop_toBottomOf="@id/emptyView3"
         app:layout_constraintStart_toEndOf="@id/emptyView1"
-        app:layout_constraintDimensionRatio="327:281"
+        app:layout_constraintDimensionRatio="314:269"
         android:scaleType="centerCrop"/>
 
     <ImageView
@@ -90,7 +90,7 @@
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
         app:layout_constraintBottom_toBottomOf="@id/imageView2frame2"
         app:layout_constraintStart_toEndOf="@id/emptyView3"
-        app:layout_constraintDimensionRatio="324:560"
+        app:layout_constraintDimensionRatio="314:550"
         android:scaleType="centerCrop"/>
 
     <View
@@ -110,7 +110,7 @@
         app:layout_constraintTop_toBottomOf="@id/emptyView4"
         app:layout_constraintStart_toStartOf="@id/imageView1frame2"
         app:layout_constraintEnd_toEndOf="@id/imageView3frame2"
-        app:layout_constraintDimensionRatio="666:241"
+        app:layout_constraintDimensionRatio="643:239"
         android:scaleType="centerCrop"/>
 
     <View

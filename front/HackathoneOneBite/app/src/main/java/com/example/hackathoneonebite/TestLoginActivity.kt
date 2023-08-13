@@ -62,7 +62,7 @@ class TestLoginActivity : AppCompatActivity() {
     }
 
     fun checkEmailExist(request: Main1LoadPostRequest){
-        val call = RetrofitBuilder.api.main1LoadPostRequest(1,1,"ewe",20)
+        /*val call = RetrofitBuilder.api.main1LoadPostRequest(1,1,"ewe",20)
         call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<Main1LoadPostResponse>,
@@ -111,7 +111,7 @@ class TestLoginActivity : AppCompatActivity() {
                 // 통신에 실패한 경우
                 Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
-        })
+        })*/
     }
 
     /*fun Login(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
