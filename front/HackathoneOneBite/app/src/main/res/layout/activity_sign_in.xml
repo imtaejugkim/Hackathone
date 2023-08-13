@@ -79,7 +79,6 @@
                 android:textSize="13sp"
                 android:text="아이디"/>
             <EditText
-                android:inputType="textPassword"
                 android:id="@+id/userId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

@@ -20,5 +20,9 @@ data class Post(
 
     var isFliped: Boolean = false,
 
-    var musicNum: Int = 0
+    var musicNum: Int = -1,
+
+    var postId: Long = 0,
+
+    var likeClicked: Boolean = false
 ) : Serializable
