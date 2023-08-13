@@ -204,7 +204,6 @@
                     </TextView>
                 </LinearLayout>
             </androidx.constraintlayout.widget.ConstraintLayout>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include layout="@layout/fragment_main5_profile_bottom"
