@@ -146,21 +146,6 @@ public class ImageUploadController {
 		return tagSet;
 	}
 
-	// 게시물에 연결된 해시태그를 검색하여 관련된 게시물을 찾는 기능
-	@GetMapping("/tags/{tagName}")
-	public ResponseEntity<Set<Post>> getPostsByTag(@PathVariable String tagName) {
-
-		Tag tag = tagRepository.findByName(tagName);
-		log.info("tag = {}", tag);
-		if (tag == null) {
-			return ResponseEntity.notFound().build();
-		}
-		Set<Post> posts = tag.getPosts();
-
-		return ResponseEntity.ok(posts);
-
-	}
-
 	// 이미지 추가
 	@PostMapping("/add")
 	public ResponseEntity<String> addImage(@RequestParam("postId") Long postId,

@@ -3,12 +3,15 @@ package com.konkuk.hackerthonrelay.pictureupload.tag;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.konkuk.hackerthonrelay.pictureupload.Post;
+import com.konkuk.hackerthonrelay.user.User;
+import com.konkuk.hackerthonrelay.user.UserDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Setter @Getter
@@ -30,6 +33,15 @@ public class Tag {
     }
     public Tag(String tagName) {
         this.name = tagName;
+    }
+
+    public TagDto tagDto(Long id, String name) {
+        TagDto dto = new TagDto(this.getId(), this.getName());
+
+        dto.setCreatedPostIds(this.posts.stream().filter(post -> post.getCreator().equals(this))
+                .map(post -> post.getId()).collect(Collectors.toList()));
+
+        return dto;
     }
 
 }
