@@ -53,6 +53,7 @@ public interface API {
     fun main3LoadUserRequest(
         @Path("Id") id: Long
     ) : Call<Main3RelaySearchRequest>
+
     //이미지 로드
     @GET("/api/posts/loadMain") //이미지 로드
     fun main1LoadPostRequest(
@@ -72,6 +73,24 @@ public interface API {
     fun createComment(
         @Body request: CreateComment
     ): Call<CommentResponse>
+    //좋아요
+    @POST("api/posts/{postId}/like")
+    fun likeClickRequest(
+        @Path("postId") postId: Long,
+        @Query("userId") userId: Long
+    ): Call<LikeClickResponse>
+    //팔로우
+    @POST("api/follow/toggle/{requesterId}/{targetId}")
+    fun followToggleRequest(
+        @Path("requesterId") requesterId: Long,
+        @Path("targetId") targetId: Long
+    ): Call<FollowToggleResponse>
+    //프로필 수정
+    /*@POST("/api/user/update/{userId}")
+    fun updateProfile(
+
+    )*/
+
 
     //랭킹
 

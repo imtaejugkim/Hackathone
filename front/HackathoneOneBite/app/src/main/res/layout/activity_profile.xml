@@ -1,5 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fragment_container"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:id="@+id/scrollView">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/profileView"
+                android:layout_width="match_parent"
+                android:layout_height="700dp">
+
+                <ImageView
+                    android:id="@+id/profileBackgroundImage"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/img_pseudo_background"
+                    app:layout_constraintBottom_toTopOf="@+id/profileInfoLayout"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.05" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.95" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/profileInfoLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:clipChildren="false"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd">
+
+                    <View
+                        android:id="@+id/emptyViewDeliForProfile"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:src="@drawable/circle_shape"
+                        android:scaleType="fitXY"
+                        app:layout_constraintTop_toTopOf="@+id/profileInfoLayout"
+                        app:layout_constraintBottom_toTopOf="@+id/profileInfoLayout"
+                        app:layout_constraintStart_toStartOf="@id/username"
+                        app:layout_constraintEnd_toEndOf="@+id/username"
+                        app:layout_constraintVertical_bias="0.5" />
+
+                    <View
+                        android:id="@+id/emptyViewForNameAlign"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        app:layout_constraintWidth_percent="0.333"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center"
+                        app:layout_constraintTop_toBottomOf="@+id/emptyViewDeliForProfile"
+                        app:layout_constraintStart_toStartOf="@+id/emptyViewForNameAlign"
+                        app:layout_constraintEnd_toEndOf="@id/emptyViewForNameAlign"
+                        android:textSize="22dp"
+                        android:fontFamily="@font/font_bold"
+                        android:textColor="@android:color/black"/>
+                    <TextView
+                        android:id="@+id/userId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/username"
+                        app:layout_constraintStart_toStartOf="@id/username"
+                        android:fontFamily="@font/font_light"
+                        android:textSize="12sp"
+                        android:textColor="#444"/>
+                    <Button
+                        android:id="@+id/button"
+                        android:layout_width="70dp"
+                        android:layout_height="27dp"
+                        android:layout_marginLeft="40dp"
+                        app:layout_constraintStart_toEndOf="@+id/username"
+                        app:layout_constraintTop_toTopOf="@id/username"
+                        app:layout_constraintBottom_toBottomOf="@id/username"
+                        android:text=""
+                        android:fontFamily="@font/font_light"
+                        android:textSize="11sp"
+                        android:background="@drawable/background_round_border"
+                        android:textColor="@android:color/white"/>
+
+                    <LinearLayout
+                        android:layout_marginTop="15dp"
+                        android:id="@+id/profilMiddleLinearLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/userId"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="13dp"
+                            android:textColor="#444"
+                            android:text="릴레이">
+                        </TextView>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="13dp"
+                            android:textColor="#444"
+                            android:text="팔로워">
+                        </TextView>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="30dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="13dp"
+                            android:textColor="#444"
+                            android:text="팔로잉">
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@+id/profilMiddleLinearLayout"
+                        android:orientation="horizontal">
+                        <TextView
+                            android:id="@+id/countRelay"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="15dp"
+                            android:textColor="#444">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/countFollower"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="15dp"
+                            android:textColor="#444">
+                        </TextView>
+                        <TextView
+                            android:id="@+id/countFollowing"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            app:layout_constraintEnd_toEndOf="@id/profileMainImage"
+                            android:fontFamily="@font/font_light"
+                            android:textSize="15dp"
+                            android:textColor="#444">
+                        </TextView>
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintTop_toTopOf="@id/profileInfoLayout"
+                    app:layout_constraintBottom_toTopOf="@+id/profileInfoLayout">
+                    <View
+                        android:id="@+id/emptyViewForProfileImage"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintWidth_percent="0.333"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"/>
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/profileMainImage"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/test_image1"
+                        app:shapeAppearanceOverlay="@style/CircularImageView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="@id/emptyViewForProfileImage"
+                        app:layout_constraintEnd_toEndOf="@id/emptyViewForProfileImage"
+                        android:background="@color/light_gray"/>
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <include layout="@layout/fragment_main5_profile_bottom"
+                android:id="@+id/profileBottomLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

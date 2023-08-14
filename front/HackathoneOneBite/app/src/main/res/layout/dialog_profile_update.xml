@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_dialog_bottom"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineLeft"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineRight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95"/>
+
+    <TextView
+        android:id="@+id/userIdStringTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        android:textSize="13sp"
+        android:textColor="@color/gray"/>
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/userIdStringTextView"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        android:layout_marginTop="5dp"
+        android:textSize="13sp"
+        android:textColor="@color/gray"/>
+
+
+    <TextView
+        android:id="@+id/textTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/dateTextView"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        android:layout_marginTop="10dp"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentRecyclerView"
+        android:layout_width="0dp"
+        android:layout_height="300dp"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"
+        app:layout_constraintTop_toBottomOf="@id/textTextView"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/addCommentEditTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toStartOf="@id/addCommentButton"
+        app:layout_constraintTop_toBottomOf="@id/commentRecyclerView"
+        android:textSize="13sp"
+        android:inputType="textMultiLine"
+        android:hint="댓글 입력.."/>
+
+    <Button
+        android:id="@+id/addCommentButton"
+        android:layout_width="60dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/addCommentEditTextView"
+        app:layout_constraintBottom_toBottomOf="@id/addCommentEditTextView"
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"
+        android:text="입력"
+        android:textSize="14sp"
+        android:textColor="@color/white"
+        android:background="@drawable/button_background_highlight"
+        android:layout_margin="4dp"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
