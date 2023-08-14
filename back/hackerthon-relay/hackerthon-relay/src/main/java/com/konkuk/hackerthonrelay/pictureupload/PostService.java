@@ -92,8 +92,15 @@ public class PostService {
 			dto.setMainImage(post.getMainImage().getPath());
 		}
 
+		List<String> participantUserIdStrings = post.getImages().stream()
+				.map(image -> image.getUser().getUserId()).distinct().collect(Collectors.toList());
+
+		dto.setParticipantUserIdStrings(participantUserIdStrings);
+
 		return dto;
 	}
+
+
 
 	public CommentDto toDto(Comment comment) {
 		CommentDto dto = new CommentDto();

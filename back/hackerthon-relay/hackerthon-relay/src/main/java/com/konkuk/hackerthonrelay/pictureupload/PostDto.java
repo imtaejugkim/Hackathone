@@ -24,6 +24,7 @@ public class PostDto {
 	private List<CommentDto> comments;
 	private Integer musicNum;
 	private List<Long> participantUserIds = new ArrayList<>();
+	private List<String> participantUserIdStrings = new ArrayList<>();
 
 	private boolean likedByCurrentUser;
 
