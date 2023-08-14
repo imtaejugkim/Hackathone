@@ -6,29 +6,24 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.R
 
-/*class AdapterMain2SearchTheme1 : RecyclerView.Adapter<AdapterMain2SearchTheme1.ImageViewHolder>() {
-    private val imageList: MutableList<> = mutableListOf()
+class AdapterMain2SearchTheme1 : RecyclerView.Adapter<AdapterMain2SearchTheme1.ViewHolder>() {
 
-    fun setData(images: List<YourImageModel>) {
-        imageList.clear()
-        imageList.addAll(images)
-        notifyDataSetChanged()
+    private val postCount = 5 // 출력할 post_frame 개수 (임의 조정)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.post_frame1, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_main1_post_film, parent, false) // Create a new layout for image item
-        return ImageViewHolder(view)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        // 데이터를 가져와서 post_frame에 바인딩하는 로직을 구현해야 함
     }
 
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val image = imageList[position]
-        // TODO: Bind the image to the ImageView in the ViewHolder
+    override fun getItemCount(): Int {
+        return postCount
     }
 
-    override fun getItemCount(): Int = imageList.size
-
-    inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        // TODO: Initialize and bind the ImageView here
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        // ViewHolder 내부에서 뷰 요소에 대한 참조를 설정하는 로직이 필요할 수 있음
     }
-}*/
+}

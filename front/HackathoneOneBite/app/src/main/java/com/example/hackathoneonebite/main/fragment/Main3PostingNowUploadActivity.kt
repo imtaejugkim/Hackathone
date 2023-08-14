@@ -19,7 +19,9 @@ import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingNowUploadBinding
 import com.example.hackathoneonebite.main.MainFrameActivity
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -35,6 +37,7 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
     private var mediaPlayer: MediaPlayer? = null
     private var selectedMusicPosition = 0
     private var musicIsExist = false
+    private lateinit var images: Array<ByteArray> // image 변환 전 byteArray들
 
     lateinit var binding: ActivityMain3PostingNowUploadBinding
     private val imageResources = arrayOf(
@@ -69,7 +72,6 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
 
         Log.d("post",receivedPost.toString())
 
-        val imageSize = intent.getIntExtra("imagePartSize", 0)
         //Log.d("imagePartSize",imageSize.toString())
 
         /*if (receivedPost != null) {
@@ -81,25 +83,17 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
             Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
         }*/
 
-        val imageParts = ArrayList<MultipartBody.Part>()
-        for (i in 0 until imageSize) {
-            val partName = intent.getStringExtra("imagePart$i")
-            val part = partName?.let { MultipartBody.Part.createFormData(it, null.toString()) }
-            if (part != null) {
-                imageParts.add(part)
-                Log.d("이미지 파트 들어옴", part.toString())
+        val imageByteArrays = ArrayList<ByteArray>()
+        for (i in 0 until 4) {
+            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
+            if (byteArray != null) {
+                imageByteArrays.add(byteArray)
             }
         }
-        Log.d("이미지 파트",imageParts.toString())
+        Log.d("new 받음",imageByteArrays.toString())
 
-        val imgArray = receivedPost?.imgArray
-        val theme = receivedPost?.theme
-        val userId = receivedPost?.userId
-        val likeCount = receivedPost?.likeCount
-        val date = receivedPost?.date
-        val isFliped = receivedPost?.isFliped
-        val likeClicked = receivedPost?.likeClicked
-        val participantUserIds = receivedPost?.participantUserIds
+        var theme = receivedPost?.theme
+        var userId = receivedPost?.userId
 
         binding.relayName.text = "$selectedName"
 
@@ -127,16 +121,41 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
                 selectedMusicPosition
             }else{ -1 }
 
-            Upload(imageParts, theme!!, userId!!, musicNum, message)
-            val intent = Intent(this@Main3PostingNowUploadActivity, MainFrameActivity::class.java)
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            var imageByteArrayIndex = 0 // imageByteArrays 리스트의 인덱스
+            val imageParts = ArrayList<MultipartBody.Part>()
+            images = Array(4) { ByteArray(0) }
 
+            for (i in 0..3) {
+                if (receivedPost!!.imgArray[i] == "true") {
+                    if (imageByteArrayIndex < imageByteArrays.size) {
+                        images[i] = imageByteArrays[imageByteArrayIndex]
+                        imageByteArrayIndex++
+                        val requestFile =
+                            RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
+                        imageParts.add(MultipartBody.Part.createFormData(
+                            "image",
+                            "image$i.jpg",
+                            requestFile
+                        ))
+                    }
+                }
+            }
+
+            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
+            val musicPart = RequestBody.create("text/plain".toMediaTypeOrNull(), musicNum.toString())
+            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), message)
+
+            Upload(imageParts, themePart, idPart, musicPart, message)
             Log.d("이미지",imageParts.toString())
             Log.d("테마",theme.toString())
             Log.d("유저 아이디",userId.toString())
             Log.d("음악",musicNum.toString())
             Log.d("글",message.toString())
+
+            val intent = Intent(this@Main3PostingNowUploadActivity, MainFrameActivity::class.java)
+            startActivity(intent)
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
         binding.playButton.setOnClickListener {
@@ -152,8 +171,8 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         }
     }
 
-    fun Upload(image: ArrayList<MultipartBody.Part>, theme: Int, userId: String, musicNum: Int?, message: String?){
-        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum , message!!)
+    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum: RequestBody, message: RequestBody){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum , message)
         call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<Main3UploadPostIsComplete>,

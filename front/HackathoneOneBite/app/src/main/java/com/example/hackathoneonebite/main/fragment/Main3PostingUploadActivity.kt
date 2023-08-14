@@ -6,17 +6,28 @@ import android.animation.ValueAnimator
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.ui.input.key.Key.Companion.I
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
+import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingRequestBinding
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingUploadBinding
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Main3PostingUploadActivity : AppCompatActivity(),
     AdapterMain3PostingUpload.OnButtonClickListener {
@@ -26,6 +37,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
     private var rotationAnimator: ValueAnimator? = null
     private var mediaPlayer: MediaPlayer? = null
     private var selectedMusicPosition = 0
+
 
     lateinit var binding: ActivityMain3PostingUploadBinding
     private val imageResources = arrayOf(
@@ -54,10 +66,25 @@ class Main3PostingUploadActivity : AppCompatActivity(),
         setContentView(binding.root)
 
         // 전달받은 데이터 가져오기
-        val selectedName = intent.getStringExtra("selected_name")
-        val receivedPost = intent.getSerializableExtra("post_data") as? Post
-
+        val receivedIntent = intent
+        val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
+        val selectedName = receivedIntent.getStringExtra("selected_name")
+        val selectedTime = intent.getIntExtra("selected_time",0)
         binding.relayName.text = "$selectedName"
+        Log.d("post",receivedPost.toString())
+        val imagePartSize = receivedIntent.getIntExtra("imagePartSize", 0)
+        val imageParts = arrayOfNulls<String>(4)
+        val imageByteArrays = ArrayList<ByteArray>()
+
+
+        for (i in 0 until 4) {
+            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
+            if (byteArray != null) {
+                imageByteArrays.add(byteArray)
+            }
+        }
+        Log.d("new 받음",imageByteArrays.toString())
+
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -68,6 +95,8 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
         val editText = binding.editText
         editText.background = null;
+        val textTime = (selectedTime / 60).toString() + " : " + (selectedTime % 60).toString()
+        binding.selectedTime.text = textTime
 
 
 
@@ -79,9 +108,19 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
         val rightArrow = binding.rightArrow
         rightArrow.setOnClickListener {
+
+
+            for(i in 0..3){
+                if(receivedPost!!.imgArray[i] == "true"){
+
+                }
+            }
+            val imageParts = ArrayList<MultipartBody.Part>()
+
+            //Upload(imageParts, theme, userId, message)
+
+
             val nextIntent = Intent(this, Main1HomeFirstFragment::class.java)
-            nextIntent.putExtra("selected_name", selectedName)
-            nextIntent.putExtra("post_data", receivedPost)
             startActivity(nextIntent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
@@ -95,6 +134,54 @@ class Main3PostingUploadActivity : AppCompatActivity(),
                 startMusic(selectedMusicPosition)
             }
         }
+    }
+
+    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum : RequestBody, message: RequestBody) {
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum, message)
+        call.enqueue(object : retrofit2.Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: retrofit2.Call<Main3UploadPostIsComplete>,
+                response: retrofit2.Response<Main3UploadPostIsComplete>
+            ) {
+                if (response.isSuccessful()) { // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "Success")
+                } else {
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(
+                                this@Main3PostingUploadActivity,
+                                errorMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(
+                                this@Main3PostingUploadActivity,
+                                "오류가 발생했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@Main3PostingUploadActivity,
+                            "오류가 발생했습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Main3UploadPostIsComplete>, t: Throwable) {
+                TODO("Not yet implemented")
+            }
+        })
+
     }
 
     override fun onButtonClicked(position: Int) {

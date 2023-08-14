@@ -71,15 +71,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.83"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="필름형"
-        android:textSize="15sp"
-        android:fontFamily="@font/font_bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/GuideLineTop" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/circleFilm"
@@ -105,15 +96,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기본형1"
-        android:textSize="15sp"
-        android:fontFamily="@font/font_bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/GuideLineSecond" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/circleTheme1"
@@ -151,15 +133,6 @@
         app:layout_constraintTop_toTopOf="@id/GuideLineBottom"
         app:shapeAppearanceOverlay="@style/CircleImageView" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="기본형2"
-        android:textSize="15sp"
-        android:fontFamily="@font/font_bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/GuideLineBottom" />
 
     <ImageView
         android:id="@+id/thema2Image"

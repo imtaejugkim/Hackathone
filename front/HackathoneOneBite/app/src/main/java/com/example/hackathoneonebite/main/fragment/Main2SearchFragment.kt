@@ -1,10 +1,12 @@
 package com.example.hackathoneonebite.main.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -63,6 +65,21 @@ class Main2SearchFragment : Fragment() {
             override fun afterTextChanged(s: Editable?) {}
         })
 
+        nameAdapter.setOnNameClickListener(object : AdapterMain2SearchFragment.OnNameClickListener {
+            override fun onNameClick(name: String) {
+                val fragment = Main5ProfileFragment()
+                val transaction = parentFragmentManager.beginTransaction()
+
+                parentFragmentManager.fragments.forEach { existingFragment ->
+                    transaction.hide(existingFragment)
+                }
+
+                transaction.add(R.id.fragmentMain2Search, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+        })
+
         binding.searchEdit.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 val isClearButtonClicked = event.rawX >= (binding.searchEdit.right - binding.searchEdit.compoundDrawables[2].bounds.width())
@@ -77,6 +94,18 @@ class Main2SearchFragment : Fragment() {
 
         // 초기에는 clear 버튼이 보이지 않도록 초기화
         updateClearButtonVisibility(false)
+
+        binding.circleFilm.setOnClickListener {
+            showThemeFilmRecyclerView()
+        }
+
+        binding.circleTheme1.setOnClickListener {
+            showTheme1RecyclerView()
+        }
+
+        binding.circleTheme2.setOnClickListener {
+            showTheme2RecyclerView()
+        }
     }
 
     private fun updateClearButtonVisibility(visible: Boolean) {
@@ -91,23 +120,38 @@ class Main2SearchFragment : Fragment() {
         binding.theme1RecyclerView.visibility = View.GONE
         binding.theme2RecyclerView.visibility = View.GONE
         binding.nameRecyclerView.visibility = View.GONE
-        binding.beforeSearch.visibility = View.GONE
+
+        val theme1Adapter = AdapterMain2SearchThemeFilm()
+        binding.theme1RecyclerView.adapter = theme1Adapter
+        binding.theme1RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun showTheme1RecyclerView() {
-        binding.themeFilmRecyclerView.visibility = View.GONE
-        binding.theme1RecyclerView.visibility = View.VISIBLE
-        binding.theme2RecyclerView.visibility = View.GONE
-        binding.nameRecyclerView.visibility = View.GONE
-        binding.beforeSearch.visibility = View.GONE
+        // Inside onViewCreated method
+        binding.circleTheme1.setOnClickListener {
+            binding.theme1RecyclerView.visibility = View.VISIBLE
+            binding.theme2RecyclerView.visibility = View.GONE
+            binding.themeFilmRecyclerView.visibility = View.GONE
+            binding.nameRecyclerView.visibility = View.GONE
+
+            val theme1Adapter = AdapterMain2SearchTheme1()
+            binding.theme1RecyclerView.adapter = theme1Adapter
+            binding.theme1RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
     }
 
     private fun showTheme2RecyclerView() {
-        binding.themeFilmRecyclerView.visibility = View.GONE
-        binding.theme1RecyclerView.visibility = View.GONE
-        binding.theme2RecyclerView.visibility = View.VISIBLE
-        binding.nameRecyclerView.visibility = View.GONE
-        binding.beforeSearch.visibility = View.GONE
+        binding.circleTheme2.setOnClickListener {
+            binding.theme2RecyclerView.visibility = View.VISIBLE
+            binding.theme1RecyclerView.visibility = View.GONE
+            binding.themeFilmRecyclerView.visibility = View.GONE
+            binding.nameRecyclerView.visibility = View.GONE
+
+            val theme2Adapter = AdapterMain2SearchTheme2()
+            binding.theme2RecyclerView.adapter = theme2Adapter
+            binding.theme2RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        }
+
     }
 
 
