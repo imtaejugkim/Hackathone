@@ -124,6 +124,10 @@ public class ImageUploadController {
 
 			post.setMainImage(post.getImages().get(0)); // 첫 번째 이미지를 메인 이미지로 설정
 
+			if (post.getImages().size() == 4) {
+				post.setCompleted(true); // 게시물 완성 상태로 설정
+			}
+
 			postRepository.save(post); // Post를 다시 저장하여 변경 사항을 반영합니다.
 			response.put("success", true); // 추가된 부분
 			response.put("postId", post.getId()); // 추가된 부분
