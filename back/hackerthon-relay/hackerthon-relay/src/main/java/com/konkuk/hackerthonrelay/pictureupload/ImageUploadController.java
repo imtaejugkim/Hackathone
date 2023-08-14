@@ -57,7 +57,7 @@ public class ImageUploadController {
 	// 새 게시물 생성
 	@PostMapping("/create")
 	public ResponseEntity<Map<String, Object>> createPost(
-			@RequestParam(value = "image", required = false) MultipartFile[] imageFiles,
+			@RequestPart(value = "image", required = false) MultipartFile[] imageFiles,
 			@RequestParam(value = "theme", required = false) Integer theme, @RequestParam("userId") String userId,
 			@RequestParam(required = false) String text,
 			@RequestParam(value = "musicNum", required = false) Integer musicNum,
@@ -66,6 +66,7 @@ public class ImageUploadController {
 
 
 		log.info("tags = {}" , tags);
+		log.info("imageFiles = {}", imageFiles);
 		Map<String, Object> response = new HashMap<>();
 
 		try {

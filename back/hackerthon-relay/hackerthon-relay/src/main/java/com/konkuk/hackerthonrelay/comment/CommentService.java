@@ -30,12 +30,15 @@ public class CommentService {
         if (comment.getAuthor() != null) {
             dto.setAuthorId(comment.getAuthor().getId()); // 작성자 ID 설정
             dto.setAuthorName(comment.getAuthor().getUsername()); // 작성자 이름 설정
+            dto.setProfileUrl(comment.getAuthor().getProfilePictureUrl()); // 작성자의 프로필 사진 URL 설정
+            dto.setAuthorUserIdString(comment.getAuthor().getUserId()); // 작성자의 String 타입의 userId 설정
         }
         if (comment.getPost() != null) { // postId 설정
             dto.setPostId(comment.getPost().getId());
         }
         return dto;
     }
+
 
     // 댓글 작성 메서드
     public Comment createComment(Comment comment, Long postId, Long authorId) {
@@ -56,6 +59,7 @@ public class CommentService {
     }
 
 
+
     // 댓글 수정 메서드
     public Comment updateComment(Long commentId, String newContent) {
         Comment comment = getComment(commentId);
@@ -66,20 +70,24 @@ public class CommentService {
         return null;
     }
 
+
     // 댓글 삭제 메서드
     public void deleteComment(Long commentId) {
         commentRepository.deleteById(commentId);
     }
+
 
     // 특정 게시물의 모든 댓글 가져오기
     public List<Comment> getCommentsByPostId(Long postId) {
         return commentRepository.findByPostId(postId);
     }
 
+
     // 댓글 가져오기 메서드
     public Comment getComment(Long commentId) {
         return commentRepository.findById(commentId).orElse(null);
     }
+
 
 }
 
