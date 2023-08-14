@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.konkuk.hackerthonrelay.comment.Comment;
@@ -120,54 +119,6 @@ public class User {
                 .filter(post -> post.getMentionedUser() != null && post.getMentionedUser().equals(this)).count();
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
-    }
-
-    public Set<Post> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(Set<Post> posts) {
-        this.posts = posts;
-    }
-
     public Set<User> getFollowers() {
         Set<User> followers = new HashSet<>();
         for (FollowRelation relation : this.followersRelation) {
@@ -182,14 +133,6 @@ public class User {
             following.add(relation.getFollowing());
         }
         return following;
-    }
-
-    public void setFollowersRelation(Set<FollowRelation> followersRelation) {
-        this.followersRelation = followersRelation;
-    }
-
-    public void setFollowingRelation(Set<FollowRelation> followingRelation) {
-        this.followingRelation = followingRelation;
     }
 
     public void updateScoreForLike() {
@@ -229,46 +172,6 @@ public class User {
         int totalScore = (int) (relayReceivedScore + likesScore + relayGivenScore);
         this.setScore(totalScore); // 실제 score 필드에 값을 저장
         return totalScore;
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public void setScore(int score) {
-        this.score = score;
-    }
-
-    public Set<Post> getLikedPosts() {
-        return likedPosts;
-    }
-
-    public void setLikedPosts(Set<Post> likedPosts) {
-        this.likedPosts = likedPosts;
-    }
-
-    public Set<FollowRelation> getFollowersRelation() {
-        return followersRelation;
-    }
-
-    public Set<FollowRelation> getFollowingRelation() {
-        return followingRelation;
-    }
-
-    public String getProfilePictureUrl() {
-        return profilePictureUrl;
-    }
-
-    public void setProfilePictureUrl(String profilePictureUrl) {
-        this.profilePictureUrl = profilePictureUrl;
-    }
-
-    public String getBackgroundPictureUrl() {
-        return backgroundPictureUrl;
-    }
-
-    public void setBackgroundPictureUrl(String backgroundPictureUrl) {
-        this.backgroundPictureUrl = backgroundPictureUrl;
     }
 
 }
