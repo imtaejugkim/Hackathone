@@ -185,7 +185,7 @@ public class ImageUploadController {
 				image.setPosition(position++);
 				post.getImages().add(image);
 			}
-			
+
 
 			if (post.getImages().size() == 4) {
 				post.setCompleted(true); // 게시물 완성 상태로 설정
