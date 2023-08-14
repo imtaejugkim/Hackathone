@@ -24,6 +24,7 @@ class MainFrameActivity : AppCompatActivity(), ViewPageAdapter.OnFragmentButtonC
 
         id = intent.getLongExtra("id", 0)
         userId = intent.getStringExtra("userId") + ""
+        id = 3
 
         initLayout()
     }

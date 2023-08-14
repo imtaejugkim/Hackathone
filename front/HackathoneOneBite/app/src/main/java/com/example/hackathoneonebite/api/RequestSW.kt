@@ -2,6 +2,7 @@ package com.example.hackathoneonebite.api
 
 import com.google.gson.annotations.SerializedName
 import okhttp3.MultipartBody
+import retrofit2.http.Body
 import java.time.LocalDateTime
 
 //Login화면
@@ -21,4 +22,11 @@ data class Main1LoadPostRequest(
     @SerializedName("id")var id: Long = 0,
     @SerializedName("lastPostDate")var lastPostDate: LocalDateTime = LocalDateTime.now(),
     @SerializedName("limit")var limit: Int = 20
+)
+
+//댓글
+data class CreateComment (
+    @SerializedName("postId")var postId: Long,
+    @SerializedName("authorId")var commentWriterId: Long,
+    @SerializedName("content")var commentContent : String
 )
