@@ -48,7 +48,11 @@ public interface API {
     ): Call<Main3RelayPostIsComplete>
 
 
-
+    //검색 로드
+    @GET("/api/user/search")
+    fun main3LoadUserRequest(
+        @Path("Id") id: Long
+    ) : Call<Main3RelaySearchRequest>
     //이미지 로드
     @GET("/api/posts/loadMain") //이미지 로드
     fun main1LoadPostRequest(
