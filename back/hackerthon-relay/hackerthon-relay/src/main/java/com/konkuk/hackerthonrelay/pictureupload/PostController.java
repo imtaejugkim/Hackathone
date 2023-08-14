@@ -64,6 +64,12 @@ public class PostController {
 		postDto.setParticipantUserIds(post.getParticipants().stream().map(postUser -> postUser.getUser().getId())
 				.collect(Collectors.toList()));
 
+		// 참여자 프로필 URL 목록을 DTO에 추가
+		List<String> participantsUserProfileUrls = post.getParticipants().stream()
+				.map(postUser -> postUser.getUser().getProfilePictureUrl()).collect(Collectors.toList());
+		postDto.setParticipantsUserProfileUrl(participantsUserProfileUrls);
+
+
 		// Main Image 설정
 		postDto.setMainImage(post.getMainImage().getPath());
 

@@ -25,6 +25,7 @@ public class PostDto {
 	private Integer musicNum;
 	private List<Long> participantUserIds = new ArrayList<>();
 	private List<String> participantUserIdStrings = new ArrayList<>();
+	private List<String> participantsUserProfileUrl = new ArrayList<>();
 
 	private boolean likedByCurrentUser;
 

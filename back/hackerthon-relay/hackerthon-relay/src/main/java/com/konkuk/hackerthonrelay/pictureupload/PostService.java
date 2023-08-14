@@ -21,6 +21,7 @@ public class PostService {
 	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 
+
 	public Post findById(Long postId) {
 		return postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 	}
@@ -64,14 +65,17 @@ public class PostService {
 //		}
 //	}
 
-
 	public PostDto toDto(Post post) { // 한번에 반환이 필요한 경우에 사용
 		PostDto dto = new PostDto();
+		List<String> participantsUserProfileUrls = post.getImages().stream()
+				.map(image -> image.getUser().getProfilePictureUrl()).distinct().collect(Collectors.toList());
+
 		dto.setId(post.getId());
 		dto.setLikeCount(post.getLikes()); // 좋아요 수 설정
 		dto.setTheme(post.getTheme()); // 테마 설정
 		dto.setDate(post.getCreatedAt());
 		dto.setText(post.getText());
+		dto.setParticipantsUserProfileUrl(participantsUserProfileUrls);
 
 		// Image 객체 리스트를 URI 리스트로 변환
 		List<String> imgList = post.getImages().stream().map(Image::getPath).collect(Collectors.toList());
