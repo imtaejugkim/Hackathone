@@ -1,0 +1,151 @@
+package com.example.hackathoneonebite
+
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.Glide.init
+import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.Data.User
+//import com.example.hackathoneonebite.api.LoginCheckEmailExistRequest
+//import com.example.hackathoneonebite.api.LoginCheckEmailExistResponse
+import com.example.hackathoneonebite.api.Main1LoadPostRequest
+import com.example.hackathoneonebite.api.Main1LoadPostResponse
+import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
+import com.example.hackathoneonebite.api.RetrofitBuilder
+import com.example.hackathoneonebite.databinding.ActivityTestLoginBinding
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
+class TestLoginActivity : AppCompatActivity() {
+    lateinit var binding: ActivityTestLoginBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityTestLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        init()
+    }
+    @SuppressLint("ResourceType")
+    fun init() {
+        binding.loginButton.setOnClickListener {
+            val inputStream = this.resources.openRawResource(R.drawable.cd_outer_playing)
+            val byteArray = inputStream.readBytes()
+            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), byteArray)
+            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), "1")
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), "wewoz")
+            val imagePart = MultipartBody.Part.createFormData("image", "your_image_name.jpg", requestFile)
+            val imagePart2 = MultipartBody.Part.createFormData("image", "your_image_name2.jpg", requestFile)
+            val imagePart3 = MultipartBody.Part.createFormData("image", "your_image_name3.jpg", requestFile)
+            val imagePart4 = MultipartBody.Part.createFormData("image", "your_image_name4.jpg", requestFile)
+            val imageParts = ArrayList<MultipartBody.Part>()
+
+            imageParts.add(imagePart)
+            imageParts.add(imagePart2)
+            imageParts.add(imagePart3)
+            imageParts.add(imagePart4)
+            //Login(imageParts, themePart, idPart)
+        }
+        binding.loadImage.setOnClickListener {
+            val request = Main1LoadPostRequest(0)
+            checkEmailExist(request)
+        }
+    }
+
+    fun checkEmailExist(request: Main1LoadPostRequest){
+        /*val call = RetrofitBuilder.api.main1LoadPostRequest(1,1,"ewe",20)
+        call.enqueue(object : Callback<Main1LoadPostResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<Main1LoadPostResponse>,
+                response: Response<Main1LoadPostResponse>
+            ) {
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    Log.d("RESPONSE: ", "success")
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "${userResponse?.date.toString()}")
+
+                    val baseUrl = "http://221.146.39.177:8081/"
+
+                    Glide.with(this@TestLoginActivity)
+                        .load("$baseUrl${userResponse!!.images[0]}")
+                        .into(binding.image1)
+                    Glide.with(this@TestLoginActivity)
+                        .load("$baseUrl${userResponse!!.images[1]}")
+                        .into(binding.image2)
+                    Glide.with(this@TestLoginActivity)
+                        .load("$baseUrl${userResponse!!.images[2]}")
+                        .into(binding.image3)
+                    Glide.with(this@TestLoginActivity)
+                        .load("$baseUrl${userResponse!!.images[3]}")
+                        .into(binding.image4)
+
+                    Toast.makeText(this@TestLoginActivity,userResponse?.date.toString(),Toast.LENGTH_LONG).show()
+                }else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@TestLoginActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@TestLoginActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@TestLoginActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<Main1LoadPostResponse>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+            }
+        })*/
+    }
+
+    /*fun Login(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, theme, userId)
+        call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<Main3UploadPostIsComplete>,
+                response: Response<Main3UploadPostIsComplete>
+            ) {
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "Success")
+                }else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@TestLoginActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@TestLoginActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@TestLoginActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<Main3UploadPostIsComplete>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+            }
+        })
+    }*/
+}

@@ -1,60 +1,75 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.example.hackathoneonebite.R
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Main3PostingFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Main3PostingFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val mainHandler = Handler(Looper.getMainLooper())
+    private val circleViews = mutableListOf<View>()
+    var id : Long = 0
+    var userId: String = ""
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_main3_posting, container, false)
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainPostingFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Main3PostingFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val intent = requireActivity().intent
+        id = intent.getLongExtra("id", 0)
+        userId = intent.getStringExtra("userId") + ""
+
+        val postImageLayoutFilm = view.findViewById<View>(R.id.filmImage)
+        val postImageLayout1 = view.findViewById<View>(R.id.thema1Image)
+        val postImageLayout2 = view.findViewById<View>(R.id.thema2Image)
+
+        val postImageLayouts = arrayOf(postImageLayoutFilm, postImageLayout1, postImageLayout2)
+
+        val film = view.findViewById<View>(R.id.circleFilm)
+        val theme1 = view.findViewById<View>(R.id.circleTheme1)
+        val theme2 = view.findViewById<View>(R.id.circleTheme2)
+
+
+        for ((index, layout) in postImageLayouts.withIndex()) {
+            layout.setOnClickListener {
+                Log.d("index", index.toString())
+
+                when(index){
+                    0 -> film.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    1 -> theme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                    2 -> theme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
                 }
+
+                mainHandler.postDelayed({
+                    val intent = Intent(requireContext(), Main3PostingMakingActivity::class.java)
+                    intent.putExtra("layout_id", index)
+                    intent.putExtra("id", id)
+                    intent.putExtra("userId",userId)
+                    Log.d("id", id.toString())
+                    startActivity(intent)
+                    activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    film.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                    theme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                    theme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                }, 100)
+
             }
+        }
     }
 }

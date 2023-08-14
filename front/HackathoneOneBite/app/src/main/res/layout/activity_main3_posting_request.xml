@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/highlight"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.32" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.64" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94" />
+
+
+    <View
+        android:id="@+id/logoBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <ImageView
+        android:id="@+id/leftArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_left"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
+
+    <TextView
+        android:id="@+id/topicTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="릴레이"
+        android:textSize="19sp"
+        android:fontFamily="@font/font_bold"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
+
+
+    <ImageView
+        android:id="@+id/rightArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_right"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/topicTextView"
+        android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"/>
+
+    <TextView
+        android:text="Null님에게 릴레이 수락 요청을 보내시겠습니까?"
+        android:id="@+id/selectName"
+        android:fontFamily="@font/font_bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintDimensionRatio="H,2.75:1"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineName"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rankingMain"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@id/selectName"
+        app:layout_constraintBottom_toTopOf="@id/guidelineButtonTop"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/relayGiverProfile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@color/light_gray"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="0dp"
+            android:src="@drawable/img_next"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/relayGiverProfile"
+            app:layout_constraintEnd_toStartOf="@+id/relayTakerProfile"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/relayTakerProfile"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@color/light_gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@+id/guidelineButtonTop">
+        <Button
+            android:id="@+id/cancelBtn"
+            android:text="아니요"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="#35867E"
+            android:background="@drawable/button_background_highlight"
+            android:layout_marginRight="10dp">
+        </Button>
+
+        <Button
+            android:id="@+id/okBtn"
+            android:text="네"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textColor="@color/black"
+            android:background="@drawable/button_background_white"
+            android:layout_marginLeft="10dp">
+        </Button>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/background_dialog_bottom"
+    android:paddingTop="70dp">
+
+    <include layout="@layout/post_frame1"
+        android:id="@+id/postImageLayout_thema1"
+        android:layout_height="300dp"
+        android:layout_width="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:text="하하하하하 안녕하십니까"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toBottomOf="@id/postImageLayout_thema1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:gravity="center_horizontal"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="510dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewGroup_profileBottom">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <!--<View
+        android:id="@+id/emptyViewTop"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.07"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/themeSelect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/font_light"
+        android:textSize="13dp"
+        android:textColor="#444"
+        android:text="테마 선택"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/emptyViewTop"
+        app:layout_constraintTop_toTopOf="@id/emptyViewTop"/>
+
+    <Button
+        android:id="@+id/thema1Button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/themeSelect"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/img_thema1"
+        android:scaleX="0.375"/>
+
+    <Button
+        android:id="@+id/filmButton"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        app:layout_constraintEnd_toStartOf="@+id/thema1Button"
+        app:layout_constraintTop_toTopOf="@+id/thema1Button"
+        app:layout_constraintBottom_toBottomOf="@id/thema1Button"
+        android:background="@drawable/img_thema_film"
+        android:scaleX="0.375"/>
+
+    <Button
+        android:id="@+id/thema2Button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toEndOf="@+id/thema1Button"
+        app:layout_constraintTop_toTopOf="@+id/thema1Button"
+        app:layout_constraintBottom_toBottomOf="@id/thema1Button"
+        android:background="@drawable/img_thema2"
+        android:scaleX="0.714"/>-->
+
+    <GridLayout
+        android:id="@+id/gridLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+        android:columnCount="4"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

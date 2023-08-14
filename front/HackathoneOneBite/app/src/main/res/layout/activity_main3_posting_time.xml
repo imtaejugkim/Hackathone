@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/highlight"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.34" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.06" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineButtonRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.94" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTimeBottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.43" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTimePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.7" />
+
+    <View
+        android:id="@+id/logoBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <TextView
+        android:id="@+id/topicTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="시간 제한 설정"
+        android:textSize="19sp"
+        android:fontFamily="@font/font_bold"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
+
+    <ImageView
+        android:id="@+id/leftArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_left"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"/>
+
+
+    <ImageView
+        android:id="@+id/rightArrow"
+        android:layout_width="25sp"
+        android:layout_height="0dp"
+        android:src="@drawable/img_arrow_right"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"/>
+
+    <TextView
+        android:text="이름 데이터가 안왔어요"
+        android:id="@+id/selectName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/black"
+        android:background="@color/white"
+        android:padding="10dp"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineName"
+        app:layout_constraintStart_toStartOf="@+id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"/>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="@id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@id/selectName"
+        app:layout_constraintBottom_toTopOf="@+id/guidelineTimePicker">
+
+        <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="00:00"
+        android:fontFamily="@font/font_bold"
+        android:textSize="80dp"
+        android:textColor="@android:color/black"
+        android:background="@android:color/white"
+        android:elevation="4dp"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

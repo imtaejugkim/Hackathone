@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:id="@+id/post_frame">
+
+    <View
+        android:id="@+id/touchView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintTop_toTopOf="@+id/space"
+        app:layout_constraintBottom_toBottomOf="@id/space"/>
+
+    <Space
+        android:id="@+id/space"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="10:14"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ImageView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintTop_toTopOf="@+id/space"
+        app:layout_constraintBottom_toBottomOf="@id/space"
+        android:src="@drawable/img_thema2_background"/>
+
+    <View
+        android:id="@+id/emptyView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.035"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="@id/space"
+        app:layout_constraintStart_toStartOf="@id/space"/>
+
+    <View
+        android:id="@+id/emptyView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.035"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toTopOf="@id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"/>
+
+    <View
+        android:id="@+id/emptyView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.015"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/imageView1frame2"
+        app:layout_constraintStart_toEndOf="@id/imageView1frame2"/>
+
+    <ImageView
+        android:id="@+id/imageView1frame2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        app:layout_constraintHeight_percent="0.266"
+        app:layout_constraintTop_toBottomOf="@id/emptyView1"
+        app:layout_constraintStart_toEndOf="@id/emptyView1"
+        app:layout_constraintDimensionRatio="314:266"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/imageView2frame2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        app:layout_constraintHeight_percent="0.269"
+        app:layout_constraintTop_toBottomOf="@id/emptyView3"
+        app:layout_constraintStart_toEndOf="@id/emptyView1"
+        app:layout_constraintDimensionRatio="314:269"
+        android:scaleType="centerCrop"/>
+
+    <ImageView
+        android:id="@+id/imageView3frame2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        app:layout_constraintTop_toBottomOf="@id/emptyView2"
+        app:layout_constraintBottom_toBottomOf="@id/imageView2frame2"
+        app:layout_constraintStart_toEndOf="@id/emptyView3"
+        app:layout_constraintDimensionRatio="314:550"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/emptyView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.015"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintTop_toBottomOf="@id/imageView3frame2"
+        app:layout_constraintStart_toEndOf="@id/imageView1frame2"/>
+
+    <ImageView
+        android:id="@+id/imageView4frame2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/light_gray"
+        app:layout_constraintTop_toBottomOf="@id/emptyView4"
+        app:layout_constraintStart_toStartOf="@id/imageView1frame2"
+        app:layout_constraintEnd_toEndOf="@id/imageView3frame2"
+        app:layout_constraintDimensionRatio="643:239"
+        android:scaleType="centerCrop"/>
+
+    <View
+        android:id="@+id/emptyView5"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.024"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/imageView2frame2"
+        app:layout_constraintBottom_toBottomOf="@+id/space"/>
+
+    <ImageView
+        android:id="@+id/RELAYTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.03"
+        android:src="@drawable/img_logo_white"
+        app:layout_constraintTop_toBottomOf="@id/imageView4frame2"
+        app:layout_constraintStart_toStartOf="@id/imageView4frame2"
+        app:layout_constraintEnd_toEndOf="@id/imageView4frame2"
+        app:layout_constraintBottom_toTopOf="@id/emptyView5" />
+
+    <TextView
+        android:id="@+id/dateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="2023.02.04"
+        android:textSize="14sp"
+        android:textColor="#7a7a7a"
+        app:layout_constraintStart_toStartOf="@+id/space"
+        app:layout_constraintEnd_toEndOf="@id/space"
+        app:layout_constraintTop_toBottomOf="@id/RELAYTextView"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

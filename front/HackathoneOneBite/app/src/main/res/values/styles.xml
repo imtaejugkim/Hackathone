@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+        <item name="strokeColor">#000000</item>
+    </style>
+    <style name="DialogSlideAnim" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowEnterAnimation">@anim/slide_out_down</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_down</item>
+    </style>
+    <style name="Theme.HackathoneOneBite.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/highlight</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/img_splash_highlight_color</item>
+    </style>
+</resources>

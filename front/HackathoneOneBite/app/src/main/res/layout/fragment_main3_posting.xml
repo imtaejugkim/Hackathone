@@ -1,14 +1,176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.fragment.Main3PostingFragment">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewGroupForSelect">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <View
+        android:id="@+id/logoBackground"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="fragment3" />
+        android:layout_height="50dp"
+        android:background="@color/highlight"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+        tools:layout_editor_absoluteX="0dp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/topicTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="테마 선택"
+        android:textSize="19sp"
+        android:fontFamily="@font/font_bold"
+        android:textColor="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/logoBackground"
+        app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTheme"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.045"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineTop"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.15"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineSecond"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.43"/>
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineBottom"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.71"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineLeft"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.17"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/GuideLineRight"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.83"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="필름형"
+        android:textSize="15sp"
+        android:fontFamily="@font/font_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GuideLineTop" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/circleFilm"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/GuideLineTop"
+        app:layout_constraintBottom_toBottomOf="@+id/GuideLineSecond"
+        app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+    <ImageView
+        android:id="@+id/filmImage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.26"
+        app:layout_constraintDimensionRatio="5:18"
+        android:src="@drawable/img_thema_film"
+        app:layout_constraintTop_toTopOf="@id/circleFilm"
+        app:layout_constraintBottom_toBottomOf="@+id/circleFilm"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기본형1"
+        android:textSize="15sp"
+        android:fontFamily="@font/font_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GuideLineSecond" />
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/circleTheme1"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/GuideLineBottom"
+        app:layout_constraintTop_toTopOf="@id/GuideLineSecond"
+        app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+    <ImageView
+        android:id="@+id/thema1Image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.26"
+        app:layout_constraintDimensionRatio="5:18"
+        android:src="@drawable/img_thema1"
+        app:layout_constraintTop_toTopOf="@+id/circleTheme1"
+        app:layout_constraintBottom_toBottomOf="@+id/circleTheme1"
+        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toEndOf="@+id/GuideLineRight"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/circleTheme2"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:background="@color/light_gray"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="@id/GuideLineBottom"
+        app:shapeAppearanceOverlay="@style/CircleImageView" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="기본형2"
+        android:textSize="15sp"
+        android:fontFamily="@font/font_bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/GuideLineBottom" />
+
+    <ImageView
+        android:id="@+id/thema2Image"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.26"
+        app:layout_constraintDimensionRatio="8:18"
+        android:src="@drawable/img_thema2"
+        app:layout_constraintBottom_toBottomOf="@id/circleTheme2"
+        app:layout_constraintTop_toTopOf="@+id/circleTheme2"
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"
+        app:layout_constraintStart_toStartOf="@+id/GuideLineLeft"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

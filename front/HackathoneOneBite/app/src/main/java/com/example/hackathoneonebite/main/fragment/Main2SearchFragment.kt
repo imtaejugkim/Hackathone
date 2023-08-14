@@ -1,60 +1,115 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.databinding.FragmentMain2SearchBinding
+import com.example.hackathoneonebite.databinding.FragmentMain5ProfileBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [Main2SearchFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class Main2SearchFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    lateinit var binding : FragmentMain2SearchBinding
+    private lateinit var nameAdapter: AdapterMain2SearchFragment
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_main2_search, container, false)
+        binding = FragmentMain2SearchBinding.inflate(layoutInflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MainSearchFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            Main2SearchFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        nameAdapter = AdapterMain2SearchFragment()
+        binding.nameRecyclerView.adapter = nameAdapter
+        binding.nameRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.searchEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                if (s.isNullOrEmpty()) {
+                    binding.beforeSearch.visibility = View.VISIBLE
+                    binding.nameRecyclerView.visibility = View.GONE
+                    nameAdapter.clearData() // 텍스트가 비어있을 경우 RecyclerView에 표시되는 이름을 모두 지움
+
+                } else {
+                    binding.beforeSearch.visibility = View.GONE
+                    binding.nameRecyclerView.visibility = View.VISIBLE
+                    // TODO: 데베 데이터를 가져와서 여기서 나오게 해야함
+                    val nameList = mutableListOf<String>()
+
+                    for (i in 1..100) {
+                        nameList.add("Name $i")
+                    }
+                    nameAdapter.setData(nameList)
+                    nameAdapter.filter.filter(s)
+                    updateClearButtonVisibility(true) // 이미지를 변경하여 보임
                 }
             }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        binding.searchEdit.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_UP) {
+                val isClearButtonClicked = event.rawX >= (binding.searchEdit.right - binding.searchEdit.compoundDrawables[2].bounds.width())
+                if (isClearButtonClicked) {
+                    binding.searchEdit.text.clear()
+                    updateClearButtonVisibility(false)
+                    return@setOnTouchListener true
+                }
+            }
+            false
+        }
+
+        // 초기에는 clear 버튼이 보이지 않도록 초기화
+        updateClearButtonVisibility(false)
     }
+
+    private fun updateClearButtonVisibility(visible: Boolean) {
+        val drawable = if (visible) R.drawable.baseline_clear_24 else R.drawable.baseline_search_24
+        binding.searchEdit.setCompoundDrawablesRelativeWithIntrinsicBounds(
+            null, null, requireContext().getDrawable(drawable), null
+        )
+    }
+
+    private fun showThemeFilmRecyclerView() {
+        binding.themeFilmRecyclerView.visibility = View.VISIBLE
+        binding.theme1RecyclerView.visibility = View.GONE
+        binding.theme2RecyclerView.visibility = View.GONE
+        binding.nameRecyclerView.visibility = View.GONE
+        binding.beforeSearch.visibility = View.GONE
+    }
+
+    private fun showTheme1RecyclerView() {
+        binding.themeFilmRecyclerView.visibility = View.GONE
+        binding.theme1RecyclerView.visibility = View.VISIBLE
+        binding.theme2RecyclerView.visibility = View.GONE
+        binding.nameRecyclerView.visibility = View.GONE
+        binding.beforeSearch.visibility = View.GONE
+    }
+
+    private fun showTheme2RecyclerView() {
+        binding.themeFilmRecyclerView.visibility = View.GONE
+        binding.theme1RecyclerView.visibility = View.GONE
+        binding.theme2RecyclerView.visibility = View.VISIBLE
+        binding.nameRecyclerView.visibility = View.GONE
+        binding.beforeSearch.visibility = View.GONE
+    }
+
+
+
 }
