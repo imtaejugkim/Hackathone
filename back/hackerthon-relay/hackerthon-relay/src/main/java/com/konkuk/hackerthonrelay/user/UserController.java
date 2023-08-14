@@ -123,30 +123,35 @@ public class UserController {
 
 	@PostMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id,
-														  @RequestPart(value = "userUpdates", required = false) User userUpdates,
+														  @RequestPart(value = "userUpdates", required = false) String userUpdatesJson,
 														  @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
 														  @RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) {
 
 		Map<String, Object> response = new HashMap<>();
 		ObjectMapper objectMapper = new ObjectMapper();
 
-		log.info("profileImage = {}", profileImage);
-		log.info("backgroundImage = {}", backgroundImage);
-		User user = userRepository.findById(id).orElse(null);
-		if (user == null) {
-			response.put("success", false);
-			response.put("message", "User not found");
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-		}
+
 
 		try {
-			if (userUpdates != null) {
+			log.info("profileImage = {}", profileImage);
+			log.info("backgroundImage = {}", backgroundImage);
+			User user = userRepository.findById(id).orElse(null);
+
+			if(userUpdatesJson != null) {
+				UserRegistrationDto userUpdates = objectMapper.readValue(userUpdatesJson, UserRegistrationDto.class);
+
 				if (userUpdates.getUsername() != null) {
 					user.setUsername(userUpdates.getUsername());
 				}
 				if (userUpdates.getUserId() != null) {
 					user.setUserId(userUpdates.getUserId());
 				}
+			}
+
+			if (user == null) {
+				response.put("success", false);
+				response.put("message", "User not found");
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
 
 			if (profileImage != null && !profileImage.isEmpty()) {
