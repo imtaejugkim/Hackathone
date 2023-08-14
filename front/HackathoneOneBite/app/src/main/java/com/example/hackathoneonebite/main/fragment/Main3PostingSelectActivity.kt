@@ -205,7 +205,6 @@ class Main3PostingSelectActivity : AppCompatActivity() {
                     imageId
                 ).toString()
                 photoList.add(0,imagePath)
-                Log.d("이미지 경로 값",imagePath)
 
             }
             adapter.notifyDataSetChanged()

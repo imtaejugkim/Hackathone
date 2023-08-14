@@ -94,7 +94,7 @@
         android:layout_height="33dp"
         app:layout_constraintEnd_toEndOf="@id/emptyView1"
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
-        android:background="@drawable/img_icon_heart"/>
+        android:background="@drawable/img_icon_like_unclick"/>
 
     <View
         android:id="@+id/emptyView3"

@@ -123,6 +123,16 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
         holder.stopMusicAnimation()
 
         holder.binding.apply {
+            //cd이미지 변경
+            when (data[position].musicNum) {
+                0 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music0)
+                1 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music1)
+                2 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music2)
+                3 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music3)
+                4 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music4)
+                5 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music5)
+                6 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music6)
+            }
             //cd회전
             holder.stopMusicAnimation()
             postImageLayoutBack.cdImageView.rotation = 0f

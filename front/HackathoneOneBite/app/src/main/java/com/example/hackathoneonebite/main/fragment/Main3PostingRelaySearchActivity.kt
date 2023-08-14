@@ -7,10 +7,12 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingRelaySearchBinding
+import okhttp3.MultipartBody
 
 class Main3PostingRelaySearchActivity : AppCompatActivity() {
 
@@ -24,17 +26,17 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
 
         val receivedIntent = intent
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
+        val imgPartArray = Array(4) { 0 }
+        val imageByteArrays = ArrayList<ByteArray>()
 
-        Log.d("post",receivedPost.toString())
 
-        if (receivedPost != null) {
-            Log.d("PostDebug", "ID: ${receivedPost.userId}")
-            Log.d("PostDebug", "Like Count: ${receivedPost.likeCount}")
-            Log.d("PostDebug", "Date: ${receivedPost.date}")
-            Log.d("PostDebug", "Message: ${receivedPost.message}")
-            Log.d("PostDebug", "Theme: ${receivedPost.theme}")
-            Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
+        for (i in 0 until 4) {
+            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
+            if (byteArray != null) {
+                imageByteArrays.add(byteArray)
+            }
         }
+        Log.d("new 받음",imageByteArrays.toString())
 
         val leftArrow = findViewById<ImageView>(R.id.leftArrow)
         leftArrow.setOnClickListener {
@@ -52,6 +54,13 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
                 val nextIntent = Intent(this@Main3PostingRelaySearchActivity, Main3PostingTimeActivity::class.java)
                 nextIntent.putExtra("selected_name", name)
                 nextIntent.putExtra("post_data", receivedPost)
+                nextIntent.putExtra("imagePartSize", imgPartArray.size)
+
+                for (i in 0 until imageByteArrays.size) {
+                    nextIntent.putExtra("imageByteArrays$i", imageByteArrays[i]) // Pass individual byte arrays to the next screen
+                    Log.d("new 보냄 ", imageByteArrays[i].toString())
+                }
+
                 startActivity(nextIntent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
             }

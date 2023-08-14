@@ -12,11 +12,13 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.LinearInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.ItemMain1PostThema2Binding
+import android.content.Context
 
-class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
+class AdapterMain1HomeThema2 (val context: Context,  val data:ArrayList<Post>)
     : RecyclerView.Adapter<AdapterMain1HomeThema2.ViewHolder>() {
     interface OnItemClickListener {
         fun OnItemClick(position: Int)
@@ -135,10 +137,18 @@ class AdapterMain1HomeThema2 (val data:ArrayList<Post>)
             }
 
             var imgArray = data[position].imgArray
-            postImageLayout.imageView1frame2.setImageResource(imgArray[0].toInt())
-            postImageLayout.imageView2frame2.setImageResource(imgArray[1].toInt())
-            postImageLayout.imageView3frame2.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4frame2.setImageResource(imgArray[3].toInt())
+            Glide.with(context)
+                .load(imgArray[0])
+                .into(postImageLayout.imageView1frame2)
+            Glide.with(context)
+                .load(imgArray[1])
+                .into(postImageLayout.imageView2frame2)
+            Glide.with(context)
+                .load(imgArray[2])
+                .into(postImageLayout.imageView3frame2)
+            Glide.with(context)
+                .load(imgArray[3])
+                .into(postImageLayout.imageView4frame2)
         }
     }
 

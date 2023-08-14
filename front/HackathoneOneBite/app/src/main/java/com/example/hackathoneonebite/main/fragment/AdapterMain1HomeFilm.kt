@@ -3,6 +3,7 @@ package com.example.hackathoneonebite.main.fragment
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
+import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,10 +11,11 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.databinding.ItemMain1PostFilmBinding
 
-class AdapterMain1HomeFilm(val data:ArrayList<Post>)
+class AdapterMain1HomeFilm(val context: Context, val data:ArrayList<Post>)
     : RecyclerView.Adapter<AdapterMain1HomeFilm.ViewHolder>() {
     interface OnItemClickListener {
         fun OnItemClick(position: Int)
@@ -52,10 +54,18 @@ class AdapterMain1HomeFilm(val data:ArrayList<Post>)
             postImageLayout.postFrame.rotationY = if(data[position].isFliped) 180f else 0f
 
             var imgArray = data[position].imgArray
-            postImageLayout.imageView1.setImageResource(imgArray[0].toInt())
-            postImageLayout.imageView2.setImageResource(imgArray[1].toInt())
-            postImageLayout.imageView3.setImageResource(imgArray[2].toInt())
-            postImageLayout.imageView4.setImageResource(imgArray[3].toInt())
+            Glide.with(context)
+                .load(imgArray[0])
+                .into(postImageLayout.imageView1)
+            Glide.with(context)
+                .load(imgArray[1])
+                .into(postImageLayout.imageView2)
+            Glide.with(context)
+                .load(imgArray[2])
+                .into(postImageLayout.imageView3)
+            Glide.with(context)
+                .load(imgArray[3])
+                .into(postImageLayout.imageView4)
         }
     }
 }

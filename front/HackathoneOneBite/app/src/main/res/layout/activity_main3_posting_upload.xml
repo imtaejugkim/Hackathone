@@ -177,6 +177,7 @@
             android:layout_weight="1">
         </TextView>
         <TextView
+            android:id="@+id/selectedTime"
             android:text="NULL"
             android:textSize="15dp"
             android:layout_width="0dp"

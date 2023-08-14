@@ -25,5 +25,49 @@ data class Main1LoadPostResponse(
     @SerializedName("date") val date: String,
     @SerializedName("text") val text: String,
     @SerializedName("musicNum") val musicNum: Int,
-    //@SerializedName("isLikeClicked") val isLikeClicked: Boolean
+    @SerializedName("likedByCurrentUser") val isLikeClicked: Boolean
+)
+
+//댓글 창
+data class CommentResponse(
+    @SerializedName("id") val commentId: Long,
+    @SerializedName("postId") val postId: Long,
+    @SerializedName("content") val text: String,
+    @SerializedName("createdAt") val time: String,
+    @SerializedName("authorId") val commentWriterId: Long,
+    @SerializedName("authorUserIdString") val commentWriterUserId: String,
+    @SerializedName("authorName") val commentWriterUsername: String,
+    @SerializedName("profileUrl") val profileImageUrl: String
+)
+
+//프로필화면
+data class Main5LoadProfileInfoResponse (
+    @SerializedName("success") val isSuccess: Boolean,
+    @SerializedName("userId") val id: Long,
+    @SerializedName("username") val username: String,
+    @SerializedName("userIdString") val userId: String,
+    @SerializedName("email") val email: String,
+    @SerializedName("createdPostIds") val postArray: ArrayList<Long>,
+    @SerializedName("profilePictureUrl") val profileImageUrl: String,
+    @SerializedName("backgroundPictureUrl") val backgroundImageUrl: String,
+    @SerializedName("relayReceivedCount") val relayReceivedCount: Int,
+    @SerializedName("followerIds") val followerIds: ArrayList<Long>,
+    @SerializedName("followingIds") val followingIds: ArrayList<Long>,
+    @SerializedName("score") val score: Int,
+    @SerializedName("selfProfile") val selfProfile: Boolean,
+    @SerializedName("editProfile") val editProfile: Boolean,
+    @SerializedName("following") val following: Boolean
+)
+data class Main5LoadPostInfoResponse (
+    @SerializedName("id") val postId: Long,
+    @SerializedName("images") val imageArray: ArrayList<String>,
+    @SerializedName("mainImage") val mainImage: String,
+    @SerializedName("theme") val theme: Int,
+    @SerializedName("likeCount") val likeCount: Int,
+    @SerializedName("date") val date: String,
+    @SerializedName("text") val text: String,
+    @SerializedName("comments") val comments: String,
+    @SerializedName("musicNum") val musicNum: Int,
+    @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
+    @SerializedName("likedByCurrentUser") val likedByCurrentUser: Boolean
 )

@@ -17,6 +17,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".main.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignInActivity"
             android:exported="false" />
         <activity
@@ -27,7 +30,8 @@
             android:exported="false" />
         <activity
             android:name=".main.MainFrameActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing"/>
         <activity
             android:name=".main.fragment.Main3PostingMakingActivity"
             android:exported="false" />
@@ -36,7 +40,8 @@
             android:exported="false" />
         <activity
             android:name=".main.fragment.Main3PostingRelaySearchActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".main.fragment.Main3PostingTimeActivity"
             android:exported="false" />
@@ -45,7 +50,12 @@
             android:exported="false" />
         <activity
             android:name=".main.fragment.Main3PostingUploadActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
+        <activity
+            android:name=".main.fragment.Main3PostingNowUploadActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".SplashActivity"
             android:exported="true"
