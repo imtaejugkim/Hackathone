@@ -38,8 +38,7 @@ public class Tag {
     public TagDto tagDto(Long id, String name) {
         TagDto dto = new TagDto(this.getId(), this.getName());
 
-        dto.setCreatedPostIds(this.posts.stream().filter(post -> post.getCreator().equals(this))
-                .map(post -> post.getId()).collect(Collectors.toList()));
+
 
         return dto;
     }

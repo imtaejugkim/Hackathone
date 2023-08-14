@@ -12,7 +12,7 @@ public class TagDto {
 
     private Long tagId; // 태그 번호
     private String tagName; // 태그 이름
-    private List<Long> createdPostIds; // 만든 게시글 Id
+    private List<Long> RelatedPostIds; // 관련 게시글 Id
 
     public TagDto(Long tagid, String tagName) {
         this.tagId = tagid;

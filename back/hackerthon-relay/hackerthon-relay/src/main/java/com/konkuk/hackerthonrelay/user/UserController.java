@@ -1,9 +1,5 @@
 package com.konkuk.hackerthonrelay.user;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -11,16 +7,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.konkuk.hackerthonrelay.follow.FollowRelationRepository;
 import com.konkuk.hackerthonrelay.follow.FollowService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,12 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-
-	//private static final Logger log = LoggerFactory.getLogger(UserController.class); // 로거 인스턴스 생성
-
 	private final UserRepository userRepository;
 	private UserService userService;
-
 	private FollowService followService;
 
 	@Autowired // 생성자 주입
