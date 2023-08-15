@@ -19,6 +19,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -34,6 +35,7 @@ import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.StartActivity
 import com.example.hackathoneonebite.api.CommentResponse
 import com.example.hackathoneonebite.api.CreateComment
+import com.example.hackathoneonebite.api.LikeClickResponse
 import com.example.hackathoneonebite.api.Main1LoadPostResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.DialogMain1CommentBinding
@@ -51,6 +53,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 
 class Main1HomeFragment : Fragment() {
@@ -103,6 +106,7 @@ class Main1HomeFragment : Fragment() {
         val activity = requireActivity() as MainFrameActivity
         this.id = activity.id
         this.userId = activity.userId
+        currentRequestedTheme = arguments?.getInt("themaNum") ?: 0
         Log.d("ID", "메인 Fragment Attached / ID : ${this.id}")
         musicArray = resources.obtainTypedArray(R.array.music_array)
     }
@@ -136,6 +140,7 @@ class Main1HomeFragment : Fragment() {
         initSelectedThema()
         initRecyclerView()
         initCommentRecyclerView()
+        initLikeButton()
         init()
     }
 
@@ -161,14 +166,17 @@ class Main1HomeFragment : Fragment() {
         if (currentRequestedTheme != null) {
             when(currentRequestedTheme) {
                 0 -> {
+                    Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                     loadPosts(0)
                 }
                 1 -> {
+                    Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                     loadPosts(1)
                 }
                 2 -> {
+                    Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                     loadPosts(2)
                 }
@@ -233,10 +241,160 @@ class Main1HomeFragment : Fragment() {
         binding.postImageLayoutThema1.likeButton.setOnClickListener {
             val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
             val position = layoutManager.findFirstVisibleItemPosition()
-            if (data_thema1[position].likeClicked) {
-
-            }
+            val postId = data_thema1[position].postId
+            val beforeStatus = data_thema1[position].likeClicked
+            likeClick(postId, id, beforeStatus, current_selected_thema, position)
         }
+        binding.postImageLayoutThema2.likeButton.setOnClickListener {
+            val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
+            val position = layoutManager.findFirstVisibleItemPosition()
+            val postId = data_thema2[position].postId
+            val beforeStatus = data_thema2[position].likeClicked
+            likeClick(postId, id, beforeStatus, current_selected_thema, position)
+        }
+        binding.postImageLayoutFilm.likeButton.setOnClickListener {
+            val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
+            val position = layoutManager.findFirstVisibleItemPosition()
+            val postId = data_film[position].postId
+            val beforeStatus = data_film[position].likeClicked
+
+            likeClick(postId, id, beforeStatus, current_selected_thema, position)
+        }
+    }
+    private fun likeClick(postId: Long, userId: Long, beforeStatus: Boolean, thema: Int, pos: Int) {
+        likeClickRequest(postId, userId, beforeStatus, thema, pos)
+    }
+    private fun likeClickRequest(postId: Long, userId: Long, beforeStatus: Boolean, thema: Int, pos: Int) {
+        val call = RetrofitBuilder.api.likeClickRequest(postId, userId)
+        call.enqueue(object : Callback<LikeClickResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<LikeClickResponse>,
+                response: Response<LikeClickResponse>
+            ) {
+                Log.e("MAIN1HOME_LIKE", response.raw().request.url.toString())
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val likeClickResponse  = response.body()
+                    if (likeClickResponse == null) {
+                        Log.e("MAIN1HOME_LIKE", "응답이 null입니다.")
+                        return
+                    } else {
+                        Log.d("MAIN1HOME_LIKE", "응답 좋음.")
+                        when (thema) {
+                            0 -> {
+                                val wasliked: Boolean = data_thema1[pos].likeClicked
+                                data_thema1[pos].likeClicked = !wasliked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = binding.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                binding.postImageLayoutThema1.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                            1 -> {
+                                val wasliked: Boolean = data_thema2[pos].likeClicked
+                                data_thema2[pos].likeClicked = !wasliked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = binding.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                binding.postImageLayoutThema2.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                            2 -> {
+                                val wasliked: Boolean = data_film[pos].likeClicked
+                                data_film[pos].likeClicked = !wasliked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = binding.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            requireContext(),
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                binding.postImageLayoutFilm.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("MAIN1HOME_LIKE", "Failed to parse error response: $errorBody")
+                            Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<LikeClickResponse>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("MAIN1HOME CONNECTION FAILURE_LIKE: ", t.localizedMessage)
+                Toast.makeText(requireContext(), "서버와의 통신에 문제가 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 //</editor-fold>
 //<editor-fold desc="리사이클러 뷰 접어놓기">
@@ -482,6 +640,13 @@ class Main1HomeFragment : Fragment() {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
+                        //like button init
+                        if (data_thema1[pos].likeClicked) {
+                            likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
+                        } else {
+                            likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                        }
+                        //
                         messageTextView.text = data_thema2[pos]?.message
                         if (data_thema2[pos].isFliped) {
                             try {
@@ -603,6 +768,13 @@ class Main1HomeFragment : Fragment() {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
+                        //like button init
+                        if (data_thema1[pos].likeClicked) {
+                            likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
+                        } else {
+                            likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                        }
+                        //
                         messageTextView.text = data_film[pos]?.message
                     }
                 }
@@ -875,7 +1047,8 @@ class Main1HomeFragment : Fragment() {
     //다른 프로필 Activity 실행
     private fun startProfileActivity(id: Long) {
         val i = Intent(requireContext(), ProfileActivity::class.java)
-        i.putExtra("id",id)
+        i.putExtra("requesterId",this.id)
+        i.putExtra("targetId",id)
         startActivity(i)
     }
     //댓글 창 위쪽 데이터 설정

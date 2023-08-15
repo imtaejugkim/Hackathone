@@ -18,14 +18,16 @@ data class LoginCheckEmailExistResponse(
 //메인화면
 data class Main1LoadPostResponse(
     @SerializedName("id") val postId: Long,
-    @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
     @SerializedName("images") val images: ArrayList<String>,
     @SerializedName("theme") val theme: Int,
     @SerializedName("likeCount") val likeCount: Int,
     @SerializedName("date") val date: String,
     @SerializedName("text") val text: String,
     @SerializedName("musicNum") val musicNum: Int,
-    @SerializedName("likedByCurrentUser") val isLikeClicked: Boolean
+    @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
+    @SerializedName("likedByCurrentUser") val isLikeClicked: Boolean,
+    @SerializedName("participantUserIdStrings") val participantUserIdStrings: ArrayList<String>,
+    @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: ArrayList<String>
 )
 
 //댓글 창
@@ -38,6 +40,18 @@ data class CommentResponse(
     @SerializedName("authorUserIdString") val commentWriterUserId: String,
     @SerializedName("authorName") val commentWriterUsername: String,
     @SerializedName("profileUrl") val profileImageUrl: String
+)
+
+//좋아요
+data class LikeClickResponse(
+    @SerializedName("status") val afterStatus: Boolean,
+    @SerializedName("message") val serverMessage: String
+)
+
+//팔로우
+data class FollowToggleResponse(
+    @SerializedName("success") val isSuccess: Boolean,
+    @SerializedName("message") val message: String
 )
 
 //프로필화면
@@ -69,5 +83,7 @@ data class Main5LoadPostInfoResponse (
     @SerializedName("comments") val comments: String,
     @SerializedName("musicNum") val musicNum: Int,
     @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
-    @SerializedName("likedByCurrentUser") val likedByCurrentUser: Boolean
+    @SerializedName("likedByCurrentUser") val likedByCurrentUser: Boolean,
+    @SerializedName("participantUserIdStrings") val participantUserIdStrings: ArrayList<String>,
+    @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: ArrayList<String>
 )

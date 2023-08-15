@@ -97,13 +97,14 @@
                         android:textSize="12sp"
                         android:textColor="#444"/>
                     <Button
+                        android:id="@+id/updateProfileInfoButton"
                         android:layout_width="70dp"
                         android:layout_height="27dp"
                         android:layout_marginLeft="40dp"
                         app:layout_constraintStart_toEndOf="@+id/username"
                         app:layout_constraintTop_toTopOf="@id/username"
                         app:layout_constraintBottom_toBottomOf="@id/username"
-                        android:text="+ 팔로우"
+                        android:text="수정"
                         android:fontFamily="@font/font_light"
                         android:textSize="11sp"
                         android:background="@drawable/background_round_border"
