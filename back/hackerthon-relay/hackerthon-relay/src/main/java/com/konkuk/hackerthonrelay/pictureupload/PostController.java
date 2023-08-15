@@ -2,6 +2,7 @@ package com.konkuk.hackerthonrelay.pictureupload;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -251,6 +252,27 @@ public class PostController {
 		log.info("postDtos = {}",postDtos);
 
 		return ResponseEntity.ok(postDtos);
+	}
+
+	// 실시간 인기 게시물 조회
+	@GetMapping("/realtimePopular")
+	public ResponseEntity<List<PostDto>> getPopularPostsInLast10Minutes() {
+		// 현재 시간
+		LocalDateTime currentTime = LocalDateTime.now();
+
+		// 10분 전 시간 계산
+		LocalDateTime tenMinutesAgo = currentTime.minus(60, ChronoUnit.MINUTES);
+
+		// 10분 이내의 게시물 조회
+		List<Post> posts = postRepository.findByCreatedAtAfter(tenMinutesAgo);
+
+		// 게시물을 좋아요 수 내림차순으로 정렬
+		List<PostDto> popularPosts = posts.stream()
+				.sorted((post1, post2) -> post2.getLikes().compareTo(post1.getLikes()))
+				.map(post -> postService.toDto(post))
+				.collect(Collectors.toList());
+
+		return ResponseEntity.ok(popularPosts);
 	}
 
 
