@@ -133,6 +133,13 @@ public class UserController {
 					user.setUsername(userUpdates.getUsername());
 				}
 				if (userUpdates.getUserId() != null) {
+					if(userUpdates.getUserId().equals(user.getUserId())){
+						log.info("userUpdates.getUserId() = {}" , userUpdates.getUserId());
+						log.info("user.getUserId() = {}" , user.getUserId());
+						response.put("success", false);
+						response.put("message", "exist");
+						return ResponseEntity.status(400).body(response);
+					}
 					user.setUserId(userUpdates.getUserId());
 				}
 			}
@@ -142,6 +149,7 @@ public class UserController {
 				response.put("message", "User not found");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
+
 
 			if (profileImage != null && !profileImage.isEmpty()) {
 				userService.saveProfileImage(id, profileImage);

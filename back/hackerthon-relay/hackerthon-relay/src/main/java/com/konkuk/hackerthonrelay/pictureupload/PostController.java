@@ -11,6 +11,7 @@ import com.konkuk.hackerthonrelay.comment.CommentService;
 import com.konkuk.hackerthonrelay.notification.Notification;
 import com.konkuk.hackerthonrelay.notification.NotificationDto;
 import com.konkuk.hackerthonrelay.notification.NotificationRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +30,7 @@ import com.konkuk.hackerthonrelay.search.UserService;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/posts")
 public class PostController {
@@ -110,18 +112,24 @@ public class PostController {
 		}
 		response.put("status", true);
 
+
 		// 알림 생성
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 		User liker = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-		Notification notification = new Notification();
-		notification.setRecipient(post.getCreator());
-		notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
-		notification.setType(Notification.NotificationType.LIKE);
-		notification.setPostId(postId);
-		notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
-		notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
 
-		notificationRepository.save(notification);
+		boolean isParticipant = post.getParticipants().stream()
+				.anyMatch(participant -> participant.getUser().equals(liker));
+		if(!isParticipant) {
+			Notification notification = new Notification();
+			notification.setRecipient(post.getCreator());
+			notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
+			notification.setType(Notification.NotificationType.LIKE);
+			notification.setPostId(postId);
+			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
+			notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
+
+			notificationRepository.save(notification);
+		}
 
 		return ResponseEntity.ok(response);
 	}
