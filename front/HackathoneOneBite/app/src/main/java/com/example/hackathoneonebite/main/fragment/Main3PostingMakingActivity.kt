@@ -118,6 +118,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
             intent.putExtra("imagePartSize", imageParts.size)
+            intent.putExtra("id", id)
+            intent.putExtra("userId",userId)
 
             for (i in 0 until 4) {
                 val image = images[i]
@@ -157,6 +159,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingRelaySearchActivity::class.java)
             intent.putExtra("post_data", post)
             intent.putExtra("imagePartSize", imageParts.size)
+            intent.putExtra("id", id)
 
             //val imageByteArrays = ArrayList<ByteArray>() // Image data extraction list
 
@@ -202,6 +205,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             intent.putExtra("post_data", post)
             intent.putExtra("imagePartSize", imageParts.size)
+            intent.putExtra("id", id)
 
 
             for (i in 0 until 4) {
@@ -241,7 +245,9 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             val post = Post(imagesFill, theme, userId, 0,LocalDateTime.now(), message,false)
             val intent = Intent(this@Main3PostingMakingActivity, Main3PostingNowUploadActivity::class.java)
             intent.putExtra("post_data", post)
-            //val imageByteArrays = ArrayList<ByteArray>() // Image data extraction list
+            intent.putExtra("imagePartSize", imageParts.size)
+            intent.putExtra("id", id)
+
 
             for (i in 0 until 4) {
                 val image = images[i]
@@ -257,10 +263,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 }
             }
 
-            /*for (i in 0 until imageByteArrays.size) {
-                intent.putExtra("imageByteArrays$i", imageByteArrays[i])
-                Log.d("new 보냄 ", imageByteArrays[i].toString())
-            }*/
             startActivity(intent)
         }
     }

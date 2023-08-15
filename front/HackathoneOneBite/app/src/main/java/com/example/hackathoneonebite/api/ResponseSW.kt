@@ -21,7 +21,7 @@ data class Main1LoadPostResponse(
     @SerializedName("images") val images: ArrayList<String>,
     @SerializedName("theme") val theme: Int,
     @SerializedName("likeCount") val likeCount: Int,
-    @SerializedName("date") val date: String,
+    @SerializedName("date") var date: String,
     @SerializedName("text") val text: String,
     @SerializedName("musicNum") val musicNum: Int,
     @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
@@ -86,4 +86,9 @@ data class Main5LoadPostInfoResponse (
     @SerializedName("likedByCurrentUser") val likedByCurrentUser: Boolean,
     @SerializedName("participantUserIdStrings") val participantUserIdStrings: ArrayList<String>,
     @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: ArrayList<String>
+)
+//프로필 수정
+data class UpdateProfileResponse (
+    @SerializedName("success") val isSuccess: Boolean = true,
+    @SerializedName("message") val message: String
 )

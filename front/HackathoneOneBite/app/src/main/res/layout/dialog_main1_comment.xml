@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background_dialog_bottom"
-    android:paddingTop="40dp"
-    android:paddingBottom="40dp">
+    android:paddingTop="20dp"
+    android:paddingBottom="20dp">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/GuideLineLeft"
@@ -22,20 +22,47 @@
         app:layout_constraintGuide_percent="0.95"/>
 
     <TextView
-        android:id="@+id/userIdStringTextView"
+        android:id="@+id/userIdStringTextView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
         android:textSize="13sp"
-        android:textColor="@color/gray"/>
+        android:textColor="@color/black"/>
+    <TextView
+        android:id="@+id/userIdStringTextView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/userIdStringTextView1"
+        app:layout_constraintStart_toEndOf="@id/userIdStringTextView1"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/userIdStringTextView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/userIdStringTextView1"
+        app:layout_constraintStart_toEndOf="@id/userIdStringTextView2"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="10dp"/>
+    <TextView
+        android:id="@+id/userIdStringTextView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/userIdStringTextView1"
+        app:layout_constraintStart_toEndOf="@id/userIdStringTextView3"
+        android:textSize="13sp"
+        android:textColor="@color/black"
+        android:layout_marginLeft="10dp"/>
 
     <TextView
         android:id="@+id/dateTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/userIdStringTextView"
-        app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintTop_toTopOf="@id/userIdStringTextView1"
+        app:layout_constraintEnd_toEndOf="@id/GuideLineRight"
         android:layout_marginTop="5dp"
         android:textSize="13sp"
         android:textColor="@color/gray"/>
@@ -43,12 +70,13 @@
 
     <TextView
         android:id="@+id/textTextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textSize="13sp"
         android:textColor="@color/black"
         app:layout_constraintTop_toBottomOf="@id/dateTextView"
         app:layout_constraintStart_toStartOf="@id/GuideLineLeft"
+        app:layout_constraintEnd_toStartOf="@id/dateTextView"
         android:layout_marginTop="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView

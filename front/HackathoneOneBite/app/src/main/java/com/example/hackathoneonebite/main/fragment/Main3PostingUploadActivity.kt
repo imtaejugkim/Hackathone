@@ -114,6 +114,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
             images = Array(4) { ByteArray(0) }
 
             for (i in 0..3) {
+                Log.d("imagArray$i",receivedPost!!.imgArray[i].toString())
                 if (receivedPost!!.imgArray[i] == "true") {
                     if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
                         images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
@@ -162,7 +163,7 @@ class Main3PostingUploadActivity : AppCompatActivity(),
         }
     }
 
-    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum: RequestBody, message: RequestBody){
+    private fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum: RequestBody, message: RequestBody){
         val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum , message)
         call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(

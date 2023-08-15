@@ -47,7 +47,8 @@
         android:layout_height="33dp"
         app:layout_constraintEnd_toStartOf="@id/emptyView2"
         app:layout_constraintTop_toBottomOf="@id/emptyView2"
-        android:background="@drawable/img_icon_share"/>
+        android:background="@drawable/img_icon_share"
+        android:visibility="invisible"/>
 
     <Button
         android:id="@+id/likeButton"
@@ -66,6 +67,61 @@
         app:layout_constraintTop_toBottomOf="@id/shareButton"
         app:layout_constraintEnd_toStartOf="@id/likeButton"/>
 
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userProfileImageView4"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/likeButton"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/userProfileImageView3"
+        android:layout_marginStart="15dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularImageView"
+        android:background="@drawable/background_main1_profile_border"
+        android:visibility="invisible"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userProfileImageView3"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/likeButton"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/userProfileImageView2"
+        android:layout_marginStart="15dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularImageView"
+        android:background="@drawable/background_main1_profile_border"
+        android:visibility="invisible"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userProfileImageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/likeButton"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/userProfileImageView1"
+        android:layout_marginStart="15dp"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularImageView"
+        android:background="@drawable/background_main1_profile_border"
+        android:visibility="invisible"/>
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/userProfileImageView1"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toTopOf="@id/likeButton"
+        app:layout_constraintBottom_toBottomOf="@id/likeButton"
+        app:layout_constraintDimensionRatio="1:1"
+        app:layout_constraintStart_toStartOf="@id/emptyView1"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/CircularImageView"
+        android:background="@drawable/background_main1_profile_border"
+        android:visibility="invisible"/>
+
     <TextView
         android:id="@+id/messageTextView"
         android:layout_width="0dp"
@@ -74,7 +130,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/emptyView1"
         app:layout_constraintStart_toStartOf="@id/emptyView1"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black"
+        android:text="...more"
+        android:maxLines="2"
+        android:ellipsize="end"/>
 
     <!--여기부터는 음악-->
     <TextView

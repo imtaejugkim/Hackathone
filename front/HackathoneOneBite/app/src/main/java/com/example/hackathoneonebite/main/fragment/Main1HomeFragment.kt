@@ -3,6 +3,7 @@ package com.example.hackathoneonebite.main.fragment
 import android.animation.ArgbEvaluator
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.TypedArray
@@ -20,6 +21,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +32,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.StartActivity
@@ -78,11 +81,11 @@ class Main1HomeFragment : Fragment() {
 
     //network handler
     private val handler = Handler(Looper.getMainLooper())
-    private var currentRequestedTheme: Int = -1
+    private var current_selected_thema: Int = -1
     private val loadMainRunnable = Runnable {
-        Log.d("MAIN1HOME", "theme ${currentRequestedTheme}를 다시 로드합니다.")
+        Log.d("MAIN1HOME", "theme ${current_selected_thema}를 다시 로드합니다.")
         Toast.makeText(requireContext(),"게시물이 로드되지 않았습니다.\n재통신을 시도합니다.", Toast.LENGTH_SHORT).show()
-        loadPosts(currentRequestedTheme)
+        loadPosts(current_selected_thema)
     }
 
     //music
@@ -99,15 +102,13 @@ class Main1HomeFragment : Fragment() {
         film(2)
     }
 
-    var current_selected_thema: Int = ThemaNumbering.thema1.value
-
     override fun onAttach(context: Context) {
         //Log.d("onAttach", "onAttach called");
         super.onAttach(context)
         val activity = requireActivity() as MainFrameActivity
         this.id = activity.id
         this.userId = activity.userId
-        currentRequestedTheme = arguments?.getInt("themaNum") ?: 0
+        current_selected_thema = arguments?.getInt("themaNum") ?: 0
         Log.d("ID", "메인 Fragment Attached / ID : ${this.id}")
         musicArray = resources.obtainTypedArray(R.array.music_array)
     }
@@ -121,7 +122,7 @@ class Main1HomeFragment : Fragment() {
         thema2Binding = FragmentMain1HomeThema2Binding.inflate(layoutInflater)
         filmBinding = FragmentMain1HomeFilmBinding.inflate(layoutInflater)
         commentDialogBinding = DialogMain1CommentBinding.inflate(layoutInflater)
-        currentRequestedTheme = -1
+        current_selected_thema = -1
         return binding.root
     }
 
@@ -140,18 +141,9 @@ class Main1HomeFragment : Fragment() {
 
         initSelectedThema()
         initRecyclerView()
-        initCommentRecyclerView()
         initNotification()
         initLikeButton()
         init()
-    }
-
-    private fun initNotification() {
-        binding.notificationButton.setOnClickListener{
-            val intent = Intent(requireContext(), NotificationActivity::class.java)
-            intent.putExtra("userId",userId)
-            startActivity(intent)
-        }
     }
 
     override fun onPause() {
@@ -168,13 +160,21 @@ class Main1HomeFragment : Fragment() {
         adapter_thema1.currentlyPlayingViewHolder = null
     }
 
+    private fun initNotification() {
+        binding.notificationButton.setOnClickListener{
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
+            intent.putExtra("userId",userId)
+            startActivity(intent)
+        }
+    }
+
     private fun initSelectedThema() {
-        if (currentRequestedTheme == -1) {
-            currentRequestedTheme = arguments?.getInt("themaNum") ?: 0
+        if (current_selected_thema == -1) {
+            current_selected_thema = arguments?.getInt("themaNum") ?: 0
         }
 
-        if (currentRequestedTheme != null) {
-            when(currentRequestedTheme) {
+        if (current_selected_thema != null) {
+            when(current_selected_thema) {
                 0 -> {
                     Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
@@ -203,8 +203,8 @@ class Main1HomeFragment : Fragment() {
         binding.postImageLayoutThema1.messageTextView.setOnClickListener {
             val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
             val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
-            adapter_comment.data.clear()
             Log.d("MAIN1COMMENT",  data_thema1[firstVisiblePosition].toString())
+            createNewCommentBinding()
             loadComments(data_thema1[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
             showCommentDialog()
@@ -212,8 +212,8 @@ class Main1HomeFragment : Fragment() {
         binding.postImageLayoutThema2.messageTextView.setOnClickListener {
             val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
             val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
-            adapter_comment.data.clear()
             Log.d("MAIN1COMMENT",  data_thema2[firstVisiblePosition].toString())
+            createNewCommentBinding()
             loadComments(data_thema2[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
             showCommentDialog()
@@ -221,32 +221,13 @@ class Main1HomeFragment : Fragment() {
         binding.postImageLayoutFilm.messageTextView.setOnClickListener {
             val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
             val firstVisiblePosition = layoutManager.findFirstVisibleItemPosition()
-            adapter_comment.data.clear()
+            createNewCommentBinding()
             loadComments(data_film[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
             showCommentDialog()
         }
-        commentDialogBinding.addCommentButton.setOnClickListener {
-            when (currentRequestedTheme) {
-                0 -> {
-                    val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
-                    val position = layoutManager.findFirstVisibleItemPosition()
-                    createComment(data_thema1[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
-                }
-                1 -> {
-                    val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
-                    val position = layoutManager.findFirstVisibleItemPosition()
-                    createComment(data_thema2[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
-                }
-                2 -> {
-                    val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
-                    val position = layoutManager.findFirstVisibleItemPosition()
-                    createComment(data_film[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
-                }
-            }
-        }
     }
-//<editor-fold desc="좋아요 뷰 접어놓기">
+    //<editor-fold desc="좋아요 뷰 접어놓기">
     private fun initLikeButton() {
         binding.postImageLayoutThema1.likeButton.setOnClickListener {
             val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
@@ -406,7 +387,7 @@ class Main1HomeFragment : Fragment() {
             }
         })
     }
-//</editor-fold>
+    //</editor-fold>
 //<editor-fold desc="리사이클러 뷰 접어놓기">
     @SuppressLint("ClickableViewAccessibility")
     private fun initRecyclerView() { //리사이클러뷰 초기화
@@ -426,12 +407,20 @@ class Main1HomeFragment : Fragment() {
                         } catch (e: ArrayIndexOutOfBoundsException) {
                             Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                         }
+                        userProfileImageView1.visibility = View.INVISIBLE
+                        userProfileImageView2.visibility = View.INVISIBLE
+                        userProfileImageView3.visibility = View.INVISIBLE
+                        userProfileImageView4.visibility = View.INVISIBLE
                         messageTextView.visibility = View.INVISIBLE
                         likeButton.visibility = View.INVISIBLE
                         shareButton.visibility = View.INVISIBLE
                         musicNameTextView.visibility = View.VISIBLE
                         singerNameTextView.visibility = View.VISIBLE
                     } else {
+                        userProfileImageView1.visibility = View.VISIBLE
+                        userProfileImageView2.visibility = View.VISIBLE
+                        userProfileImageView3.visibility = View.VISIBLE
+                        userProfileImageView4.visibility = View.VISIBLE
                         messageTextView.visibility = View.VISIBLE
                         likeButton.visibility = View.VISIBLE
                         shareButton.visibility = View.VISIBLE
@@ -515,6 +504,10 @@ class Main1HomeFragment : Fragment() {
                             } catch (e: ArrayIndexOutOfBoundsException) {
                                 Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                             }
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
                             messageTextView.visibility = View.INVISIBLE
                             likeButton.visibility = View.INVISIBLE
                             shareButton.visibility = View.INVISIBLE
@@ -522,6 +515,10 @@ class Main1HomeFragment : Fragment() {
                             singerNameTextView.visibility = View.VISIBLE
                         } else {
                             Log.d("position",pos.toString())
+                            userProfileImageView1.visibility = View.VISIBLE
+                            userProfileImageView2.visibility = View.VISIBLE
+                            userProfileImageView3.visibility = View.VISIBLE
+                            userProfileImageView4.visibility = View.VISIBLE
                             messageTextView.visibility = View.VISIBLE
                             likeButton.visibility = View.VISIBLE
                             shareButton.visibility = View.VISIBLE
@@ -577,12 +574,20 @@ class Main1HomeFragment : Fragment() {
                         } catch (e: ArrayIndexOutOfBoundsException) {
                             Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                         }
+                        userProfileImageView1.visibility = View.INVISIBLE
+                        userProfileImageView2.visibility = View.INVISIBLE
+                        userProfileImageView3.visibility = View.INVISIBLE
+                        userProfileImageView4.visibility = View.INVISIBLE
                         messageTextView.visibility = View.INVISIBLE
                         likeButton.visibility = View.INVISIBLE
                         shareButton.visibility = View.INVISIBLE
                         musicNameTextView.visibility = View.VISIBLE
                         singerNameTextView.visibility = View.VISIBLE
                     } else {
+                        userProfileImageView1.visibility = View.VISIBLE
+                        userProfileImageView2.visibility = View.VISIBLE
+                        userProfileImageView3.visibility = View.VISIBLE
+                        userProfileImageView4.visibility = View.VISIBLE
                         messageTextView.visibility = View.VISIBLE
                         likeButton.visibility = View.VISIBLE
                         shareButton.visibility = View.VISIBLE
@@ -666,6 +671,10 @@ class Main1HomeFragment : Fragment() {
                             } catch (e: ArrayIndexOutOfBoundsException) {
                                 Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                             }
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
                             messageTextView.visibility = View.INVISIBLE
                             likeButton.visibility = View.INVISIBLE
                             shareButton.visibility = View.INVISIBLE
@@ -673,6 +682,10 @@ class Main1HomeFragment : Fragment() {
                             singerNameTextView.visibility = View.VISIBLE
                         } else {
                             Log.d("position",pos.toString())
+                            userProfileImageView1.visibility = View.VISIBLE
+                            userProfileImageView2.visibility = View.VISIBLE
+                            userProfileImageView3.visibility = View.VISIBLE
+                            userProfileImageView4.visibility = View.VISIBLE
                             messageTextView.visibility = View.VISIBLE
                             likeButton.visibility = View.VISIBLE
                             shareButton.visibility = View.VISIBLE
@@ -869,7 +882,7 @@ class Main1HomeFragment : Fragment() {
 
         //Dialog에서 thema1을 선택했을 경우
         bindingDialog.postFrame1.setOnClickListener {
-            currentRequestedTheme = 0
+            current_selected_thema = 0
             when (current_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     dlg.dismiss()
@@ -892,10 +905,9 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema1.isNotEmpty()) {
                         binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.thema1.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
 
                 ThemaNumbering.film.value -> {
@@ -906,16 +918,15 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema1.isNotEmpty()) {
                         binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.thema1.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
             }
         }
         //Dialog에서 thema2을 선택했을 경우
         bindingDialog.postFrame2.setOnClickListener {
-            currentRequestedTheme = 1
+            current_selected_thema = 1
             when (current_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     //글 로드 중지
@@ -935,10 +946,9 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema2.isNotEmpty()) {
                         binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.thema2.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
 
                 ThemaNumbering.thema2.value -> {
@@ -953,16 +963,15 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema2.isNotEmpty()) {
                         binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.thema2.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
             }
         }
         //Dialog에서 Film을 선택했을 경우
         bindingDialog.postFrameFilm.setOnClickListener {
-            currentRequestedTheme = 2
+            current_selected_thema = 2
             when (current_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     //글 로드 중지
@@ -982,10 +991,9 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema2.isNotEmpty()) {
                         binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.film.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
 
                 ThemaNumbering.thema2.value -> {
@@ -1006,10 +1014,9 @@ class Main1HomeFragment : Fragment() {
                     if (data_thema2.isNotEmpty()) {
                         binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                     }
-                    current_selected_thema = ThemaNumbering.film.value
                     dlg.dismiss()
                     //글 로드 재개
-                    loadPosts(currentRequestedTheme)
+                    loadPosts(current_selected_thema)
                 }
 
                 ThemaNumbering.film.value -> {
@@ -1020,7 +1027,31 @@ class Main1HomeFragment : Fragment() {
     }
 //</editor-fold>
 
-//<editor-fold desc="댓글 부분 접어놓기">
+    //<editor-fold desc="댓글 부분 접어놓기">
+    private fun createNewCommentBinding() {
+        this.commentDialogBinding = DialogMain1CommentBinding.inflate(layoutInflater)
+        initCommentRecyclerView()
+        adapter_comment.data.clear()
+        this.commentDialogBinding.addCommentButton.setOnClickListener {
+            when (current_selected_thema) {
+                0 -> {
+                    val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
+                    val position = layoutManager.findFirstVisibleItemPosition()
+                    createComment(data_thema1[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
+                }
+                1 -> {
+                    val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
+                    val position = layoutManager.findFirstVisibleItemPosition()
+                    createComment(data_thema2[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
+                }
+                2 -> {
+                    val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
+                    val position = layoutManager.findFirstVisibleItemPosition()
+                    createComment(data_film[position].postId, id, commentDialogBinding.addCommentEditTextView.text.toString())
+                }
+            }
+        }
+    }
     //댓글 Dialog
     private fun showCommentDialog() {
         //dialog 객체 생성
@@ -1036,7 +1067,10 @@ class Main1HomeFragment : Fragment() {
         dlg.setOnDismissListener {
             commentDialogBinding.apply {
                 textTextView.text = ""
-                userIdStringTextView.text = ""
+                userIdStringTextView1.text = ""
+                userIdStringTextView2.text = ""
+                userIdStringTextView3.text = ""
+                userIdStringTextView4.text = ""
                 dateTextView.text = ""
             }
         }
@@ -1047,42 +1081,81 @@ class Main1HomeFragment : Fragment() {
             commentRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter_comment = AdapterMain1HomeComment(requireContext())
             adapter_comment.userIdClickListener = object : AdapterMain1HomeComment.OnItemClickListener {
-                    override fun OnItemClick(id: Long) {
-                        startProfileActivity(id)
-                    }
+                override fun OnItemClick(id: Long) {
+                    startProfileActivity(id)
                 }
+            }
             commentRecyclerView.adapter = adapter_comment
         }
     }
     //다른 프로필 Activity 실행
-    private fun startProfileActivity(id: Long) {
+    private fun startProfileActivity(targetId: Long) {
         val i = Intent(requireContext(), ProfileActivity::class.java)
         i.putExtra("requesterId",this.id)
-        i.putExtra("targetId",id)
+        i.putExtra("targetId",targetId)
         startActivity(i)
     }
     //댓글 창 위쪽 데이터 설정
     private fun setPostDataInCommentWindow(position: Int) {
         commentDialogBinding.apply {
-            when (currentRequestedTheme) {
+            when (current_selected_thema) {
                 0 -> {
-                    var idSum: String = ""
-                    data_thema1[position].participantUserIds.forEach { id -> idSum = idSum + ", " + id.toString() }
-                    userIdStringTextView.text = idSum
+                    userIdStringTextView1.setText(data_thema1[position].participantUserIdStrings[0])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema1[position].participantUserIds[0])
+                    }
+                    userIdStringTextView2.setText(data_thema1[position].participantUserIdStrings[1])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema1[position].participantUserIds[1])
+                    }
+                    userIdStringTextView3.setText(data_thema1[position].participantUserIdStrings[2])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema1[position].participantUserIds[2])
+                    }
+                    userIdStringTextView4.setText(data_thema1[position].participantUserIdStrings[3])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema1[position].participantUserIds[3])
+                    }
                     dateTextView.text = data_thema1[position].date.toString()
                     textTextView.text = data_thema1[position].message
                 }
                 1 -> {
-                    var idSum: String = ""
-                    data_thema2[position].participantUserIds.forEach { id -> idSum = idSum + ", " + id.toString() }
-                    userIdStringTextView.text = idSum
+                    userIdStringTextView1.setText(data_thema2[position].participantUserIdStrings[0])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema2[position].participantUserIds[0])
+                    }
+                    userIdStringTextView2.setText(data_thema2[position].participantUserIdStrings[1])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema2[position].participantUserIds[1])
+                    }
+                    userIdStringTextView3.setText(data_thema2[position].participantUserIdStrings[2])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema2[position].participantUserIds[2])
+                    }
+                    userIdStringTextView4.setText(data_thema2[position].participantUserIdStrings[3])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_thema2[position].participantUserIds[3])
+                    }
                     dateTextView.text = data_thema2[position].date.toString()
                     textTextView.text = data_thema2[position].message
                 }
                 2 -> {
-                    var idSum: String = ""
-                    data_film[position].participantUserIds.forEach { id -> idSum = idSum + ", " + id.toString() }
-                    userIdStringTextView.text = idSum
+                    userIdStringTextView1.setText(data_film[position].participantUserIdStrings[0])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_film[position].participantUserIds[0])
+                    }
+                    userIdStringTextView2.setText(data_film[position].participantUserIdStrings[1])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_film[position].participantUserIds[1])
+                    }
+                    userIdStringTextView3.setText(data_film[position].participantUserIdStrings[2])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_film[position].participantUserIds[2])
+                    }
+                    userIdStringTextView4.setText(data_film[position].participantUserIdStrings[3])
+                    userIdStringTextView1.setOnClickListener {
+                        startProfileActivity(data_film[position].participantUserIds[3])
+                    }
                     dateTextView.text = data_film[position].date.toString()
                     textTextView.text = data_film[position].message
                 }
@@ -1111,7 +1184,6 @@ class Main1HomeFragment : Fragment() {
                         return
                     } else {
                         Log.e("MAIN1HOME_COMMENT4", "댓글 로드 성공!")
-                        commentDialogBinding.userIdStringTextView
                         adapter_comment.data = commentsList.toMutableList()
                         adapter_comment.notifyDataSetChanged()
                     }
@@ -1144,6 +1216,12 @@ class Main1HomeFragment : Fragment() {
         val request = CreateComment(postId, userId, commentContent)
         createCommentRequest(request, postId)
     }
+    //키보드 숨기기
+    fun hideKeyboard(activity: Activity) {
+        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = activity.currentFocus ?: View(activity)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
     private fun createCommentRequest(request: CreateComment, postId: Long) {
         val call = RetrofitBuilder.api.createComment(request)
         call.enqueue(object : Callback<CommentResponse> { // 비동기 방식 통신 메소드
@@ -1158,20 +1236,26 @@ class Main1HomeFragment : Fragment() {
                         Log.e("MAIN1HOME_CREATE_COMMENT2", "응답이 null입니다.")
                         return
                     } else  {
-                        when (currentRequestedTheme) {
+                        when (current_selected_thema) {
                             0 -> {
                                 val layoutManager = binding.postImageLayoutThema1.recyclerView.layoutManager as LinearLayoutManager
                                 val position = layoutManager.findFirstVisibleItemPosition()
+                                commentDialogBinding.addCommentEditTextView.setText("")
+                                hideKeyboard(requireActivity())
                                 loadComments(postId, position)
                             }
                             1 -> {
                                 val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
                                 val position = layoutManager.findFirstVisibleItemPosition()
+                                commentDialogBinding.addCommentEditTextView.setText("")
+                                hideKeyboard(requireActivity())
                                 loadComments(postId, position)
                             }
                             2 -> {
                                 val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
                                 val position = layoutManager.findFirstVisibleItemPosition()
+                                commentDialogBinding.addCommentEditTextView.setText("")
+                                hideKeyboard(requireActivity())
                                 loadComments(postId, position)
                             }
                         }
@@ -1200,7 +1284,7 @@ class Main1HomeFragment : Fragment() {
             }
         })
     }
-//</editor-fold>
+    //</editor-fold>
     private fun loadPosts(themaNum: Int) {
         //요청을 보낼 시간 설정
         val lastPostDate: LocalDateTime? = when(themaNum) {
@@ -1240,16 +1324,17 @@ class Main1HomeFragment : Fragment() {
                     binding.postImageLayoutFilm.viewGroup.visibility = View.INVISIBLE
             }
         }
-        loadPostRequest(this.id, themaNum, lastPostDate.toString())
+        loadPostRequest(this.id, current_selected_thema, lastPostDate.toString())
     }
     fun loadPostRequest(id: Long, theme: Int, lastPostDate: String){
+        Log.d("MAIN1HOME", lastPostDate+" 이전의 게시글을 로드합니다.")
         val call = RetrofitBuilder.api.main1LoadPostRequest(id,theme,lastPostDate)
         call.enqueue(object : Callback<List<Main1LoadPostResponse>> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<List<Main1LoadPostResponse>>,
                 response: Response<List<Main1LoadPostResponse>>
             ) {
-                Log.e("MAIN1HOME", response.raw().request.url.toString())
+                Log.e("MAIN1HOME", response.raw().request.url.toString()) //요청 보내는 주소.
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val postList  = response.body()
                     if (postList == null) {
@@ -1258,7 +1343,6 @@ class Main1HomeFragment : Fragment() {
                         reload()
                         return
                     }
-
                     Log.d("MAIN1HOME", "응답 성공 / post 개수 : " + postList.size.toString())
                     //데이터 처리
                     val beforeDataCount = when (theme) {
@@ -1277,10 +1361,15 @@ class Main1HomeFragment : Fragment() {
                         //TODO: postId랑 userIds랑 구별해야됨.
                         newPost.postId = post.postId
                         newPost.likeCount = post.likeCount
-                        val dateString = post.date
+                        var dateString = post.date
+                        for (i in 0..25 - dateString.length) {
+                            dateString += "0"
+                        }
+                        val parts = dateString.split(".")
+                        val nanoSeconds = ((parts[1]).toInt() - 1).toString()
                         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-                        newPost.date = LocalDateTime.parse(dateString, formatter)
-                        Log.d("MAIN1HOME", newPost.date.toString())
+                        newPost.date = LocalDateTime.parse(parts[0] + "." + nanoSeconds, formatter)
+
                         newPost.message = post.text
                         newPost.musicNum = post.musicNum
                         newPost.participantUserIds = post.participantUserIds
@@ -1300,6 +1389,24 @@ class Main1HomeFragment : Fragment() {
                                 Log.d("MAIN1HOME", "theme1 게시물이 로드되었습니다. data_set개수 : " + data_thema1.count())
                                 adapter_thema1.notifyDataSetChanged()
                                 binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
+                                if (beforeDataCount == 0) {
+                                    if (data_thema1[0].likeClicked) {
+                                        thema1Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
+                                    } else {
+                                        thema1Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                                    }
+                                    if (data_thema1[0].participantsUserProfileUrl.count() == 1) {
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema1[0].participantsUserProfileUrl[0])
+                                            .into(thema1Binding.userProfileImageView1)
+                                    } else if (data_thema1[0].participantsUserProfileUrl.count() == 4) {
+                                        for (i in 0..3){
+                                            Glide.with(requireContext())
+                                                .load(baseUrl + data_thema1[i].participantsUserProfileUrl[i])
+                                                .into(thema1Binding.userProfileImageView1)
+                                        }
+                                    }
+                                }
                             }
                         }
                         1 -> {
