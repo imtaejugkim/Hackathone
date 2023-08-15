@@ -182,8 +182,12 @@ public class PostController {
 
 		User currentUser = userRepository.findById(userId).orElse(null); // 현재 사용자 정보 가져오기
 
-		List<PostDto> postDtos = posts.stream().map(post -> {
-			PostDto dto = postService.toDto(post);
+		List<PostDto> postDtos = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.map(post -> {
+					PostDto dto = postService.toDto(post);
+//		List<PostDto> postDtos = posts.stream().map(post -> {
+//			PostDto dto = postService.toDto(post);
 
 			// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
 			if (currentUser != null && post.getLikedUsers().contains(currentUser)) {
@@ -204,11 +208,14 @@ public class PostController {
 			return dto;
 		}).collect(Collectors.toList());
 
+		log.info("postDtos = {}",postDtos);
+
 		return ResponseEntity.ok(postDtos);
 	}
 
 	private LocalDateTime convertStringToLocalDateTime(String str) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
 		return LocalDateTime.parse(str, formatter);
 	}
 
@@ -236,6 +243,12 @@ public class PostController {
 
 			return dto;
 		}).collect(Collectors.toList());
+
+		posts = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+
+		log.info("postDtos = {}",postDtos);
 
 		return ResponseEntity.ok(postDtos);
 	}
