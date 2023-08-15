@@ -30,13 +30,15 @@ public class Notification {
 
 	private Long postId; // 릴레이 알림에 대한 postId
 	private Long userId; // 릴레이나 좋아요를 보낸 사용자 ID
+	private String userIdString; // String 형태의 사용자 ID
 	private String userName; // 릴레이나 좋아요를 보낸 사용자의 이름
 	private Duration remainingTime; // 릴레이에 대한 남은 시간
+	private String userProfileUrl; // 작성자의 프로필 사진 URL 필드 추가
 
 	private NotificationType type;
 
 	public enum NotificationType {
-		LIKE, COMMENT, FOLLOW,
+		LIKE, COMMENT, FOLLOW, RELAY
 		// ... 다른 알림 타입들 추후에 추가
 	}
 

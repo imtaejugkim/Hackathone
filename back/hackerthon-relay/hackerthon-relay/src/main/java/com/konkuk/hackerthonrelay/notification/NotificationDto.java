@@ -12,7 +12,9 @@ public class NotificationDto {
 	private String message;
 	private LocalDateTime createdAt;
 	private Long userId;
+	private String userIdString;
 	private String userName;
 	private Duration remainingTime;
 	private Long postId;
+	private String userProfileUrl;
 }

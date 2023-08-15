@@ -10,13 +10,17 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
+	
+	List<Post> findByIsCompletedFalse();
 
-	List<Post> findByThemeAndUserIdInOrderByCreatedAtDesc(Integer theme, List<Long> userIds, Pageable pageable);
+	List<Post> findByThemeAndUserId(Integer theme, Long Id);
 
-	List<Post> findByThemeAndUserIdInAndCreatedAtBeforeOrderByCreatedAtDesc(Integer theme, List<Long> userIds,
-																			LocalDateTime lastPostDate, Pageable pageable);
+	List<Post> findByThemeAndCreatorIdInOrderByCreatedAtDesc(Integer theme, List<Long> creatorIds, Pageable pageable);
 
-	List<Post> findByUser(User user);
+	List<Post> findByThemeAndCreatorIdInAndCreatedAtBeforeOrderByCreatedAtDesc(Integer theme, List<Long> creatorIds,
+			LocalDateTime createdAt, Pageable pageable);
 
+	List<Post> findByCreator(User user);
+	
 	List<Post> findByCreatedAtAfter(LocalDateTime tenMinutesAgo);
 }

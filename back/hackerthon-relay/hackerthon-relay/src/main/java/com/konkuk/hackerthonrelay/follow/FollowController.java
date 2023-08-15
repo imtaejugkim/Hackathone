@@ -1,5 +1,8 @@
 package com.konkuk.hackerthonrelay.follow;
 
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.Notification.NotificationType;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +22,41 @@ public class FollowController {
     private final FollowRelationRepository followRelationRepository;
     private final UserRepository userRepository;
     private final FollowService followService;
+	private final NotificationRepository notificationRepository;
 
-    public FollowController(FollowRelationRepository followRelationRepository, UserRepository userRepository, FollowService followService) {
-        this.followRelationRepository = followRelationRepository;
-        this.userRepository = userRepository;
-        this.followService = followService;
-    }
+	public FollowController(FollowRelationRepository followRelationRepository, UserRepository userRepository,
+			FollowService followService, NotificationRepository notificationRepository) {
+		this.followRelationRepository = followRelationRepository;
+		this.userRepository = userRepository;
+		this.followService = followService;
+		this.notificationRepository = notificationRepository;
+	}
 
-    @PostMapping("/toggle/{requesterId}/{targetId}")
-    public ResponseEntity<Map<String, Object>> toggleFollow(@PathVariable Long requesterId,
-                                                            @PathVariable Long targetId) {
-        return followService.toggleFollow(requesterId, targetId);
+	@PostMapping("/toggle/{requesterId}/{targetId}")
+	public ResponseEntity<Map<String, Object>> toggleFollow(@PathVariable Long requesterId,
+			@PathVariable Long targetId) {
+		ResponseEntity<Map<String, Object>> responseEntity = followService.toggleFollow(requesterId, targetId);
+		Map<String, Object> response = responseEntity.getBody();
+
+		boolean isFollowing = (boolean) response.get("isFollowing");
+		if (isFollowing) {
+			// 팔로우 관계가 생성되었을 때 알림 생성
+			User requester = userRepository.findById(requesterId)
+					.orElseThrow(() -> new RuntimeException("User not found"));
+			User target = userRepository.findById(targetId).orElseThrow(() -> new RuntimeException("User not found"));
+
+			Notification notification = new Notification();
+			notification.setRecipient(target);
+			notification.setMessage(requester.getUsername() + "님이 당신을 팔로우했습니다.");
+			notification.setType(NotificationType.FOLLOW);
+			notification.setUserId(requester.getId()); // 팔로우 요청한 사용자의 ID
+			notification.setUserIdString(requester.getUserId()); // 팔로우 요청한 사용자의 String userId 설정
+			notification.setUserName(requester.getUsername()); // 팔로우 요청한 사용자의 이름
+			notification.setUserProfileUrl(requester.getProfilePictureUrl());
+
+			notificationRepository.save(notification);
+		}
+		return responseEntity;
     }
 
     @GetMapping("/followers/{userId}")

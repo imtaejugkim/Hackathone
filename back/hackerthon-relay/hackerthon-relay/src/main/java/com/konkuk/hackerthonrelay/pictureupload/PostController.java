@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import com.konkuk.hackerthonrelay.comment.CommentService;
 import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.Notification.NotificationType;
 import com.konkuk.hackerthonrelay.notification.NotificationDto;
 import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,6 @@ import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.comment.CommentDto;
 import com.konkuk.hackerthonrelay.follow.FollowRelation;
 import com.konkuk.hackerthonrelay.follow.FollowRelationRepository;
-import com.konkuk.hackerthonrelay.search.UserService;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
 
@@ -36,25 +36,17 @@ import com.konkuk.hackerthonrelay.user.UserRepository;
 @RequestMapping("/api/posts")
 public class PostController {
 
+
 	private final PostRepository postRepository;
 	private final PostService postService;
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private FollowRelationRepository followRelationRepository;
-
-	@Autowired
-	private CommentService commentService; // CommentService 주입
-
+	private final UserRepository userRepository;
+	private final FollowRelationRepository followRelationRepository;
+	private final CommentService commentService;
 	private final NotificationRepository notificationRepository;
-
 
 	@Autowired
 	public PostController(PostService postService, PostRepository postRepository, UserRepository userRepository,
-						  FollowRelationRepository followRelationRepository, CommentService commentService,
-						  NotificationRepository notificationRepository
-	) {
+			FollowRelationRepository followRelationRepository, CommentService commentService, NotificationRepository notificationRepository) {
 		this.postService = postService;
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
@@ -62,7 +54,6 @@ public class PostController {
 		this.commentService = commentService;
 		this.notificationRepository = notificationRepository;
 	}
-
 
 	@GetMapping("/{postId}")
 	public ResponseEntity<PostDto> getPost(@PathVariable Long postId) {
@@ -102,7 +93,7 @@ public class PostController {
 
 	@PostMapping("/{postId}/like")
 	public ResponseEntity<Map<String, Object>> likePost(@PathVariable Long postId, @RequestParam Long userId) {
-		Map<String, Object> response = new HashMap<>();
+	    Map<String, Object> response = new HashMap<>();
 
 		boolean isLiked = postService.likePost(postId, userId);
 
@@ -113,28 +104,26 @@ public class PostController {
 		}
 		response.put("status", true);
 
-
 		// 알림 생성
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 		User liker = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+		
+		if (!liker.equals(post.getCreator())) {
+		    Notification notification = new Notification();
+		    notification.setRecipient(post.getCreator());
+		    notification.setMessage(liker.getUsername() + "님이 당신의 게시물을 좋아합니다.");
+		    notification.setType(NotificationType.LIKE);
+		    notification.setPostId(postId);
+		    notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
+		    notification.setUserIdString(liker.getUserId()); // String 형태의 userId 설정
+		    notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
+		    notification.setUserProfileUrl(liker.getProfilePictureUrl());
 
-		boolean isParticipant = post.getParticipants().stream()
-				.anyMatch(participant -> participant.getUser().equals(liker));
-		if(isLiked && !isParticipant) {
-			Notification notification = new Notification();
-			notification.setRecipient(post.getCreator());
-			notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
-			notification.setType(Notification.NotificationType.LIKE);
-			notification.setPostId(postId);
-			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
-			notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
-
-			notificationRepository.save(notification);
+		    notificationRepository.save(notification);
 		}
-
 		return ResponseEntity.ok(response);
 	}
-
+	
 	@GetMapping("/notifications/{userId}")
 	public ResponseEntity<List<NotificationDto>> getNotifications(@PathVariable Long userId) {
 		User user = userRepository.findById(userId)
@@ -156,7 +145,7 @@ public class PostController {
 
 	@GetMapping("/loadMain")
 	public ResponseEntity<List<PostDto>> getMainPosts(@RequestParam Long userId, @RequestParam Integer theme,
-													  @RequestParam(required = false) String lastPostDateStr, @RequestParam(defaultValue = "20") int limit) {
+			@RequestParam(required = false) String lastPostDateStr, @RequestParam(defaultValue = "20") int limit) {
 
 		LocalDateTime lastPostDate = null;
 		if (lastPostDateStr != null && !lastPostDateStr.isEmpty()) {
@@ -174,21 +163,22 @@ public class PostController {
 		List<Post> posts;
 
 		if (lastPostDate == null) {
-			posts = postRepository.findByThemeAndUserIdInOrderByCreatedAtDesc(theme, followingUserIds,
+			posts = postRepository.findByThemeAndCreatorIdInOrderByCreatedAtDesc(theme, followingUserIds,
 					PageRequest.of(0, limit));
 		} else {
-			posts = postRepository.findByThemeAndUserIdInAndCreatedAtBeforeOrderByCreatedAtDesc(theme, followingUserIds,
+			posts = postRepository.findByThemeAndCreatorIdInAndCreatedAtBeforeOrderByCreatedAtDesc(theme,
+					followingUserIds,
 					lastPostDate, PageRequest.of(0, limit));
 		}
 
 		User currentUser = userRepository.findById(userId).orElse(null); // 현재 사용자 정보 가져오기
-
-		List<PostDto> postDtos = posts.stream()
+		
+		posts = posts.stream()
 				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
-				.map(post -> {
-					PostDto dto = postService.toDto(post);
-//		List<PostDto> postDtos = posts.stream().map(post -> {
-//			PostDto dto = postService.toDto(post);
+				.collect(Collectors.toList());
+		
+		List<PostDto> postDtos = posts.stream().map(post -> {
+			PostDto dto = postService.toDto(post);
 
 			// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
 			if (currentUser != null && post.getLikedUsers().contains(currentUser)) {
@@ -209,8 +199,6 @@ public class PostController {
 			return dto;
 		}).collect(Collectors.toList());
 
-		log.info("postDtos = {}",postDtos);
-
 		return ResponseEntity.ok(postDtos);
 	}
 
@@ -225,10 +213,14 @@ public class PostController {
 		User profileUser = userRepository.findById(userId)
 				.orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));
 
-		List<Post> posts = postRepository.findByUser(profileUser);
+		List<Post> posts = postRepository.findByCreator(profileUser);
 
 		User loggedInUser = userRepository.findById(currentUser).orElse(null); // 로그인한 사용자 정보 가져오기
-
+		
+		posts = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+		
 		List<PostDto> postDtos = posts.stream().map(post -> {
 			PostDto dto = postService.toDto(post);
 
@@ -245,11 +237,6 @@ public class PostController {
 			return dto;
 		}).collect(Collectors.toList());
 
-		posts = posts.stream()
-				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
-				.collect(Collectors.toList());
-
-		log.info("postDtos = {}",postDtos);
 
 		return ResponseEntity.ok(postDtos);
 	}
