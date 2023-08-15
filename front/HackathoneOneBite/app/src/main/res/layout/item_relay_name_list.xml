@@ -10,10 +10,24 @@
     android:layout_marginBottom="8dp"
     android:gravity="center_vertical">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/nameTextView"
-        android:text="홍길동"
-        android:textSize="15dp"/>
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/idTextView"
+            android:textColor="@color/black"
+            android:text="tae0803"
+            android:textSize="20dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/nameTextView"
+            android:text="김태정"
+            android:textSize="15dp"/>
+
+
+    </LinearLayout>
 </LinearLayout>

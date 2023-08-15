@@ -19,9 +19,3 @@ data class Main3RelayPostRequest(
     @SerializedName("text")var message: String = ""
 )
 
-data class Main3RelaySearchRequest(
-    @SerializedName("id")var id: Long = 0,
-    @SerializedName("username")var username: String = "",
-    @SerializedName("user_id")var user_id: String = "",
-    @SerializedName("email")var email: String = "",
-)

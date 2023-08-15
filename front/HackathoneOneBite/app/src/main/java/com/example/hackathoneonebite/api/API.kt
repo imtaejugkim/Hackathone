@@ -47,12 +47,20 @@ public interface API {
         @Part("remainingSeconds") remainingSeconds : Int
     ): Call<Main3RelayPostIsComplete>
 
+    //알림 로드
+    @GET("/api/notification/{userId}")
+    fun notificationLoadRequest(
+        @Path("userId") userId: String
+    ): Call<List<NotificationLoadResponse>>
+
+
 
     //검색 로드
     @GET("/api/user/search")
     fun main3LoadUserRequest(
-        @Path("Id") id: Long
-    ) : Call<Main3RelaySearchRequest>
+        @Query("Id") id: Long,
+        @Query("q") q : String
+    ) : Call<List<Main3RelaySearchResponse>>
 
     //이미지 로드
     @GET("/api/posts/loadMain") //이미지 로드

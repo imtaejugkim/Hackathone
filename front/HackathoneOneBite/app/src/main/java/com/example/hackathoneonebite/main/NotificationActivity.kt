@@ -21,6 +21,8 @@ import java.sql.Types.NULL
 
 class NotificationActivity : AppCompatActivity() {
     lateinit var binding: ActivityNotificationBinding
+    private  var notificationList = mutableListOf<String>()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,21 +67,17 @@ class NotificationActivity : AppCompatActivity() {
 
     private fun loadNotificationRequest(userId : String) {
         val call = RetrofitBuilder.api.notificationLoadRequest(userId)
-        call.enqueue(object : Callback<NotificationLoadResponse> { // 비동기 방식 통신 메소드
+        call.enqueue(object : Callback<List<NotificationLoadResponse>> { // 비동기 방식 통신 메소드
             override fun onResponse(
-                call: Call<NotificationLoadResponse>,
-                response: Response<NotificationLoadResponse>
+                call: Call<List<NotificationLoadResponse>>,
+                response: Response<List<NotificationLoadResponse>>
             ) {
                 Log.e("Notification: LOAD POST INFO0", response.raw().request.url.toString())
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
-                    val id = userResponse?.id
-                    val message = userResponse?.message
-                    val createdAt = userResponse?.createdAt
-                    val userName = userResponse?.userName
-                    val remainingTime = userResponse?.remainingTime
-                    val postId = userResponse?.postId
-                    init(id,message,createdAt,userName,remainingTime,postId)
+                    val notificationList =
+                        userResponse?.map { "${it.id} (${it.userId}) (${it.message}) (${it.createdAt}) (${it.userName}) (${it.remainingTime}) (${it.postId})" }?.toMutableList()
+
                 }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
@@ -98,7 +96,7 @@ class NotificationActivity : AppCompatActivity() {
                     }
                 }
             }
-            override fun onFailure(call: Call<NotificationLoadResponse>, t: Throwable) {
+            override fun onFailure(call: Call<List<NotificationLoadResponse>>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("MAIN5PROFILE CONNECTION FAILURE: LOAD POST INFO3", t.localizedMessage)
 

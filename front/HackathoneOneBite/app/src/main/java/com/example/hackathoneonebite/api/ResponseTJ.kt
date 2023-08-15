@@ -22,3 +22,10 @@ data class NotificationLoadResponse(
     @SerializedName("postId") val postId : Long
 
     )
+
+data class Main3RelaySearchResponse(
+    @SerializedName("id")var id: Long = 0,
+    @SerializedName("username")var username: String = "",
+    @SerializedName("userId")var userId: String = "",
+    @SerializedName("email")var email: String = "",
+)
