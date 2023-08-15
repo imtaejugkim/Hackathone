@@ -42,7 +42,7 @@ public class User {
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 
-    @JsonManagedReference // 형
+    @JsonManagedReference
     @ManyToMany(mappedBy = "likedUsers")
     private Set<Post> likedPosts = new HashSet<>();
 
