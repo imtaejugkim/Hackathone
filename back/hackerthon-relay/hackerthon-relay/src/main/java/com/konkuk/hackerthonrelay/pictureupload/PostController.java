@@ -187,8 +187,6 @@ public class PostController {
 				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
 				.map(post -> {
 					PostDto dto = postService.toDto(post);
-//		List<PostDto> postDtos = posts.stream().map(post -> {
-//			PostDto dto = postService.toDto(post);
 
 			// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
 			if (currentUser != null && post.getLikedUsers().contains(currentUser)) {

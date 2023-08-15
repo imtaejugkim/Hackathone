@@ -25,7 +25,7 @@ public class Post {
 	@OneToOne
 	private Image mainImage;
 
-	@JsonManagedReference // 형
+	@JsonManagedReference
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Image> images = new ArrayList<>();
 
@@ -220,5 +220,6 @@ public class Post {
 			return true; // 좋아요 눌림을 나타내는 true 반환
 		}
 	}
+
 
 }

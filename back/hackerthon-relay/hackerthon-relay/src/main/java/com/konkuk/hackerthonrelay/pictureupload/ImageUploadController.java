@@ -28,6 +28,7 @@ import com.konkuk.hackerthonrelay.user.UserRepository;
 public class ImageUploadController {
     private final ImageUploadService uploadService;
     private final PostRepository postRepository;
+	private final PostService postService;
 	private final UserRepository userRepository;
 
 	private final ImageRepository imageRepository;
@@ -38,7 +39,7 @@ public class ImageUploadController {
 	@Autowired
 	public ImageUploadController(ImageUploadService uploadService, PostRepository postRepository,
 			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService,
-								 NotificationRepository notificationRepository) {
+								 NotificationRepository notificationRepository, PostService postService) {
         this.uploadService = uploadService;
         this.postRepository = postRepository;
 		this.userRepository = userRepository;
@@ -46,6 +47,7 @@ public class ImageUploadController {
 		this.tagRepository = tagRepository;
 		this.tagService = tagService;
 		this.notificationRepository = notificationRepository;
+		this.postService = postService;
     }
 
 	//db 업데이트
@@ -73,6 +75,7 @@ public class ImageUploadController {
 		log.info("imageFiles = {}", imageFiles);
 		Map<String, Object> response = new HashMap<>();
 
+
 		try {
 			User user = userRepository.findByUserId(userId);
 			if (user == null) {
@@ -81,6 +84,7 @@ public class ImageUploadController {
 				response.put("message", "User not found.");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
+
 
 			Post post = new Post();
 			post.setTheme(theme); // 게시물 테마 설정
@@ -164,6 +168,7 @@ public class ImageUploadController {
 			Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
 			User user = userRepository.findByUserId(userId);
+
 
 			// 참여자 목록에서 특정 사용자가 이미 포함되어 있는지 확인
 			boolean isUserAlreadyParticipant = post.getParticipants().stream()

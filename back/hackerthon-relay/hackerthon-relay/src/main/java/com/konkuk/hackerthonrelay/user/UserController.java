@@ -196,8 +196,9 @@ public class UserController {
 	public ResponseEntity<List<UserRankingDto>> getRanking() {
 		List<User> users = userRepository.findAll();
 		List<UserRankingDto> ranking = users.stream()
-				.map(user -> new UserRankingDto(user.getId(), user.getUsername(), user.getScore())) // getScore 메소드를 사용
-				.sorted(Comparator.comparing(UserRankingDto::getScore).reversed()).collect(Collectors.toList());
+				.map(user -> new UserRankingDto(user.getId(), user.getUsername(), user.getScore()))
+				.sorted(Comparator.comparing(UserRankingDto::getScore).reversed())
+				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(ranking);
 	}
