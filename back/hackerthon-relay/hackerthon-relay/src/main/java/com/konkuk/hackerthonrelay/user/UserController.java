@@ -64,6 +64,7 @@ public class UserController {
 		user.setUserId(dto.getUserId());
 		user.setUsername(dto.getUsername());
 		user.setEmail(dto.getEmail());
+		user.setProfilePictureUrl("/profiles/basicProfile.jpg");
 
 		try {
 			User savedUser = userRepository.save(user);
