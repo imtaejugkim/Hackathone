@@ -73,6 +73,15 @@ public class CommentService {
 
     // 댓글 삭제 메서드
     public void deleteComment(Long commentId) {
+
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        if (comment != null) {
+            Post post = comment.getPost();
+            // 댓글 수 감소
+            post.setCommentCount(post.getCommentCount() - 1);
+            postRepository.save(post);
+        }
+
         commentRepository.deleteById(commentId);
     }
 

@@ -215,7 +215,7 @@ class Main5ProfileFragment : Fragment() {
         dlg.window?.setGravity(Gravity.BOTTOM)
         dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
-
+//<editor-fold desc="새로고침 접어놓기">
     //프로필 정보 호출
     private fun loadProfileInfo(id: Long) {
         Log.d("MAIN5PROFILE", "id : " + id.toString())
@@ -341,5 +341,11 @@ class Main5ProfileFragment : Fragment() {
     }
     private fun reloadPost() {
         handler.postDelayed(postRunnable, 7000)
+    }
+//</editor-fold>
+
+    //프로필 수정 화면
+    private fun modifyProfile(id: Long) {
+
     }
 }

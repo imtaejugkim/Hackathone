@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,8 @@ public class PostService {
 	}
 
 	@Autowired
-	public PostService(PostRepository postRepository, UserRepository userRepository) {
+	public PostService(PostRepository postRepository, UserRepository userRepository,
+					   NotificationRepository notificationRepository) {
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 	}
@@ -67,15 +69,12 @@ public class PostService {
 
 	public PostDto toDto(Post post) { // 한번에 반환이 필요한 경우에 사용
 		PostDto dto = new PostDto();
-		List<String> participantsUserProfileUrls = post.getImages().stream()
-				.map(image -> image.getUser().getProfilePictureUrl()).distinct().collect(Collectors.toList());
 
 		dto.setId(post.getId());
 		dto.setLikeCount(post.getLikes()); // 좋아요 수 설정
 		dto.setTheme(post.getTheme()); // 테마 설정
 		dto.setDate(post.getCreatedAt());
 		dto.setText(post.getText());
-		dto.setParticipantsUserProfileUrl(participantsUserProfileUrls);
 
 		// Image 객체 리스트를 URI 리스트로 변환
 		List<String> imgList = post.getImages().stream().map(Image::getPath).collect(Collectors.toList());
@@ -100,6 +99,11 @@ public class PostService {
 				.map(image -> image.getUser().getUserId()).distinct().collect(Collectors.toList());
 
 		dto.setParticipantUserIdStrings(participantUserIdStrings);
+
+		List<String> participantsUserProfileUrls = post.getImages().stream()
+				.map(image -> image.getUser().getProfilePictureUrl()).distinct().collect(Collectors.toList());
+
+		dto.setParticipantsUserProfileUrl(participantsUserProfileUrls);
 
 		return dto;
 	}

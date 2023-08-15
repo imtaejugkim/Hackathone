@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.*;
 
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.pictureupload.tag.Tag;
 import com.konkuk.hackerthonrelay.pictureupload.tag.TagRepository;
 import com.konkuk.hackerthonrelay.pictureupload.tag.TagService;
@@ -29,19 +31,21 @@ public class ImageUploadController {
 	private final UserRepository userRepository;
 
 	private final ImageRepository imageRepository;
+	private final NotificationRepository notificationRepository;
 	private final TagService tagService;
-
 	private final TagRepository tagRepository;
 
 	@Autowired
 	public ImageUploadController(ImageUploadService uploadService, PostRepository postRepository,
-			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService) {
+			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService,
+								 NotificationRepository notificationRepository) {
         this.uploadService = uploadService;
         this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.imageRepository = imageRepository;
 		this.tagRepository = tagRepository;
 		this.tagService = tagService;
+		this.notificationRepository = notificationRepository;
     }
 
 	//db 업데이트
@@ -100,6 +104,8 @@ public class ImageUploadController {
 			if (text != null) {
 				post.setText(text); // 텍스트 설정
 			}
+
+			post.setMainImage(post.getImages().get(0)); // 첫 번째 이미지를 메인 이미지로 설정
 
 			if (tags != null && !tags.isEmpty()) {
 				Set<Tag> tagSet = parseTags(tags);
@@ -237,6 +243,17 @@ public class ImageUploadController {
 		post.setMentionedUser(mentioned);
 		post.setRemainingTime(Duration.ofSeconds(remainingSeconds));
 
+		// 알림 생성
+		Notification notification = new Notification();
+		notification.setRecipient(mentioned);
+		notification.setMessage(currentUser.getUsername() + "님이 릴레이를 신청하셨습니다.");
+		notification.setType(Notification.NotificationType.COMMENT);
+		notification.setPostId(postId);
+		notification.setUserId(currentUser.getId()); // 현재 사용자의 ID
+		notification.setUserName(currentUser.getUsername()); // 현재 사용자의 이름
+		notification.setRemainingTime(Duration.ofSeconds(remainingSeconds)); // 남은 시간 설정
+
+		notificationRepository.save(notification);
 		postRepository.save(post);
 		Map<String, Object> response = new HashMap<>();
 		response.put("success", true);

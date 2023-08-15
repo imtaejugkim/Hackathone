@@ -62,6 +62,7 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
     }
     fun addDataToFragment(position: Int, key: String, value: Int) {
         val fragment = fragments[position]
+        Log.d("eeeee",fragment.toString())
         val args = fragment.arguments ?: Bundle()
         args.putInt(key, value)
         fragment.arguments = args
