@@ -25,7 +25,7 @@ public class Image {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 
-	@JsonBackReference // 난 JsonIgonore
+	@JsonBackReference
 	@ManyToOne(cascade = CascadeType.ALL)
 	private Post post;
 

@@ -40,12 +40,6 @@ public class FollowServiceImpl implements FollowService {
         User follower = userRepository.findById(followerId).orElse(null);
         User following = userRepository.findById(followingId).orElse(null);
 
-        //FollowRelation existingRelation = followRelationRepository.findByFollowerAndFollowing(follower, following);
-//        if (existingRelation != null) {
-//            response.put("success", false);
-//            return ResponseEntity.badRequest().body(response);
-//        }
-
         if (follower == null || following == null) {
             response.put("success", false);
             return ResponseEntity.badRequest().body(response);

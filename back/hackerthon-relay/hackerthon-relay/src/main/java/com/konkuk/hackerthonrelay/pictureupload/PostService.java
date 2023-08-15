@@ -56,17 +56,6 @@ public class PostService {
 		return isLiked;
 	}
 
-
-//	@Scheduled(fixedDelay = 1000) // This method will be executed every 60 seconds
-//	public void checkPostRemainingTime() {
-//		List<Post> posts = postRepository.findByIsCompletedFalse(); // 아직 완료되지 않은 게시물만 조회
-//		for (Post post : posts) {
-//			post.decreaseRemainingTime();
-//			post.passEditRight();
-//			postRepository.save(post);
-//		}
-//	}
-
 	public PostDto toDto(Post post) { // 한번에 반환이 필요한 경우에 사용
 		PostDto dto = new PostDto();
 

@@ -2,9 +2,12 @@ package com.konkuk.hackerthonrelay.search;
 
 import com.konkuk.hackerthonrelay.user.User;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "search_history")
+@Setter @Getter
 public class SearchHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -14,29 +17,5 @@ public class SearchHistory {
 	private User user;
 
 	private String keyword;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
 
 }
