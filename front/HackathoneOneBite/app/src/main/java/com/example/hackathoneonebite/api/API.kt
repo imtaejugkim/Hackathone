@@ -94,10 +94,34 @@ public interface API {
         @Path("targetId") targetId: Long
     ): Call<FollowToggleResponse>
     //프로필 수정
-    /*@POST("/api/user/update/{userId}")
-    fun updateProfile(
-
-    )*/
+    @Multipart
+    @POST("/api/user/update/{userId}")
+    fun updateProfile_userId_username(
+        @Path("userId") id: Long,
+        @Part("userUpdates") updateRequest: UpdateProfileRequest
+    ): Call<UpdateProfileResponse>
+    @Multipart
+    @POST("/api/user/update/{userId}")
+    fun updateProfile_userId_username_profileImg(
+        @Path("userId") id: Long,
+        @Part("userUpdates") updateRequest: UpdateProfileRequest,
+        @Part profileImage: MultipartBody.Part
+    ): Call<UpdateProfileResponse>
+    @Multipart
+    @POST("/api/user/update/{userId}")
+    fun updateProfile_userId_username_backgroundImg(
+        @Path("userId") id: Long,
+        @Part("userUpdates") updateRequest: UpdateProfileRequest,
+        @Part backgroundImage: MultipartBody.Part
+    ): Call<UpdateProfileResponse>
+    @Multipart
+    @POST("/api/user/update/{userId}")
+    fun updateProfile_userId_username_profileImg_backgroundImg(
+        @Path("userId") id: Long,
+        @Part("userUpdates") updateRequest: UpdateProfileRequest,
+        @Part profileImage: MultipartBody.Part,
+        @Part backgroundImage: MultipartBody.Part
+    ): Call<UpdateProfileResponse>
 
 
     //랭킹
