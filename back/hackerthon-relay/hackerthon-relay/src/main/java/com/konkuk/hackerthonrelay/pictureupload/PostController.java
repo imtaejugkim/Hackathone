@@ -8,6 +8,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.konkuk.hackerthonrelay.comment.CommentService;
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.NotificationDto;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +33,8 @@ import com.konkuk.hackerthonrelay.user.UserRepository;
 @RequestMapping("/api/posts")
 public class PostController {
 
+	private final PostRepository postRepository;
+	private final PostService postService;
 	@Autowired
 	private UserRepository userRepository;
 
@@ -39,17 +44,20 @@ public class PostController {
 	@Autowired
 	private CommentService commentService; // CommentService 주입
 
-	private final PostRepository postRepository;
-	private final PostService postService;
+	private final NotificationRepository notificationRepository;
+
 
 	@Autowired
 	public PostController(PostService postService, PostRepository postRepository, UserRepository userRepository,
-						  FollowRelationRepository followRelationRepository, CommentService commentService) {
+						  FollowRelationRepository followRelationRepository, CommentService commentService,
+						  NotificationRepository notificationRepository
+	) {
 		this.postService = postService;
 		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.followRelationRepository = followRelationRepository;
 		this.commentService = commentService;
+		this.notificationRepository = notificationRepository;
 	}
 
 
@@ -102,7 +110,39 @@ public class PostController {
 		}
 		response.put("status", true);
 
+		// 알림 생성
+		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
+		User liker = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+		Notification notification = new Notification();
+		notification.setRecipient(post.getCreator());
+		notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
+		notification.setType(Notification.NotificationType.LIKE);
+		notification.setPostId(postId);
+		notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
+		notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
+
+		notificationRepository.save(notification);
+
 		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/notifications/{userId}")
+	public ResponseEntity<List<NotificationDto>> getNotifications(@PathVariable Long userId) {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new RuntimeException("User with ID " + userId + " not found"));
+
+		List<Notification> notifications = notificationRepository.findByRecipient(user);
+
+		// Convert to DTOs
+		List<NotificationDto> notificationDtos = notifications.stream().map(notification -> {
+			NotificationDto dto = new NotificationDto();
+			dto.setId(notification.getId());
+			dto.setMessage(notification.getMessage());
+			dto.setCreatedAt(notification.getCreatedAt());
+			return dto;
+		}).collect(Collectors.toList());
+
+		return ResponseEntity.ok(notificationDtos);
 	}
 
 	@GetMapping("/loadMain")
