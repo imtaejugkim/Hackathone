@@ -119,7 +119,7 @@ public class PostController {
 
 		boolean isParticipant = post.getParticipants().stream()
 				.anyMatch(participant -> participant.getUser().equals(liker));
-		if(!isParticipant) {
+		if(isLiked && !isParticipant) {
 			Notification notification = new Notification();
 			notification.setRecipient(post.getCreator());
 			notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
