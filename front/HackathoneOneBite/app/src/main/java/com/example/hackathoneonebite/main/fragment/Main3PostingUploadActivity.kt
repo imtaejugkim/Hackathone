@@ -16,11 +16,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.MyApplication
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingRequestBinding
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingUploadBinding
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import org.json.JSONException
@@ -37,6 +39,8 @@ class Main3PostingUploadActivity : AppCompatActivity(),
     private var rotationAnimator: ValueAnimator? = null
     private var mediaPlayer: MediaPlayer? = null
     private var selectedMusicPosition = 0
+    private var musicIsExist = false
+    private lateinit var images: Array<ByteArray> // image 변환 전 byteArray들
 
 
     lateinit var binding: ActivityMain3PostingUploadBinding
@@ -74,16 +78,6 @@ class Main3PostingUploadActivity : AppCompatActivity(),
         Log.d("post",receivedPost.toString())
         val imagePartSize = receivedIntent.getIntExtra("imagePartSize", 0)
         val imageParts = arrayOfNulls<String>(4)
-        val imageByteArrays = ArrayList<ByteArray>()
-
-
-        for (i in 0 until 4) {
-            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
-            if (byteArray != null) {
-                imageByteArrays.add(byteArray)
-            }
-        }
-        Log.d("new 받음",imageByteArrays.toString())
 
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
@@ -95,10 +89,13 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
         val editText = binding.editText
         editText.background = null;
+
         val textTime = (selectedTime / 60).toString() + " : " + (selectedTime % 60).toString()
         binding.selectedTime.text = textTime
 
-
+        var theme = receivedPost?.theme
+        var userId = receivedPost?.userId
+        var message = editText.text.toString()
 
         val leftArrow = binding.leftArrow
         leftArrow.setOnClickListener {
@@ -108,17 +105,46 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
         val rightArrow = binding.rightArrow
         rightArrow.setOnClickListener {
+            val musicNum = if(musicIsExist){
+                selectedMusicPosition
+            }else{ -1 }
 
+            var imageByteArrayIndex = 0 // imageByteArrays 리스트의 인덱스
+            val imageParts = ArrayList<MultipartBody.Part>()
+            images = Array(4) { ByteArray(0) }
 
-            for(i in 0..3){
-                if(receivedPost!!.imgArray[i] == "true"){
-
+            for (i in 0..3) {
+                if (receivedPost!!.imgArray[i] == "true") {
+                    if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
+                        images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
+                        Log.d("images[$i]",images[i].toString())
+                        Log.d("인덱스는?",imageByteArrayIndex.toString())
+                        imageByteArrayIndex++
+                        val requestFile =
+                            RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
+                        imageParts.add(MultipartBody.Part.createFormData(
+                            "image",
+                            "image$i.jpg",
+                            requestFile
+                        ))
+                    }
                 }
             }
-            val imageParts = ArrayList<MultipartBody.Part>()
 
-            //Upload(imageParts, theme, userId, message)
+            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
+            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
+            val musicPart = RequestBody.create("text/plain".toMediaTypeOrNull(), musicNum.toString())
+            val message = RequestBody.create("text/plain".toMediaTypeOrNull(), message)
 
+            Upload(imageParts, themePart, idPart, musicPart, message)
+
+            Log.d("이미지",imageParts.toString())
+            Log.d("테마",theme.toString())
+            Log.d("유저 아이디",userId.toString())
+            Log.d("음악",musicNum.toString())
+            Log.d("글",message.toString())
+
+            MyApplication.imageByteArrays.clear()
 
             val nextIntent = Intent(this, Main1HomeFirstFragment::class.java)
             startActivity(nextIntent)
@@ -136,52 +162,39 @@ class Main3PostingUploadActivity : AppCompatActivity(),
         }
     }
 
-    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum : RequestBody, message: RequestBody) {
-        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum, message)
-        call.enqueue(object : retrofit2.Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
+    fun Upload(image: ArrayList<MultipartBody.Part>, theme: RequestBody, userId: RequestBody, musicNum: RequestBody, message: RequestBody){
+        val call = RetrofitBuilder.api.uploadPost(image, theme, userId, musicNum , message)
+        call.enqueue(object : Callback<Main3UploadPostIsComplete> { // 비동기 방식 통신 메소드
             override fun onResponse(
-                call: retrofit2.Call<Main3UploadPostIsComplete>,
-                response: retrofit2.Response<Main3UploadPostIsComplete>
+                call: Call<Main3UploadPostIsComplete>,
+                response: Response<Main3UploadPostIsComplete>
             ) {
-                if (response.isSuccessful()) { // 응답 잘 받은 경우
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
                     // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
                     Log.d("RESPONSE: ", "Success")
-                } else {
+                }else{
                     // 통신 성공 but 응답 실패
                     val errorBody = response.errorBody()?.string()
                     if (!errorBody.isNullOrEmpty()) {
                         try {
                             val jsonObject = JSONObject(errorBody)
                             val errorMessage = jsonObject.getString("error_message")
-                            Toast.makeText(
-                                this@Main3PostingUploadActivity,
-                                errorMessage,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this@Main3PostingUploadActivity, errorMessage, Toast.LENGTH_SHORT).show()
                         } catch (e: JSONException) {
                             Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
-                            Toast.makeText(
-                                this@Main3PostingUploadActivity,
-                                "오류가 발생했습니다.",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(this@Main3PostingUploadActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                         }
                     } else {
-                        Toast.makeText(
-                            this@Main3PostingUploadActivity,
-                            "오류가 발생했습니다.",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(this@Main3PostingUploadActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
 
             override fun onFailure(call: Call<Main3UploadPostIsComplete>, t: Throwable) {
-                TODO("Not yet implemented")
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
             }
         })
-
     }
 
     override fun onButtonClicked(position: Int) {
@@ -189,6 +202,11 @@ class Main3PostingUploadActivity : AppCompatActivity(),
 
         binding.mp3Song.visibility = View.VISIBLE
         binding.cdImageView.setImageResource(imageResources[position])
+
+        if(!musicIsExist) {
+            musicIsExist
+        }
+        else !musicIsExist
     }
 
     private fun startRotation() {

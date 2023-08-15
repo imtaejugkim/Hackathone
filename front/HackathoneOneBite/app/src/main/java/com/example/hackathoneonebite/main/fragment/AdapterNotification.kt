@@ -1,58 +1,74 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.content.Intent
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.R
 
-/*class AdapterNotification(private val items: List<NotificationItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class AdapterNotification : RecyclerView.Adapter<AdapterNotification.NotificationViewHolder>() {
+    private val items: MutableList<NotificationItem> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return when (viewType) {
-            TYPE_LIKE_NOTIFICATION -> {
-                val itemView = inflater.inflate(R.layout.item_like_notification, parent, false)
-                LikeNotificationViewHolder(itemView)
-            }
-            TYPE_FOLLOW_NOTIFICATION -> {
-                val itemView = inflater.inflate(R.layout.item_relay_notification, parent, false)
-                FollowNotificationViewHolder(itemView)
-            }
-            // 다른 유형의 아이템에 대한 처리 추가
-            else -> throw IllegalArgumentException("Unknown view type")
-        }
+        val view = inflater.inflate(R.layout.item_relay_notification, parent, false)
+        return NotificationViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val item = items[position]
-        when (holder) {
-            is LikeNotificationViewHolder -> {
-                // 좋아요 알림 아이템 뷰홀더 처리
+        holder.bind(item)
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    fun addItem(item: NotificationItem) {
+        items.add(item)
+        notifyItemInserted(items.size - 1)
+    }
+
+    inner class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val notificationProfile: ImageView = itemView.findViewById(R.id.notificationProfile)
+        private val notificationName: TextView = itemView.findViewById(R.id.notificationName)
+        private val notificationTime: TextView = itemView.findViewById(R.id.notificationTime)
+        private val notificationButton: Button = itemView.findViewById(R.id.notificationButton)
+
+        fun bind(item: NotificationItem) {
+            notificationName.text = item.userName
+            notificationTime.text = item.remainingTime
+            if(item.remainingTime == null){
+                notificationButton.visibility = View.GONE
             }
-            is FollowNotificationViewHolder -> {
-                // 팔로우 알림 아이템 뷰홀더 처리
+            notificationProfile.setImageResource(R.drawable.test_image1)
+        }
+
+        init {
+            notificationButton.setOnClickListener {
+                val context = itemView.context
+                val position = adapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val clickedItem = items[position]
+                    if (clickedItem.remainingTime == null) {
+                        val userId = clickedItem.posId // 수정해야 할 부분
+                        val intent = Intent(context, Main3PostingMakingActivity::class.java)
+                        intent.putExtra("userId", userId)
+                        context.startActivity(intent)
+                    }
+                }
             }
-            // 다른 유형의 아이템에 대한 처리 추가
         }
     }
 
-    override fun getItemViewType(position: Int): Int {
-        val item = items[position]
-        return when (item.notificationType) {
-            NotificationType.LIKE -> TYPE_LIKE_NOTIFICATION
-            NotificationType.FOLLOW -> TYPE_FOLLOW_NOTIFICATION
-            // 다른 유형의 아이템에 대한 처리 추가
-        }
-    }
+}
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
-
-    // 유형 식별을 위한 상수 정의
-    companion object {
-        private const val TYPE_LIKE_NOTIFICATION = 0
-        private const val TYPE_FOLLOW_NOTIFICATION = 1
-        // 다른 유형의 아이템에 대한 상수 정의
-    }
-}*/
+data class NotificationItem(
+    val id: Long?,
+    val userName: String?,
+    val message: String?,
+    val remainingTime: String?,
+    val posId: Long?
+)

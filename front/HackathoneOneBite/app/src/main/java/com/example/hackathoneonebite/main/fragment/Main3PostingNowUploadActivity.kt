@@ -14,6 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.MyApplication
+import com.example.hackathoneonebite.MyApplication.Companion.imageByteArrays
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
@@ -83,14 +85,15 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
             Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
         }*/
 
-        val imageByteArrays = ArrayList<ByteArray>()
-        for (i in 0 until 4) {
+        //val imageByteArrays = ArrayList<ByteArray>()
+        /*for (i in 0 until 4) {
             val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
             if (byteArray != null) {
                 imageByteArrays.add(byteArray)
             }
         }
-        Log.d("new 받음",imageByteArrays.toString())
+        Log.d("new 받음",imageByteArrays.toString())*/
+
 
         var theme = receivedPost?.theme
         var userId = receivedPost?.userId
@@ -129,6 +132,8 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
                 if (receivedPost!!.imgArray[i] == "true") {
                     if (imageByteArrayIndex < imageByteArrays.size) {
                         images[i] = imageByteArrays[imageByteArrayIndex]
+                        Log.d("images[$i]",images[i].toString())
+                        Log.d("인덱스는?",imageByteArrayIndex.toString())
                         imageByteArrayIndex++
                         val requestFile =
                             RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
@@ -152,6 +157,8 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
             Log.d("유저 아이디",userId.toString())
             Log.d("음악",musicNum.toString())
             Log.d("글",message.toString())
+
+            MyApplication.imageByteArrays.clear()
 
             val intent = Intent(this@Main3PostingNowUploadActivity, MainFrameActivity::class.java)
             startActivity(intent)

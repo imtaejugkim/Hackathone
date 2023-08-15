@@ -52,14 +52,6 @@ class Main3PostingRequestActivity : AppCompatActivity() {
         var musicNum = receivedPost?.musicNum
 
 
-        for (i in 0 until 4) {
-            val byteArray = intent.getByteArrayExtra("imageByteArrays$i")
-            if (byteArray != null) {
-                imageByteArrays.add(byteArray)
-            }
-        }
-        Log.d("new 받음", imageByteArrays.toString())
-
         loadProfileInfo(id)
 
         binding.selectName.text = "$selectedName 님에게 릴레이 수락 요청 보내시겠습니까"
@@ -89,15 +81,7 @@ class Main3PostingRequestActivity : AppCompatActivity() {
                 val nextIntent = Intent(this, Main3PostingUploadActivity::class.java)
                 nextIntent.putExtra("selected_name", selectedName)
                 nextIntent.putExtra("post_data", receivedPost)
-                // 배열의 각 원소 정보를 넘겨주고 로그 출력
 
-                for (i in 0 until imageByteArrays.size) {
-                    intent.putExtra(
-                        "imageByteArrays$i",
-                        imageByteArrays[i]
-                    )
-                    Log.d("new 보냄 ", imageByteArrays[i].toString())
-                }
                 startActivity(nextIntent)
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
 

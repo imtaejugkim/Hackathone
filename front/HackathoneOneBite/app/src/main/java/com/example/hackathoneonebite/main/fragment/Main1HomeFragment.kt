@@ -45,6 +45,7 @@ import com.example.hackathoneonebite.databinding.FragmentMain1HomeFilmBinding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema1Binding
 import com.example.hackathoneonebite.databinding.FragmentMain1HomeThema2Binding
 import com.example.hackathoneonebite.main.MainFrameActivity
+import com.example.hackathoneonebite.main.NotificationActivity
 import com.example.hackathoneonebite.main.ProfileActivity
 import org.json.JSONException
 import org.json.JSONObject
@@ -140,8 +141,17 @@ class Main1HomeFragment : Fragment() {
         initSelectedThema()
         initRecyclerView()
         initCommentRecyclerView()
+        initNotification()
         initLikeButton()
         init()
+    }
+
+    private fun initNotification() {
+        binding.notificationButton.setOnClickListener{
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
+            intent.putExtra("userId",userId)
+            startActivity(intent)
+        }
     }
 
     override fun onPause() {
