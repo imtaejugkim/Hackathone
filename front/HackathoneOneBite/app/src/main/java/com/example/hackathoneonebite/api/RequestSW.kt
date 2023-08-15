@@ -30,3 +30,8 @@ data class CreateComment (
     @SerializedName("authorId")var commentWriterId: Long,
     @SerializedName("content")var commentContent : String
 )
+//프로필 수정
+data class UpdateProfileRequest (
+    @SerializedName("userId")var userId: String,
+    @SerializedName("username")var username: String
+)

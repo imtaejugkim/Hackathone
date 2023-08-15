@@ -28,5 +28,7 @@ data class Post(
 
     var participantUserIds: ArrayList<Long> = arrayListOf(),
 
-    var participantUserIdStrings: ArrayList<String> = arrayListOf()
+    var participantUserIdStrings: ArrayList<String> = arrayListOf(),
+
+    var participantsUserProfileUrl: ArrayList<String> = arrayListOf()
 ) : Serializable

@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.api.CommentResponse
 import com.example.hackathoneonebite.databinding.ItemMain1CommentBinding
-import com.google.android.play.core.integrity.p
 
 class AdapterMain1HomeComment (val context: Context, var data:MutableList<CommentResponse> = mutableListOf<CommentResponse>())
     : RecyclerView.Adapter<AdapterMain1HomeComment.ViewHolder>() {

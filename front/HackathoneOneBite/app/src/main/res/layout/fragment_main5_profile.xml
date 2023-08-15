@@ -104,11 +104,11 @@
                         app:layout_constraintStart_toEndOf="@+id/username"
                         app:layout_constraintTop_toTopOf="@id/username"
                         app:layout_constraintBottom_toBottomOf="@id/username"
-                        android:text="수정"
                         android:fontFamily="@font/font_light"
                         android:textSize="11sp"
                         android:background="@drawable/background_round_border"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@android:color/white"
+                        android:enabled="false"/>
 
                     <LinearLayout
                         android:layout_marginTop="15dp"
@@ -225,6 +225,12 @@
                         app:layout_constraintEnd_toEndOf="@id/emptyViewForProfileImage"
                         android:background="@color/light_gray"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:src="@drawable/button_background_highlight"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <include layout="@layout/fragment_main5_profile_bottom"
@@ -232,6 +238,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+
     </androidx.core.widget.NestedScrollView>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

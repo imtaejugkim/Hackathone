@@ -48,8 +48,7 @@
         android:gravity="center">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="30dp">
@@ -62,13 +61,12 @@
             <EditText
                 android:id="@+id/username"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textColor="#888"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="30dp">
@@ -81,7 +79,7 @@
             <EditText
                 android:id="@+id/userId"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:layout_weight="1"
                 android:textColor="#888"/>
 
@@ -89,8 +87,7 @@
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="30dp">
@@ -103,15 +100,15 @@
             <TextView
                 android:id="@+id/email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textColor="#888"
+                android:gravity="center_vertical"
                 android:text="xxxx@gmail.com"/>
 
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="50dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginBottom="30dp">
@@ -124,8 +121,9 @@
             <TextView
                 android:id="@+id/language"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textColor="#888"
+                android:gravity="center_vertical"
                 android:text="한국어"/>
         </LinearLayout>
 

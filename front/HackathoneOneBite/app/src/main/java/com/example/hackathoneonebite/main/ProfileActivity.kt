@@ -1,11 +1,17 @@
 package com.example.hackathoneonebite.main
 
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
@@ -14,11 +20,15 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.core.content.ContextCompat
 import androidx.core.view.setMargins
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Glide.init
+import com.bumptech.glide.request.RequestOptions
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.FollowToggleResponse
 import com.example.hackathoneonebite.api.Main5LoadPostInfoResponse
@@ -26,15 +36,20 @@ import com.example.hackathoneonebite.api.Main5LoadProfileInfoResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityProfileBinding
 import com.example.hackathoneonebite.databinding.DialogMain5PostBinding
+import com.example.hackathoneonebite.databinding.DialogProfileUpdateBinding
 import com.example.hackathoneonebite.databinding.FragmentMain5ProfileBinding
 import com.example.hackathoneonebite.databinding.ItemMain5PostsBinding
 import com.example.hackathoneonebite.main.fragment.Main5ProfileFragment
 import com.google.android.material.internal.ViewUtils.dpToPx
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class ProfileActivity : AppCompatActivity() {//property
     var fragment_width: Int = 0
@@ -67,6 +82,50 @@ class ProfileActivity : AppCompatActivity() {//property
         Toast.makeText(this,"포스트 정보가 로드되지 않았습니다.\n서버와 재통신을 시도합니다.", Toast.LENGTH_SHORT).show()
         loadPostInfo(targetId)
     }
+    //Gallery
+    var isProfileImgChangeOrBack: Boolean = true
+    var isProfileImgChanged: Boolean = false
+    var isBackgroundImgChanged: Boolean = false
+    var profileImgName: String = ""
+    var backgroundImgName: String= ""
+    var profileImageFile: File? = null
+    var backgroundImageFile: File? = null
+    val REQ_GALLERY = 1
+    val imageResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+            result ->
+        if (result.resultCode == RESULT_OK) {
+            val imageUri = result.data?.data
+            imageUri?.let {
+                //서버 업로드를 위해 파일 형태로 변환
+                if (isProfileImgChangeOrBack) {
+                    profileImageFile = File(getRealPathFromURI(it))
+                } else {
+                    backgroundImageFile = File(getRealPathFromURI(it))
+                }
+                //이미지 이름 가져오기
+                val cursor = contentResolver.query(imageUri, null, null, null, null)
+                cursor?.use {
+                    if (it.moveToFirst()) {
+                        val columnIndex = it.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME)
+                        if (columnIndex != -1) {
+                            if (isProfileImgChangeOrBack) {
+                                isProfileImgChanged = true
+                                profileImgName = it.getString(columnIndex)
+                                if (profileImgName == "") profileImgName = " "
+                            } else {
+                                isProfileImgChanged = false
+                                backgroundImgName = it.getString(columnIndex)
+                                if (backgroundImgName == "") backgroundImgName = " "
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //코드 시작
     override fun onCreate(savedInstanceState: Bundle?) {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         super.onCreate(savedInstanceState)
@@ -178,6 +237,82 @@ class ProfileActivity : AppCompatActivity() {//property
         ).toInt()
     }
 
+    //프로필 정보 변경 다이얼로그 표시
+    private fun showProfileDialog() {
+        isProfileImgChanged = false
+        isBackgroundImgChanged = false
+        val bindingDialog = DialogProfileUpdateBinding.inflate(layoutInflater)
+        //변경 버튼 리스너 등록
+        bindingDialog.profileUpdateButton.setOnClickListener {
+            if (isProfileImgChanged && isBackgroundImgChanged) { //updateProfile_userId_username_profileImg_backgroundImg
+
+            } else if (isProfileImgChanged) { //updateProfile_userId_username_profileImg
+
+            } else if (isBackgroundImgChanged) { //updateProfile_userId_username_backgroundImg
+
+            } else { //updateProfile_userId_username_profileImg
+
+            }
+        }
+        //프로필 이미지 변경 버튼 리스너 등록
+        bindingDialog.profileImgChangeButton.setOnClickListener {
+            profileImgName = ""
+            isProfileImgChangeOrBack = true
+            selectGallery()
+            bindingDialog.profileImgTextView.text = if(profileImgName == "") "재시도 필요" else profileImgName
+        }
+        //배경 이미지 변경 버튼 리스너 등록
+        bindingDialog.backgroundImgChangeButton.setOnClickListener {
+            backgroundImgName = ""
+            isProfileImgChangeOrBack = false
+            selectGallery()
+            bindingDialog.backgroundImgTextView.text = if(backgroundImgName == "") "재시도 필요" else backgroundImgName
+        }
+        val builder = AlertDialog.Builder(this)
+        val dlg = builder.setView(bindingDialog.root).show()
+        dlg.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        dlg.window?.setGravity(Gravity.BOTTOM)
+        dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+    //이미지 실제 경로 반환
+    private fun getRealPathFromURI(uri: Uri): String {
+        val buildName = Build.MANUFACTURER
+        if (buildName.equals("Xiaomi")) {
+            return uri.path!!
+        }
+        var columnIndex = 0
+        val proj = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor = contentResolver.query(uri, proj, null, null, null)
+        if (cursor!!.moveToFirst()) {
+            columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+        }
+        val result = cursor.getString(columnIndex)
+        cursor.close()
+        return result
+    }
+    //갤러리 호출하기
+    private fun selectGallery() {
+        val readPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        //권한 확인
+        if (readPermission == PackageManager.PERMISSION_DENIED) {
+            //권한 요청
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQ_GALLERY)
+        } else {
+            //권한이 있는 경우 갤러리 실행
+            val intent = Intent(Intent.ACTION_PICK)
+            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
+            imageResult.launch(intent)
+        }
+    }
+    //프로필 정보 변경 처리
+    private fun updateProfile() {
+
+    }
+
+    //프로필 게시물 이미지 추가 함수
     private fun displayPostImage(postList: List<Main5LoadPostInfoResponse>) {
         val gridLayout = binding.profileBottomLayout.gridLayout
         gridLayout.removeAllViews()
@@ -203,6 +338,7 @@ class ProfileActivity : AppCompatActivity() {//property
         }
     }
 
+    //프로필 게시물 다이얼로그 표시
     private fun showPostDialog() {
         val bindingDialog = DialogMain5PostBinding.inflate(layoutInflater)
         val builder = AlertDialog.Builder(this)
