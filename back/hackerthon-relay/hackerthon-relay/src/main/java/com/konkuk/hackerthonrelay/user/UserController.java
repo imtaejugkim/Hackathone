@@ -126,6 +126,7 @@ public class UserController {
 			log.info("backgroundImage = {}", backgroundImage);
 			User user = userRepository.findById(id).orElse(null);
 
+
 			if(userUpdatesJson != null) {
 				UserRegistrationDto userUpdates = objectMapper.readValue(userUpdatesJson, UserRegistrationDto.class);
 
@@ -133,13 +134,21 @@ public class UserController {
 					user.setUsername(userUpdates.getUsername());
 				}
 				if (userUpdates.getUserId() != null) {
-					if(userUpdates.getUserId().equals(user.getUserId())){
-						log.info("userUpdates.getUserId() = {}" , userUpdates.getUserId());
-						log.info("user.getUserId() = {}" , user.getUserId());
+					User existingUserWithSameUserId = userRepository.findByUserId(userUpdates.getUserId());
+
+					if (existingUserWithSameUserId != null && !existingUserWithSameUserId.getId().equals(id)) {
 						response.put("success", false);
 						response.put("message", "exist");
-						return ResponseEntity.status(400).body(response);
+						return ResponseEntity.ok(response);
 					}
+
+//					if(!userUpdates.getUsername().equals(user.getUsername()) && userUpdates.getUserId().equals(user.getUserId())){
+//						log.info("userUpdates.getUserId() = {}" , userUpdates.getUserId());
+//						log.info("user.getUserId() = {}" , user.getUserId());
+//						response.put("success", false);
+//						response.put("message", "exist");
+//						return ResponseEntity.status(400).body(response);
+//					}
 					user.setUserId(userUpdates.getUserId());
 				}
 			}
