@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.example.hackathoneonebite.Data.Post
+import com.example.hackathoneonebite.MyApplication.Companion.imageByteArrays
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingTimeBinding
 import okhttp3.MultipartBody
@@ -38,16 +39,6 @@ class Main3PostingTimeActivity : AppCompatActivity() {
         binding.selectName.text = selectedName
 
         val imgPartArray = Array(4) { 0 }
-        val imageByteArrays = ArrayList<ByteArray>()
-
-
-        for (i in 0 until 4) {
-            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
-            if (byteArray != null) {
-                imageByteArrays.add(byteArray)
-            }
-        }
-        Log.d("new 받음",imageByteArrays.toString())
 
         val sensitivityFactor = 0.001 // 조절할 민감도 계수
         var lastEventTime = 0L

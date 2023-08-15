@@ -1,6 +1,7 @@
 package com.example.hackathoneonebite.main.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +12,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hackathoneonebite.R
@@ -21,6 +24,8 @@ class Main2SearchFragment : Fragment() {
 
     lateinit var binding : FragmentMain2SearchBinding
     private lateinit var nameAdapter: AdapterMain2SearchFragment
+    private var isInitialStateVisible = true
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -73,9 +78,15 @@ class Main2SearchFragment : Fragment() {
                 parentFragmentManager.fragments.forEach { existingFragment ->
                     transaction.hide(existingFragment)
                 }
+                val inputMethodManager = requireContext().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
-                transaction.add(R.id.fragmentMain2Search, fragment)
+
+                binding.afterTransaction.visibility = View.VISIBLE
+                transaction.add(R.id.afterTransaction, fragment)
                 transaction.addToBackStack(null)
+                binding.beforeTransaction.visibility = View.GONE
+
                 transaction.commit()
             }
         })
@@ -92,19 +103,62 @@ class Main2SearchFragment : Fragment() {
             false
         }
 
+        val postImageLayoutFilm = binding.filmImage
+        val postImageLayout1 = binding.filmTheme1
+        val postImageLayout2 = binding.filmTheme2
+        val postImageLayouts = arrayOf(postImageLayoutFilm, postImageLayout1, postImageLayout2)
+
+        for ((index, layout) in postImageLayouts.withIndex()) {
+            layout.setOnClickListener {
+                when(index){
+                    0 -> {
+                        binding.circleFilm.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                        binding.circleTheme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        binding.circleTheme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        showThemeFilmRecyclerView()
+
+                    }
+                    1 -> {
+                        binding.circleFilm.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        binding.circleTheme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                        binding.circleTheme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        showTheme1RecyclerView()
+                    }
+                    2 -> {
+                        binding.circleFilm.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        binding.circleTheme1.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.light_gray))
+                        binding.circleTheme2.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.highlight))
+                        showTheme2RecyclerView()
+                    }
+                }
+            }
+        }
+
         // 초기에는 clear 버튼이 보이지 않도록 초기화
         updateClearButtonVisibility(false)
+    }
 
-        binding.circleFilm.setOnClickListener {
-            showThemeFilmRecyclerView()
+
+    private fun restoreLayoutState() {
+        if (isInitialStateVisible) {
+            binding.beforeTransaction.visibility = View.VISIBLE
+            binding.afterTransaction.visibility = View.GONE
+        } else {
+            binding.beforeTransaction.visibility = View.GONE
+            binding.afterTransaction.visibility = View.VISIBLE
         }
+    }
 
-        binding.circleTheme1.setOnClickListener {
-            showTheme1RecyclerView()
-        }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean("isInitialStateVisible", isInitialStateVisible)
+    }
 
-        binding.circleTheme2.setOnClickListener {
-            showTheme2RecyclerView()
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        if (savedInstanceState != null) {
+            isInitialStateVisible = savedInstanceState.getBoolean("isInitialStateVisible", true)
+            restoreLayoutState()
         }
     }
 
@@ -121,14 +175,12 @@ class Main2SearchFragment : Fragment() {
         binding.theme2RecyclerView.visibility = View.GONE
         binding.nameRecyclerView.visibility = View.GONE
 
-        val theme1Adapter = AdapterMain2SearchThemeFilm()
-        binding.theme1RecyclerView.adapter = theme1Adapter
+        val themeFilmAdapter = AdapterMain2SearchThemeFilm()
+        binding.theme1RecyclerView.adapter = themeFilmAdapter
         binding.theme1RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
     }
 
     private fun showTheme1RecyclerView() {
-        // Inside onViewCreated method
-        binding.circleTheme1.setOnClickListener {
             binding.theme1RecyclerView.visibility = View.VISIBLE
             binding.theme2RecyclerView.visibility = View.GONE
             binding.themeFilmRecyclerView.visibility = View.GONE
@@ -137,11 +189,10 @@ class Main2SearchFragment : Fragment() {
             val theme1Adapter = AdapterMain2SearchTheme1()
             binding.theme1RecyclerView.adapter = theme1Adapter
             binding.theme1RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        }
+
     }
 
     private fun showTheme2RecyclerView() {
-        binding.circleTheme2.setOnClickListener {
             binding.theme2RecyclerView.visibility = View.VISIBLE
             binding.theme1RecyclerView.visibility = View.GONE
             binding.themeFilmRecyclerView.visibility = View.GONE
@@ -150,8 +201,6 @@ class Main2SearchFragment : Fragment() {
             val theme2Adapter = AdapterMain2SearchTheme2()
             binding.theme2RecyclerView.adapter = theme2Adapter
             binding.theme2RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        }
-
     }
 
 
