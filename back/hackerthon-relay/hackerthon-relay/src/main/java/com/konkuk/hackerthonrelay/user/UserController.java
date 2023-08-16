@@ -69,7 +69,7 @@ public class UserController {
 		}
 
 		// 유효성 검사: userId는 10자까지 username은 5글자까지여야 한다.
-		if (dto.getUserId().length() <= 10 || dto.getUsername().length() <= 5) {
+		if (dto.getUserId().length() > 10 || dto.getUsername().length() > 5) {
 			response.put("success", false);
 			response.put("id", -3L); // userId 또는 username이 5글자를 초과한 경우
 			return ResponseEntity.badRequest().body(response);
