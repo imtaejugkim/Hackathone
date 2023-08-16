@@ -36,8 +36,8 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/upload")
 public class ImageUploadController {
-    private final ImageUploadService uploadService;
-    private final PostRepository postRepository;
+	private final ImageUploadService uploadService;
+	private final PostRepository postRepository;
 	private final UserRepository userRepository;
 	private final ImageRepository imageRepository;
 	private final NotificationRepository notificationRepository;
@@ -46,18 +46,18 @@ public class ImageUploadController {
 
 	@Autowired
 	public ImageUploadController(ImageUploadService uploadService, PostRepository postRepository,
-			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService,
-			NotificationRepository notificationRepository) {
-        this.uploadService = uploadService;
-        this.postRepository = postRepository;
+			ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository,
+			TagService tagService, NotificationRepository notificationRepository) {
+		this.uploadService = uploadService;
+		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.imageRepository = imageRepository;
 		this.tagRepository = tagRepository;
 		this.tagService = tagService;
 		this.notificationRepository = notificationRepository;
-    }
+	}
 
-	//db 업데이트
+	// db 업데이트
 	@Scheduled(fixedRate = 60000) // 매 분마다 실행
 	public void checkPostExpiry() {
 		List<Post> posts = postRepository.findAll();
@@ -76,10 +76,6 @@ public class ImageUploadController {
 			@RequestParam(value = "musicNum", required = false) Integer musicNum,
 			@RequestParam(required = false) String tags) {
 
-
-
-		log.info("tags = {}" , tags);
-		log.info("imageFiles = {}", imageFiles);
 		Map<String, Object> response = new HashMap<>();
 
 		try {
@@ -98,7 +94,6 @@ public class ImageUploadController {
 			post.addParticipant(user); // 참여자 추가
 			post.setMusicNum(musicNum); // 여기에 musicNum 설정 로직 추가
 			postRepository.save(post); // 먼저 Post를 저장하여 ID를 생성합니다.
-
 
 			int position = 0;
 			for (MultipartFile imageFile : imageFiles) {
@@ -136,7 +131,6 @@ public class ImageUploadController {
 				}
 			}
 
-
 			post.setMainImage(post.getImages().get(0)); // 첫 번째 이미지를 메인 이미지로 설정
 
 			if (post.getImages().size() == 4) {
@@ -168,7 +162,7 @@ public class ImageUploadController {
 	// 이미지 추가
 	@PostMapping("/add")
 	public ResponseEntity<String> addImage(@RequestParam("postId") Long postId,
-										   @RequestParam("image") MultipartFile[] imageFiles, @RequestParam("userId") String userId) {
+			@RequestParam("image") MultipartFile[] imageFiles, @RequestParam("userId") String userId) {
 		try {
 			Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -201,6 +195,7 @@ public class ImageUploadController {
 			throw new RuntimeException("Could not upload file. Please try again.", e);
 		}
 	}
+
 
 	@GetMapping("/{imageId}")
 	public ResponseEntity<Image> getImageById(@PathVariable Long imageId) {

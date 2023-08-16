@@ -123,7 +123,7 @@ public class PostController {
 		if(isLiked && !isParticipant) {
 			Notification notification = new Notification();
 			notification.setRecipient(post.getCreator());
-			notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
+			notification.setMessage(liker.getUsername() + "님이 당신의 게시물을 좋아합니다.");
 			notification.setType(Notification.NotificationType.LIKE);
 			notification.setPostId(postId);
 			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
