@@ -4,13 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.comment.CommentDto;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
 
@@ -89,10 +88,15 @@ public class PostService {
 
 		dto.setParticipantUserIdStrings(participantUserIdStrings);
 
-		List<String> participantsUserProfileUrls = post.getImages().stream()
-				.map(image -> image.getUser().getProfilePictureUrl()).distinct().collect(Collectors.toList());
+		List<String> participantsUserProfileUrl = new ArrayList<>();
+		for (Long userId : participantUserIds) {
+			User user = userRepository.findById(userId).orElse(null);
+			if (user != null) {
+				participantsUserProfileUrl.add(user.getProfilePictureUrl());
+			}
+		}
 
-		dto.setParticipantsUserProfileUrl(participantsUserProfileUrls);
+		dto.setParticipantsUserProfileUrl(participantsUserProfileUrl);
 
 		return dto;
 	}

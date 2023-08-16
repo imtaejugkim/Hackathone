@@ -1,8 +1,11 @@
 package com.konkuk.hackerthonrelay.follow;
 
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.http.ResponseEntity;
 
@@ -15,6 +18,8 @@ import java.util.HashMap;
 @Service
 public class FollowServiceImpl implements FollowService {
 
+    @Autowired
+    private NotificationRepository notificationRepository;
     private final FollowRelationRepository followRelationRepository;
     private final UserRepository userRepository;
 
@@ -57,11 +62,23 @@ public class FollowServiceImpl implements FollowService {
         followRelationRepository.save(relation);
 
         response.put("success", true);
+
+        // 알림 생성
+        Notification notification = new Notification();
+        notification.setRecipient(following);
+        notification.setMessage(follower.getUsername() + "님이 팔로우 했습니다.");
+        notification.setUserId(followerId);
+        notification.setUserName(follower.getUsername());
+        notification.setType(Notification.NotificationType.FOLLOW);
+        notificationRepository.save(notification);
+
         return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<Map<String, Object>> unfollowUser(Long followerId, Long followingId) {
+        log.info("Attempting to remove a follow relation between followerId: {} and followingId: {}", followerId,
+                followingId);
         User follower = userRepository.findById(followerId).orElse(null);
         User following = userRepository.findById(followingId).orElse(null);
         Map<String, Object> response = new HashMap<>();
@@ -136,18 +153,22 @@ public class FollowServiceImpl implements FollowService {
         }
 
         FollowRelation relation = followRelationRepository.findByFollowerAndFollowing(requester, target);
+        boolean isNowFollowing;
         if (relation == null) {
             relation = new FollowRelation();
             relation.setFollower(requester);
             relation.setFollowing(target);
             followRelationRepository.save(relation);
             response.put("message", "Followed successfully");
+            isNowFollowing = true;
         } else {
             followRelationRepository.delete(relation);
             response.put("message", "Unfollowed successfully");
+            isNowFollowing = false;
         }
 
         response.put("success", true);
+        response.put("isFollowing", isNowFollowing); // 여기서 "isFollowing" 값을 추가합니다.
         return ResponseEntity.ok(response);
     }
 

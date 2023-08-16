@@ -6,16 +6,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.konkuk.hackerthonrelay.follow.FollowService;
-import jakarta.persistence.EntityNotFoundException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.konkuk.hackerthonrelay.follow.FollowService;
+
+import jakarta.persistence.EntityNotFoundException;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -113,45 +121,30 @@ public class UserController {
 
 	@PostMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id,
-														  @RequestPart(value = "userUpdates", required = false) String userUpdatesJson,
-														  @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-														  @RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) {
+			@RequestPart(value = "username", required = false) String username,
+			@RequestPart(value = "userId", required = false) String userId,
+			@RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+			@RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) {
 
 		Map<String, Object> response = new HashMap<>();
-		ObjectMapper objectMapper = new ObjectMapper();
-
-
 
 		try {
 			log.info("profileImage = {}", profileImage);
 			log.info("backgroundImage = {}", backgroundImage);
 			User user = userRepository.findById(id).orElse(null);
 
+			if (username != null) {
+				user.setUsername(username);
+			}
+			if (userId != null) {
+				User existingUserWithSameUserId = userRepository.findByUserId(userId);
 
-			if(userUpdatesJson != null) {
-				UserRegistrationDto userUpdates = objectMapper.readValue(userUpdatesJson, UserRegistrationDto.class);
-
-				if (userUpdates.getUsername() != null) {
-					user.setUsername(userUpdates.getUsername());
+				if (existingUserWithSameUserId != null && !existingUserWithSameUserId.getId().equals(id)) {
+					response.put("success", false);
+					response.put("message", "exist");
+					return ResponseEntity.ok(response);
 				}
-				if (userUpdates.getUserId() != null) {
-					User existingUserWithSameUserId = userRepository.findByUserId(userUpdates.getUserId());
-
-					if (existingUserWithSameUserId != null && !existingUserWithSameUserId.getId().equals(id)) {
-						response.put("success", false);
-						response.put("message", "exist");
-						return ResponseEntity.ok(response);
-					}
-
-//					if(!userUpdates.getUsername().equals(user.getUsername()) && userUpdates.getUserId().equals(user.getUserId())){
-//						log.info("userUpdates.getUserId() = {}" , userUpdates.getUserId());
-//						log.info("user.getUserId() = {}" , user.getUserId());
-//						response.put("success", false);
-//						response.put("message", "exist");
-//						return ResponseEntity.status(400).body(response);
-//					}
-					user.setUserId(userUpdates.getUserId());
-				}
+				user.setUserId(userId);
 			}
 
 			if (user == null) {
@@ -159,7 +152,6 @@ public class UserController {
 				response.put("message", "User not found");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
-
 
 			if (profileImage != null && !profileImage.isEmpty()) {
 				userService.saveProfileImage(id, profileImage);
@@ -196,8 +188,9 @@ public class UserController {
 	public ResponseEntity<List<UserRankingDto>> getRanking() {
 		List<User> users = userRepository.findAll();
 		List<UserRankingDto> ranking = users.stream()
-				.map(user -> new UserRankingDto(user.getId(), user.getUsername(), user.getScore())) // getScore 메소드를 사용
-				.sorted(Comparator.comparing(UserRankingDto::getScore).reversed()).collect(Collectors.toList());
+				.map(user -> new UserRankingDto(user.getId(), user.getUsername(), user.getScore()))
+				.sorted(Comparator.comparing(UserRankingDto::getScore).reversed())
+				.collect(Collectors.toList());
 
 		return ResponseEntity.ok(ranking);
 	}

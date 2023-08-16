@@ -8,11 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.konkuk.hackerthonrelay.comment.CommentService;
-import com.konkuk.hackerthonrelay.notification.Notification;
-import com.konkuk.hackerthonrelay.notification.NotificationDto;
-import com.konkuk.hackerthonrelay.notification.NotificationRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.comment.CommentDto;
+import com.konkuk.hackerthonrelay.comment.CommentService;
 import com.konkuk.hackerthonrelay.follow.FollowRelation;
 import com.konkuk.hackerthonrelay.follow.FollowRelationRepository;
-import com.konkuk.hackerthonrelay.search.UserService;
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.NotificationDto;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -123,11 +123,13 @@ public class PostController {
 		if(isLiked && !isParticipant) {
 			Notification notification = new Notification();
 			notification.setRecipient(post.getCreator());
-			notification.setMessage(liker.getUsername() + "님이 당신의 게시물에 좋아요를 눌렀습니다.");
+			notification.setMessage(liker.getUsername() + "님이 당신의 게시물을 좋아합니다.");
 			notification.setType(Notification.NotificationType.LIKE);
 			notification.setPostId(postId);
 			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
+			notification.setUserIdString(liker.getUserId()); // String 형태의 userId 설정
 			notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
+			notification.setUserProfileUrl(liker.getProfilePictureUrl());
 
 			notificationRepository.save(notification);
 		}
@@ -183,12 +185,14 @@ public class PostController {
 
 		User currentUser = userRepository.findById(userId).orElse(null); // 현재 사용자 정보 가져오기
 
-		List<PostDto> postDtos = posts.stream()
+		posts = posts.stream()
 				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+
+		List<PostDto> postDtos = posts.stream()
+				//.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
 				.map(post -> {
 					PostDto dto = postService.toDto(post);
-//		List<PostDto> postDtos = posts.stream().map(post -> {
-//			PostDto dto = postService.toDto(post);
 
 			// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
 			if (currentUser != null && post.getLikedUsers().contains(currentUser)) {
@@ -215,7 +219,7 @@ public class PostController {
 	}
 
 	private LocalDateTime convertStringToLocalDateTime(String str) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
 		return LocalDateTime.parse(str, formatter);
 	}
@@ -228,6 +232,10 @@ public class PostController {
 		List<Post> posts = postRepository.findByUser(profileUser);
 
 		User loggedInUser = userRepository.findById(currentUser).orElse(null); // 로그인한 사용자 정보 가져오기
+
+		posts = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
 
 		List<PostDto> postDtos = posts.stream().map(post -> {
 			PostDto dto = postService.toDto(post);
@@ -244,10 +252,6 @@ public class PostController {
 
 			return dto;
 		}).collect(Collectors.toList());
-
-		posts = posts.stream()
-				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
-				.collect(Collectors.toList());
 
 		log.info("postDtos = {}",postDtos);
 

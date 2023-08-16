@@ -13,9 +13,17 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.follow.FollowRelation;
 import com.konkuk.hackerthonrelay.pictureupload.Post;
-
 import com.konkuk.hackerthonrelay.pictureupload.PostUser;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -42,7 +50,7 @@ public class User {
     @JsonManagedReference
     private List<Comment> comments = new ArrayList<>();
 
-    @JsonManagedReference // 형
+    @JsonManagedReference
     @ManyToMany(mappedBy = "likedUsers")
     private Set<Post> likedPosts = new HashSet<>();
 
@@ -66,6 +74,7 @@ public class User {
     // 프로필 사진 배경 사진 - 유저 아이디와 연결해야함, 저장가능해야함, 요청하면 화면 바꿔주고 db저장 보관, id와 엮기
     private String profilePictureUrl;   // 프로필 사진 url
     private String backgroundPictureUrl;    // 배경 사진 url
+
 
     @Override
     public boolean equals(Object o) {
@@ -155,7 +164,7 @@ public class User {
         if (isLiked) {
             this.score += likeReceivedWeight;
         } else {
-            this.score -= likeReceivedWeight;
+			this.score = Math.max(0, this.score - likeReceivedWeight);
         }
     }
 
@@ -172,6 +181,10 @@ public class User {
         int totalScore = (int) (relayReceivedScore + likesScore + relayGivenScore);
         this.setScore(totalScore); // 실제 score 필드에 값을 저장
         return totalScore;
+    }
+
+    public void updateScoreForInitialization() {
+        this.score = 0;
     }
 
 }

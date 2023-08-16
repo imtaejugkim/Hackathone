@@ -21,10 +21,11 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 태그 이름
     @Column(unique = true)
     private String name;
 
-
+    // 태그와 연관된 게시물들
     @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Post> posts = new HashSet<>();

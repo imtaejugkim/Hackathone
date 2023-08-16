@@ -26,6 +26,7 @@ public class UserSearchController {
 	@Autowired
 	private SearchHistoryRepository searchHistoryRepository;
 
+	// 생성자
 	@Autowired
 	public UserSearchController(UserService userService) {
 		this.userService = userService;

@@ -2,34 +2,43 @@ package com.konkuk.hackerthonrelay.pictureupload;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import com.konkuk.hackerthonrelay.notification.Notification;
-import com.konkuk.hackerthonrelay.notification.NotificationRepository;
-import com.konkuk.hackerthonrelay.pictureupload.tag.Tag;
-import com.konkuk.hackerthonrelay.pictureupload.tag.TagRepository;
-import com.konkuk.hackerthonrelay.pictureupload.tag.TagService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.konkuk.hackerthonrelay.comment.Comment;
-import com.konkuk.hackerthonrelay.comment.CommentRepository;
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.Notification.NotificationType;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
+import com.konkuk.hackerthonrelay.pictureupload.tag.Tag;
+import com.konkuk.hackerthonrelay.pictureupload.tag.TagRepository;
+import com.konkuk.hackerthonrelay.pictureupload.tag.TagService;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/upload")
 public class ImageUploadController {
-    private final ImageUploadService uploadService;
-    private final PostRepository postRepository;
+	private final ImageUploadService uploadService;
+	private final PostRepository postRepository;
 	private final UserRepository userRepository;
-
 	private final ImageRepository imageRepository;
 	private final NotificationRepository notificationRepository;
 	private final TagService tagService;
@@ -37,19 +46,19 @@ public class ImageUploadController {
 
 	@Autowired
 	public ImageUploadController(ImageUploadService uploadService, PostRepository postRepository,
-			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService,
-								 NotificationRepository notificationRepository) {
-        this.uploadService = uploadService;
-        this.postRepository = postRepository;
+			ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository,
+			TagService tagService, NotificationRepository notificationRepository) {
+		this.uploadService = uploadService;
+		this.postRepository = postRepository;
 		this.userRepository = userRepository;
 		this.imageRepository = imageRepository;
 		this.tagRepository = tagRepository;
 		this.tagService = tagService;
 		this.notificationRepository = notificationRepository;
-    }
+	}
 
-	//db 업데이트
-	@Scheduled(fixedRate = 60000) // 매 초마다 실행
+	// db 업데이트
+	@Scheduled(fixedRate = 60000) // 매 분마다 실행
 	public void checkPostExpiry() {
 		List<Post> posts = postRepository.findAll();
 		for (Post post : posts) {
@@ -67,10 +76,6 @@ public class ImageUploadController {
 			@RequestParam(value = "musicNum", required = false) Integer musicNum,
 			@RequestParam(required = false) String tags) {
 
-
-
-		log.info("tags = {}" , tags);
-		log.info("imageFiles = {}", imageFiles);
 		Map<String, Object> response = new HashMap<>();
 
 		try {
@@ -89,7 +94,6 @@ public class ImageUploadController {
 			post.addParticipant(user); // 참여자 추가
 			post.setMusicNum(musicNum); // 여기에 musicNum 설정 로직 추가
 			postRepository.save(post); // 먼저 Post를 저장하여 ID를 생성합니다.
-
 
 			int position = 0;
 			for (MultipartFile imageFile : imageFiles) {
@@ -127,7 +131,6 @@ public class ImageUploadController {
 				}
 			}
 
-
 			post.setMainImage(post.getImages().get(0)); // 첫 번째 이미지를 메인 이미지로 설정
 
 			if (post.getImages().size() == 4) {
@@ -135,12 +138,12 @@ public class ImageUploadController {
 			}
 
 			postRepository.save(post); // Post를 다시 저장하여 변경 사항을 반영합니다.
-			response.put("success", true); // 추가된 부분
-			response.put("postId", post.getId()); // 추가된 부분
+			response.put("success", true);
+			response.put("postId", post.getId());
 			return new ResponseEntity<>(response, HttpStatus.CREATED); // 수정된 부분
 
 		} catch (IOException e) {
-			response.put("success", false); // 추가된 부분
+			response.put("success", false);
 			response.put("message", "Could not upload file. Please try again."); // 추가된 부분
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 수정된 부분 }
 		}
@@ -159,7 +162,7 @@ public class ImageUploadController {
 	// 이미지 추가
 	@PostMapping("/add")
 	public ResponseEntity<String> addImage(@RequestParam("postId") Long postId,
-										   @RequestParam("image") MultipartFile[] imageFiles, @RequestParam("userId") String userId) {
+			@RequestParam("image") MultipartFile[] imageFiles, @RequestParam("userId") String userId) {
 		try {
 			Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
@@ -193,6 +196,7 @@ public class ImageUploadController {
 		}
 	}
 
+
 	@GetMapping("/{imageId}")
 	public ResponseEntity<Image> getImageById(@PathVariable Long imageId) {
 		Image image = imageRepository.findById(imageId)
@@ -204,8 +208,8 @@ public class ImageUploadController {
 	// 릴레이 이어가기 (사용자 언급만 허용)
 	@PostMapping("/relay")
 	public ResponseEntity<Map<String, Object>> relayPost(@RequestParam("postId") Long postId,
-														 @RequestParam("user") String userId,
-														 @RequestParam(value = "remainingSeconds", required = false, defaultValue = "86400") int remainingSeconds) {
+			@RequestParam("user") String userId,
+			@RequestParam(value = "remainingSeconds", required = false, defaultValue = "86400") int remainingSeconds) {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
 		User creator = post.getCreator();
@@ -239,7 +243,6 @@ public class ImageUploadController {
 		userRepository.save(mentioned); // 변경 사항을 저장합니다.
 
 		post.setLastMentionedUser(post.getUser()); // 현재의 편집 권한을 가진 사용자를 마지막으로 언급된 사용자로 설정
-		post.setUser(mentioned); // 언급된 사용자에게 편집 권한 부여
 		post.setMentionedUser(mentioned);
 		post.setRemainingTime(Duration.ofSeconds(remainingSeconds));
 
@@ -247,11 +250,14 @@ public class ImageUploadController {
 		Notification notification = new Notification();
 		notification.setRecipient(mentioned);
 		notification.setMessage(currentUser.getUsername() + "님이 릴레이를 신청하셨습니다.");
-		notification.setType(Notification.NotificationType.COMMENT);
+		notification.setType(NotificationType.RELAY);
 		notification.setPostId(postId);
 		notification.setUserId(currentUser.getId()); // 현재 사용자의 ID
+		notification.setUserIdString(currentUser.getUserId()); // 현재 사용자의 String userId 설정
 		notification.setUserName(currentUser.getUsername()); // 현재 사용자의 이름
 		notification.setRemainingTime(Duration.ofSeconds(remainingSeconds)); // 남은 시간 설정
+		notification.setUserProfileUrl(currentUser.getProfilePictureUrl()); // 'getProfileUrl()'는 사용자의 프로필 URL을 반환하는
+																			// 메서드여야 합니다.
 
 		notificationRepository.save(notification);
 		postRepository.save(post);
