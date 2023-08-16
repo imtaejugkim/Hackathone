@@ -3,6 +3,7 @@
 #### 앱 이름 : RELAY
 
 #### 팀명 : 해커톤 한 입
+노션 링크 : https://www.notion.so/911d793fca3b4500ad937fe8f1208f09
 
 #### 주제 : MZ
 <br>
