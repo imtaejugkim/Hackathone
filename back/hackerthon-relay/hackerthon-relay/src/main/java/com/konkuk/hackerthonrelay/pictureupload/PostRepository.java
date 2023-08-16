@@ -19,4 +19,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	List<Post> findByUser(User user);
 
 	List<Post> findByCreatedAtAfter(LocalDateTime tenMinutesAgo);
+
+    List<Post> findByThemeAndUserIdIn(Integer theme, List<Long> followingUserIds);
 }
