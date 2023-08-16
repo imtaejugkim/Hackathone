@@ -13,9 +13,17 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.follow.FollowRelation;
 import com.konkuk.hackerthonrelay.pictureupload.Post;
-
 import com.konkuk.hackerthonrelay.pictureupload.PostUser;
-import jakarta.persistence.*;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -156,7 +164,7 @@ public class User {
         if (isLiked) {
             this.score += likeReceivedWeight;
         } else {
-            this.score -= likeReceivedWeight;
+			this.score = Math.max(0, this.score - likeReceivedWeight);
         }
     }
 
