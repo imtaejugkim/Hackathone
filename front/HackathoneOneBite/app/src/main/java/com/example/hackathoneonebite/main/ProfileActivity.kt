@@ -20,6 +20,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -31,6 +32,7 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
 import androidx.core.view.setMargins
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Glide.init
 import com.bumptech.glide.request.RequestOptions
@@ -38,6 +40,7 @@ import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.CommentResponse
 import com.example.hackathoneonebite.api.CreateComment
 import com.example.hackathoneonebite.api.FollowToggleResponse
+import com.example.hackathoneonebite.api.LikeClickResponse
 import com.example.hackathoneonebite.api.LoadAPostInfoResponse
 import com.example.hackathoneonebite.api.Main5LoadPostInfoResponse
 import com.example.hackathoneonebite.api.Main5LoadProfileInfoResponse
@@ -65,6 +68,7 @@ import java.io.File
 import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import kotlin.random.Random
 
 class ProfileActivity : AppCompatActivity() {//property
     var fragment_width: Int = 0
@@ -671,8 +675,10 @@ class ProfileActivity : AppCompatActivity() {//property
     private fun loadAPostInfo(postId: Long) {
         loadAPostInfoRequest(postId)
     }
+    var aPostInfo: LoadAPostInfoResponse? = null
     private fun loadAPostInfoRequest(postId: Long) {
         val call = RetrofitBuilder.api.loadAPostInfoRequest(postId)
+        val userIdLong: Long = this.requesterId
         call.enqueue(object : Callback<LoadAPostInfoResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<LoadAPostInfoResponse>,
@@ -680,12 +686,12 @@ class ProfileActivity : AppCompatActivity() {//property
             ) {
                 Log.e("MAIN1HOME_COMMENT21", response.raw().request.url.toString())
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
-                    val aPostInfo  = response.body()
+                    aPostInfo  = response.body()
                     if (aPostInfo == null) {
                         Log.e("MAIN1HOME_COMMENT22", "응답이 null입니다.")
                         return
                     } else {
-                        when (aPostInfo.theme) {
+                        when (aPostInfo!!.theme) {
                             0 -> {
                                 val bindingAPost = DialogMain5Post0Binding.inflate(layoutInflater)
                                 val builder = AlertDialog.Builder(this@ProfileActivity)
@@ -698,48 +704,48 @@ class ProfileActivity : AppCompatActivity() {//property
                                 dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                                 //프레임 이미지 변경
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[0])
+                                    .load(baseUrl + aPostInfo!!.imageArray[0])
                                     .into(bindingAPost.postImageLayout.imageView1frame1)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[1])
+                                    .load(baseUrl + aPostInfo!!.imageArray[1])
                                     .into(bindingAPost.postImageLayout.imageView2frame1)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[2])
+                                    .load(baseUrl + aPostInfo!!.imageArray[2])
                                     .into(bindingAPost.postImageLayout.imageView3frame1)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[3])
+                                    .load(baseUrl + aPostInfo!!.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4frame1)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo!!.date.split('T')[0]
                                 //좋아요 반영
-                                if (aPostInfo.likeClicked) {
+                                if (aPostInfo!!.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                                 } else {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
                                 }
                                 //글 반영
-                                bindingAPost.messageTextView.text = aPostInfo.text
+                                bindingAPost.messageTextView.text = aPostInfo!!.text
                                 //프사 반영
-                                if (aPostInfo.participantsUserProfileUrl.count() == 1) {
+                                if (aPostInfo!!.participantsUserProfileUrl.count() == 1) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView3.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView4.visibility = View.INVISIBLE
-                                } else if (aPostInfo.participantsUserProfileUrl.count() == 4) {
+                                } else if (aPostInfo!!.participantsUserProfileUrl.count() == 4) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[1])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[1])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[2])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[2])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[3])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[3])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.VISIBLE
@@ -748,7 +754,11 @@ class ProfileActivity : AppCompatActivity() {//property
                                 }
                                 //클릭 리스너
                                 bindingAPost.messageTextView.setOnClickListener {
-                                    showCommentDialog(aPostInfo)
+                                    showCommentDialog(aPostInfo!!)
+                                }
+                                //좋아요 리스너
+                                bindingAPost.likeButton.setOnClickListener {
+                                    likeClick(postId, userIdLong, aPostInfo!!.theme, aPostInfo!!.likeClicked, bindingAPost)
                                 }
                             }
                             1 -> {
@@ -763,48 +773,48 @@ class ProfileActivity : AppCompatActivity() {//property
                                 dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                                 //프레임 이미지 변경
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[0])
+                                    .load(baseUrl + aPostInfo!!.imageArray[0])
                                     .into(bindingAPost.postImageLayout.imageView1frame2)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[1])
+                                    .load(baseUrl + aPostInfo!!.imageArray[1])
                                     .into(bindingAPost.postImageLayout.imageView2frame2)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[2])
+                                    .load(baseUrl + aPostInfo!!.imageArray[2])
                                     .into(bindingAPost.postImageLayout.imageView3frame2)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[3])
+                                    .load(baseUrl + aPostInfo!!.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4frame2)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo!!.date.split('T')[0]
                                 //좋아요 반영
-                                if (aPostInfo.likeClicked) {
+                                if (aPostInfo!!.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                                 } else {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
                                 }
                                 //글 반영
-                                bindingAPost.messageTextView.text = aPostInfo.text
+                                bindingAPost.messageTextView.text = aPostInfo!!.text
                                 //프사 반영
-                                if (aPostInfo.participantsUserProfileUrl.count() == 1) {
+                                if (aPostInfo!!.participantsUserProfileUrl.count() == 1) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView3.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView4.visibility = View.INVISIBLE
-                                } else if (aPostInfo.participantsUserProfileUrl.count() == 4) {
+                                } else if (aPostInfo!!.participantsUserProfileUrl.count() == 4) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[1])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[1])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[2])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[2])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[3])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[3])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.VISIBLE
@@ -813,7 +823,11 @@ class ProfileActivity : AppCompatActivity() {//property
                                 }
                                 //클릭 리스너
                                 bindingAPost.messageTextView.setOnClickListener {
-                                    showCommentDialog(aPostInfo)
+                                    showCommentDialog(aPostInfo!!)
+                                }
+                                //좋아요 리스너
+                                bindingAPost.likeButton.setOnClickListener {
+                                    likeClick(postId, userIdLong, aPostInfo!!.theme, aPostInfo!!.likeClicked, bindingAPost)
                                 }
                             }
                             2 -> {
@@ -828,48 +842,48 @@ class ProfileActivity : AppCompatActivity() {//property
                                 dlg.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                                 //프레임 이미지 변경
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[0])
+                                    .load(baseUrl + aPostInfo!!.imageArray[0])
                                     .into(bindingAPost.postImageLayout.imageView1)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[1])
+                                    .load(baseUrl + aPostInfo!!.imageArray[1])
                                     .into(bindingAPost.postImageLayout.imageView2)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[2])
+                                    .load(baseUrl + aPostInfo!!.imageArray[2])
                                     .into(bindingAPost.postImageLayout.imageView3)
                                 Glide.with(this@ProfileActivity)
-                                    .load(baseUrl + aPostInfo.imageArray[3])
+                                    .load(baseUrl + aPostInfo!!.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo!!.date.split('T')[0]
                                 //좋아요 반영
-                                if (aPostInfo.likeClicked) {
+                                if (aPostInfo!!.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                                 } else {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
                                 }
                                 //글 반영
-                                bindingAPost.messageTextView.text = aPostInfo.text
+                                bindingAPost.messageTextView.text = aPostInfo!!.text
                                 //프사 반영
-                                if (aPostInfo.participantsUserProfileUrl.count() == 1) {
+                                if (aPostInfo!!.participantsUserProfileUrl.count() == 1) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView3.visibility = View.INVISIBLE
                                     bindingAPost.userProfileImageView4.visibility = View.INVISIBLE
-                                } else if (aPostInfo.participantsUserProfileUrl.count() == 4) {
+                                } else if (aPostInfo!!.participantsUserProfileUrl.count() == 4) {
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[0])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[0])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[1])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[1])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[2])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[2])
                                         .into(bindingAPost.userProfileImageView1)
                                     Glide.with(this@ProfileActivity)
-                                        .load(baseUrl + aPostInfo.participantsUserProfileUrl[3])
+                                        .load(baseUrl + aPostInfo!!.participantsUserProfileUrl[3])
                                         .into(bindingAPost.userProfileImageView1)
                                     bindingAPost.userProfileImageView1.visibility = View.VISIBLE
                                     bindingAPost.userProfileImageView2.visibility = View.VISIBLE
@@ -878,7 +892,11 @@ class ProfileActivity : AppCompatActivity() {//property
                                 }
                                 //클릭 리스너
                                 bindingAPost.messageTextView.setOnClickListener {
-                                    showCommentDialog(aPostInfo)
+                                    showCommentDialog(aPostInfo!!)
+                                }
+                                //좋아요 리스너
+                                bindingAPost.likeButton.setOnClickListener {
+                                    likeClick(postId, userIdLong, aPostInfo!!.theme, aPostInfo!!.likeClicked, bindingAPost)
                                 }
                             }
                         }
@@ -1010,4 +1028,140 @@ class ProfileActivity : AppCompatActivity() {//property
         })
     }
     //</editor-fold>
+    //좋아요
+    private fun likeClick(postId: Long, userId: Long, thema: Int, wasLiked: Boolean, dialogPostBindindg: ViewBinding) {
+        likeClickRequest(postId, userId, thema, wasLiked, dialogPostBindindg)
+    }
+    private fun likeClickRequest(postId: Long, userId: Long, thema: Int, wasliked: Boolean, dialogPostBindindg: ViewBinding) {
+        val call = RetrofitBuilder.api.likeClickRequest(postId, userId)
+        call.enqueue(object : Callback<LikeClickResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<LikeClickResponse>,
+                response: Response<LikeClickResponse>
+            ) {
+                Log.e("MAIN1HOME_LIKE", response.raw().request.url.toString())
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val likeClickResponse  = response.body()
+                    if (likeClickResponse == null) {
+                        Log.e("MAIN1HOME_LIKE", "응답이 null입니다.")
+                        return
+                    } else {
+                        Log.d("MAIN1HOME_LIKE", "응답 좋음.")
+                        when (thema) {
+                            0 -> {
+                                val dialogPostBindindg2 = dialogPostBindindg as DialogMain5Post0Binding
+                                aPostInfo!!.likeClicked = !aPostInfo!!.likeClicked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = dialogPostBindindg2.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            this@ProfileActivity,
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                dialogPostBindindg2.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                            1 -> {
+                                val dialogPostBindindg2 = dialogPostBindindg as DialogMain5Post1Binding
+                                aPostInfo!!.likeClicked = !aPostInfo!!.likeClicked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = dialogPostBindindg2.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            this@ProfileActivity,
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                dialogPostBindindg2.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                            2 -> {
+                                val dialogPostBindindg2 = dialogPostBindindg as DialogMain5Post2Binding
+                                aPostInfo!!.likeClicked = !aPostInfo!!.likeClicked
+                                if (!wasliked) {
+                                    //pop up 랜덤 출력
+                                    val randomValue = Random.nextInt(2)
+                                    val resourceImaga: Int =
+                                        if (randomValue == 0) R.drawable.img_pop_up_smile else R.drawable.img_pop_up_heart
+                                    val imageView = dialogPostBindindg2.likePopUpImageView
+                                    imageView.setImageResource(resourceImaga)
+                                    imageView.visibility = View.VISIBLE
+                                    if (!wasliked) {
+                                        val scaleUpAnimation = AnimationUtils.loadAnimation(
+                                            this@ProfileActivity,
+                                            R.anim.scale_up
+                                        )
+                                        imageView.startAnimation(scaleUpAnimation)
+                                    }
+                                    Handler(Looper.getMainLooper()).postDelayed({
+                                        imageView.visibility = View.GONE
+                                    }, 800)
+                                }
+                                //버튼 리소스 변경
+                                dialogPostBindindg2.likeButton.setBackgroundResource(
+                                    if (wasliked)
+                                        R.drawable.img_icon_like_unclick
+                                    else
+                                        R.drawable.img_icon_like_click
+                                )
+                            }
+                        }
+                    }
+                } else {
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@ProfileActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("MAIN1HOME_LIKE", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@ProfileActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@ProfileActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: Call<LikeClickResponse>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("MAIN1HOME CONNECTION FAILURE_LIKE: ", t.localizedMessage)
+                Toast.makeText(this@ProfileActivity, "서버와의 통신에 문제가 있습니다.", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 }

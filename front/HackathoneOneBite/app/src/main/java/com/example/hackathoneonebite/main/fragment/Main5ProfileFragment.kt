@@ -470,12 +470,16 @@ class Main5ProfileFragment : Fragment() {
         //변경 버튼 리스너 등록
         bindingDialog.profileUpdateButton.setOnClickListener {
             if (isProfileImgChanged && isBackgroundImgChanged) { //API:updateProfile_userId_username_profileImg_backgroundImg
+                Log.d("MAIN5", "사진 둘 다 변경")
                 updateProfileTextAndProfileAndBackground(bindingDialog.userId.text.toString(), bindingDialog.username.text.toString(), bindingDialog ,dlg)
             } else if (isProfileImgChanged) { //API:updateProfile_userId_username_profileImg
+                Log.d("MAIN5", "프로필 사진 변경")
                 updateProfileTextAndProfile(bindingDialog.userId.text.toString(), bindingDialog.username.text.toString(),bindingDialog ,dlg)
             } else if (isBackgroundImgChanged) { //API:updateProfile_userId_username_backgroundImg
+                Log.d("MAIN5", "배경 사진 변경")
                 updateProfileTextAndBackground(bindingDialog.userId.text.toString(), bindingDialog.username.text.toString(),bindingDialog ,dlg)
             } else { //API:updateProfile_userId_username
+                Log.d("MAIN5", "사진 안 변경")
                 updateProfileOnlyText(bindingDialog.userId.text.toString(), bindingDialog.username.text.toString(),bindingDialog ,dlg)
             }
         }
@@ -603,12 +607,14 @@ class Main5ProfileFragment : Fragment() {
         updateProfileTextAndProfileRequest(this.id, userId, username, dialogBinding, dlg)
     }
     private fun updateProfileTextAndProfileRequest(id: Long, userId: String, username: String, dialogBinding: DialogProfileUpdateBinding, dlg: AlertDialog) {
-        Log.d("main5", profileImageFile.toString())
         val requestBodyUserId: RequestBody = userId.toRequestBody("text/plain".toMediaType())
         val requestBodyUsername: RequestBody = username.toRequestBody("text/plain".toMediaType())
         val mediaType = "image/*".toMediaTypeOrNull()
-        val requestBody: RequestBody = profileImageFile!!.asRequestBody(mediaType)
-        val call = RetrofitBuilder.api.updateProfile_userId_username_profileImg(id, requestBodyUserId, requestBodyUsername, requestBody)
+        Log.d("main5", profileImageFile.toString())
+
+        val requestFile = profileImageFile!!.asRequestBody("image/png".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("image", "background", requestFile)
+        val call = RetrofitBuilder.api.updateProfile_userId_username_profileImg(id, requestBodyUserId, requestBodyUsername, body)
         call.enqueue(object : Callback<UpdateProfileResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<UpdateProfileResponse>,
@@ -664,9 +670,10 @@ class Main5ProfileFragment : Fragment() {
     private fun updateProfileTextAndBackgroundRequest(id: Long, userId: String, username: String, dialogBinding: DialogProfileUpdateBinding, dlg: AlertDialog) {
         val requestBodyUserId: RequestBody = userId.toRequestBody("text/plain".toMediaType())
         val requestBodyUsername: RequestBody = username.toRequestBody("text/plain".toMediaType())
-        val mediaType = "image/*".toMediaTypeOrNull()
-        val requestBody: RequestBody = backgroundImageFile!!.asRequestBody(mediaType)
-        val call = RetrofitBuilder.api.updateProfile_userId_username_backgroundImg(id, requestBodyUserId, requestBodyUsername, requestBody)
+
+        val requestFile = backgroundImageFile!!.asRequestBody("image/png".toMediaTypeOrNull())
+        val body = MultipartBody.Part.createFormData("image", "background", requestFile)
+        val call = RetrofitBuilder.api.updateProfile_userId_username_backgroundImg(id, requestBodyUserId, requestBodyUsername, body)
         call.enqueue(object : Callback<UpdateProfileResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<UpdateProfileResponse>,
@@ -725,7 +732,14 @@ class Main5ProfileFragment : Fragment() {
         val mediaType = "image/*".toMediaTypeOrNull()
         val requestBodyProfile: RequestBody = profileImageFile!!.asRequestBody(mediaType)
         val requestBodyBackground: RequestBody = backgroundImageFile!!.asRequestBody(mediaType)
-        val call = RetrofitBuilder.api.updateProfile_userId_username_profileImg_backgroundImg(id, requestBodyUserId, requestBodyUsername, requestBodyProfile, requestBodyBackground)
+
+        val requestFile = backgroundImageFile!!.asRequestBody("image/png".toMediaTypeOrNull())
+        val body1 = MultipartBody.Part.createFormData("image", "background", requestFile)
+
+        val requestFil2 = profileImageFile!!.asRequestBody("image/png".toMediaTypeOrNull())
+        val body2 = MultipartBody.Part.createFormData("image", "background", requestFil2)
+
+        val call = RetrofitBuilder.api.updateProfile_userId_username_profileImg_backgroundImg(id, requestBodyUserId, requestBodyUsername, body2, body1)
         call.enqueue(object : Callback<UpdateProfileResponse> { // 비동기 방식 통신 메소드
             override fun onResponse(
                 call: Call<UpdateProfileResponse>,

@@ -107,29 +107,29 @@ public interface API {
         @Part("username") username: RequestBody
     ): Call<UpdateProfileResponse>
     @Multipart
-    @POST("/api/user/update/{userId}")
+    @POST("/api/user/update/{id}")
     fun updateProfile_userId_username_profileImg(
         @Path("id") id: Long,
         @Part("userId") userId: RequestBody,
         @Part("username") username: RequestBody,
-        @Part("profileImage") profileImage: RequestBody
+        @Part profileImage: MultipartBody.Part
     ): Call<UpdateProfileResponse>
     @Multipart
-    @POST("/api/user/update/{userId}")
+    @POST("/api/user/update/{id}")
     fun updateProfile_userId_username_backgroundImg(
         @Path("id") id: Long,
         @Part("userId") userId: RequestBody,
         @Part("username") username: RequestBody,
-        @Part("backgroundImage") backgroundImage: RequestBody
+        @Part backgroundImage: MultipartBody.Part
     ): Call<UpdateProfileResponse>
     @Multipart
-    @POST("/api/user/update/{userId}")
+    @POST("/api/user/update/{id}")
     fun updateProfile_userId_username_profileImg_backgroundImg(
         @Path("id") id: Long,
         @Part("userId") userId: RequestBody,
         @Part("username") username: RequestBody,
-        @Part("profileImage") profileImage: RequestBody,
-        @Part("backgroundImage") backgroundImage: RequestBody
+        @Part profileImage: MultipartBody.Part,
+        @Part backgroundImage: MultipartBody.Part
     ): Call<UpdateProfileResponse>
 
 
