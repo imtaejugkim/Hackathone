@@ -24,7 +24,10 @@ class Main3PostingTimeActivity : AppCompatActivity() {
     private var currentValue: Int = 0
     lateinit var binding : ActivityMain3PostingTimeBinding
     var id : Long = 0
+    var selectedId : Long = 0
+    var userId : String = ""
     var selectedUserId : Long = 0
+    var requestNumber : Int = -1
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +43,8 @@ class Main3PostingTimeActivity : AppCompatActivity() {
         val selectedName = intent.getStringExtra("selected_name")
         selectedUserId = receivedIntent.getLongExtra("selectedUserId",0)
         id = receivedIntent.getLongExtra("id", 0)
+        selectedId = receivedIntent.getLongExtra("selectedId",selectedId)
+        requestNumber = receivedIntent.getIntExtra("requestNumber",-1)
         binding.selectName.text = selectedName
 
         val imgPartArray = Array(4) { 0 }
@@ -90,7 +95,10 @@ class Main3PostingTimeActivity : AppCompatActivity() {
             nextIntent.putExtra("selected_time", currentValue) // 시간 값을 전달
             nextIntent.putExtra("post_data", receivedPost)
             nextIntent.putExtra("selectedUserId",selectedUserId)
+            nextIntent.putExtra("selectedId",selectedId)
+            nextIntent.putExtra("requestNumber",requestNumber)
             nextIntent.putExtra("id",id)
+            nextIntent.putExtra("userId",userId)
             nextIntent.putExtra("imagePartSize", imgPartArray.size)
 
             for (i in 0 until imageByteArrays.size) {

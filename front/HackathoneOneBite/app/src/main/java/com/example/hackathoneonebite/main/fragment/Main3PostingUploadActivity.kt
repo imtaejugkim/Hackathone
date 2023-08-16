@@ -22,6 +22,8 @@ import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingRequestBinding
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingUploadBinding
+import com.example.hackathoneonebite.main.MainFrameActivity
+import com.google.android.gms.internal.zzaqb.reset
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -114,43 +116,54 @@ class Main3PostingUploadActivity : AppCompatActivity(),
             images = Array(4) { ByteArray(0) }
 
             for (i in 0..3) {
-                Log.d("imagArray$i",receivedPost!!.imgArray[i].toString())
+                Log.d("imageArray$i", receivedPost!!.imgArray[i])
                 if (receivedPost!!.imgArray[i] == "true") {
                     if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
                         images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
-                        Log.d("images[$i]",images[i].toString())
-                        Log.d("인덱스는?",imageByteArrayIndex.toString())
+                        Log.d("images[$i]", images[i].toString())
+                        Log.d("인덱스는?", imageByteArrayIndex.toString())
                         imageByteArrayIndex++
                         val requestFile =
                             RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
-                        imageParts.add(MultipartBody.Part.createFormData(
-                            "image",
-                            "image$i.jpg",
-                            requestFile
-                        ))
+                        imageParts.add(
+                            MultipartBody.Part.createFormData(
+                                "image",
+                                "image$i.jpg",
+                                requestFile
+                            )
+                        )
                     }
+                }
+                else{
+                    val emptyRequestBody = RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
+                    val emptyPart = MultipartBody.Part.createFormData("empty_part_name", "", emptyRequestBody)
+                    imageParts.add(emptyPart)
                 }
             }
 
-            val themePart = RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
-            val idPart = RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
-            val musicPart = RequestBody.create("text/plain".toMediaTypeOrNull(), musicNum.toString())
+            val themePart =
+                RequestBody.create("text/plain".toMediaTypeOrNull(), theme.toString())
+            val idPart =
+                RequestBody.create("text/plain".toMediaTypeOrNull(), userId.toString())
+            val musicPart =
+                RequestBody.create("text/plain".toMediaTypeOrNull(), musicNum.toString())
             val message = RequestBody.create("text/plain".toMediaTypeOrNull(), message)
 
             Upload(imageParts, themePart, idPart, musicPart, message)
 
-            Log.d("이미지",imageParts.toString())
-            Log.d("테마",theme.toString())
-            Log.d("유저 아이디",userId.toString())
-            Log.d("음악",musicNum.toString())
-            Log.d("글",message.toString())
+            Log.d("이미지", imageParts.toString())
+            Log.d("테마", theme.toString())
+            Log.d("유저 아이디", userId.toString())
+            Log.d("음악", musicNum.toString())
+            Log.d("글", message.toString())
 
             MyApplication.imageByteArrays.clear()
 
-            val nextIntent = Intent(this, Main1HomeFirstFragment::class.java)
+            val nextIntent = Intent(this, MainFrameActivity::class.java)
             startActivity(nextIntent)
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
+
 
         binding.playButton.setOnClickListener {
             if (isRotating) {

@@ -11,7 +11,7 @@ class AdapterMain2SearchTheme1 : RecyclerView.Adapter<AdapterMain2SearchTheme1.V
     private val postCount = 5 // 출력할 post_frame 개수 (임의 조정)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_main1_post_thema1, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_theme_1, parent, false)
         return ViewHolder(view)
     }
 

@@ -13,18 +13,28 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.Main3RelaySearchResponse
+import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.FragmentMain2SearchBinding
 import com.example.hackathoneonebite.databinding.FragmentMain5ProfileBinding
+import org.json.JSONException
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class Main2SearchFragment : Fragment() {
 
     lateinit var binding : FragmentMain2SearchBinding
     private lateinit var nameAdapter: AdapterMain2SearchFragment
     private var isInitialStateVisible = true
+    private  var nameList = mutableListOf<String>()
+    var id : Long = 0
 
 
     override fun onCreateView(
@@ -55,12 +65,7 @@ class Main2SearchFragment : Fragment() {
                 } else {
                     binding.beforeSearch.visibility = View.GONE
                     binding.nameRecyclerView.visibility = View.VISIBLE
-                    // TODO: 데베 데이터를 가져와서 여기서 나오게 해야함
-                    val nameList = mutableListOf<String>()
-
-                    for (i in 1..100) {
-                        nameList.add("Name $i")
-                    }
+                    Search(id,binding.searchEdit.text.toString())
                     nameAdapter.setData(nameList)
                     nameAdapter.filter.filter(s)
                     updateClearButtonVisibility(true) // 이미지를 변경하여 보임
@@ -201,6 +206,45 @@ class Main2SearchFragment : Fragment() {
             val theme2Adapter = AdapterMain2SearchTheme2()
             binding.theme2RecyclerView.adapter = theme2Adapter
             binding.theme2RecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+    }
+
+    fun Search(id:Long, q : String){
+        val call = RetrofitBuilder.api.main3LoadUserRequest(id, q)
+        call.enqueue(object : Callback<List<Main3RelaySearchResponse>> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: Call<List<Main3RelaySearchResponse>>,
+                response: Response<List<Main3RelaySearchResponse>>
+            ) {
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    if (userResponse != null) {
+                        val nameIdList = userResponse.map { "${it.username} (${it.userId})" }.toMutableList()
+                        nameAdapter.setData(nameIdList)
+                        nameAdapter.notifyDataSetChanged()
+                    }
+                } else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(requireContext(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<List<Main3RelaySearchResponse>>, t: Throwable) {
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+
+            }
+        })
     }
 
 

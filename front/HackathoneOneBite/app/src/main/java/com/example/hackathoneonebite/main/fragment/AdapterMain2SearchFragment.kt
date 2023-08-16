@@ -53,6 +53,13 @@ class AdapterMain2SearchFragment
                 nameClickListener?.onNameClick(name)
             }
         }
+
+        private fun extractNameAndUserId(nameId: String): Pair<String, String> {
+            val parts = nameId.split("(", ")")
+            val name = parts[0].trim()
+            val userId = parts[1].trim()
+            return Pair(name, userId)
+        }
     }
 
     override fun getFilter(): Filter {
