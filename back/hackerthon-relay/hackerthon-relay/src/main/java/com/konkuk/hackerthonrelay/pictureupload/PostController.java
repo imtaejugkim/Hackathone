@@ -3,6 +3,7 @@ package com.konkuk.hackerthonrelay.pictureupload;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -278,6 +279,58 @@ public class PostController {
 
 		return ResponseEntity.ok(popularPosts);
 	}
+
+	@GetMapping("/random")
+	public ResponseEntity<PostDto> getRandomPost(@RequestParam Long userId, @RequestParam Integer theme) {
+		log.info("userId = {}", userId);
+		log.info("theme = {}", theme);
+		// Fetch users that the current user is following
+		List<FollowRelation> followRelations = followRelationRepository
+				.findByFollower(userRepository.findById(userId).orElse(null));
+		List<Long> followingUserIds = followRelations.stream().map(relation -> relation.getFollowing().getId())
+				.collect(Collectors.toList());
+		// Also add the current user's ID to the list
+		followingUserIds.add(userId);
+
+		List<Post> posts = postRepository.findByThemeAndUserIdIn(theme, followingUserIds);
+		Collections.shuffle(posts); // Shuffle the posts list
+
+		User currentUser = userRepository.findById(userId).orElse(null); // 현재 사용자 정보 가져오기
+
+		posts = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+
+		if (posts.isEmpty()) {
+			return ResponseEntity.notFound().build(); // No posts available
+		}
+
+		Post randomPost = posts.get(0); // Get the first post after shuffling
+
+		PostDto dto = postService.toDto(randomPost);
+
+		// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
+		if (currentUser != null && randomPost.getLikedUsers().contains(currentUser)) {
+			dto.setLikedByCurrentUser(true);
+		} else {
+			dto.setLikedByCurrentUser(false);
+		}
+
+		// Fetch comments for the post
+		List<Comment> commentsForPost = commentService.getCommentsByPostId(randomPost.getId());
+		List<CommentDto> commentDtosForPost = commentsForPost.stream().map(commentService::convertToDto)
+				.collect(Collectors.toList());
+		dto.setComments(commentDtosForPost);
+
+		// 참여자 ID 리스트에서 중복 제거
+		dto.setParticipantUserIds(dto.getParticipantUserIds().stream().distinct().collect(Collectors.toList()));
+
+		log.info("Random postDto = {}", dto);
+
+		return ResponseEntity.ok(dto);
+	}
+
+
 
 
 }
