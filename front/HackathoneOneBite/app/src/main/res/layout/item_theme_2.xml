@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/viewGroupForFilmItem">
 
-    <include layout="@layout/post_frame_film"
+    <include layout="@layout/post_frame2"
         android:id="@+id/postImageLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"

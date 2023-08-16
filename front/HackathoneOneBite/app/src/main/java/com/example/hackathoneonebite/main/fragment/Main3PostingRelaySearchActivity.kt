@@ -32,7 +32,9 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
     private  var nameList = mutableListOf<String>()
     lateinit var binding:ActivityMain3PostingRelaySearchBinding
     var id : Long = 0
+    var selectedId : Long = 0
     var userId : String = ""
+    var requestNumber : Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +44,7 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
         val receivedIntent = intent
         id = receivedIntent.getLongExtra("id", 0)
         userId = receivedIntent.getStringExtra("userId") + ""
+        requestNumber = receivedIntent.getIntExtra("requestNumber",-1)
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
         val imgPartArray = Array(4) { 0 }
 
@@ -59,11 +62,17 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
         adapter.setOnNameClickListener(object : AdapterMain3PostingRelaySearch.OnNameClickListener {
             override fun onNameClick(name: String) {
 
-                val parts = name.split("(", ")")
-                val selectedName = parts[0].trim()
-                val selectedUserId = parts[1].trim().toLong()
 
-                if (id == selectedUserId) {
+                val parts = name.split("(", ")","(",")")
+                Log.d("parts",parts.toString())
+                val selectedName = parts[0].trim()
+                val selectedUserId = parts[1].trim()
+                val selectedId = parts[3].trim().toLong()
+
+                Log.d("selectedUserId",selectedUserId)
+                Log.d("selected",selectedId.toString())
+
+                if (userId == selectedUserId) {
                     Toast.makeText(
                         this@Main3PostingRelaySearchActivity,
                         "선택할 수 없습니다",
@@ -79,9 +88,11 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
                     nextIntent.putExtra("post_data", receivedPost)
                     nextIntent.putExtra("imagePartSize", imgPartArray.size)
                     nextIntent.putExtra("selectedUserId", selectedUserId)
-                    Log.d("selectedUserId", selectedUserId.toString())
-                    nextIntent.putExtra("id", 0)
-
+                    nextIntent.putExtra("selectedId",selectedId)
+                    Log.d("selectedUserId", selectedUserId)
+                    nextIntent.putExtra("id", id)
+                    nextIntent.putExtra("requestNumber",requestNumber)
+                    nextIntent.putExtra("userId",userId)
 
                     startActivity(nextIntent)
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
@@ -124,7 +135,8 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
                 if(response.isSuccessful()){ // 응답 잘 받은 경우
                     val userResponse = response.body()
                     if (userResponse != null) {
-                        val nameIdList = userResponse.map { "${it.username} (${it.userId})" }.toMutableList()
+                        val nameIdList = userResponse.map { "${it.username}(${it.userId})(${it.id})" }.toMutableList()
+                        Log.d("nameIdList",nameIdList.toString())
                         adapter.setData(nameIdList)
                         adapter.notifyDataSetChanged()
                     }

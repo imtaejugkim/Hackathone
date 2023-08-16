@@ -143,13 +143,13 @@
         app:layout_constraintEnd_toEndOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@id/guidelineRelayInfo">
         <TextView
-            android:text="릴레이 상대"
+            android:text="작성자"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1">
         </TextView>
         <TextView
-            android:id="@+id/relayName"
+            android:id="@+id/userName"
             android:text="NULL"
             android:layout_width="0dp"
             android:gravity="right"
@@ -167,7 +167,7 @@
         app:layout_constraintEnd_toEndOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@id/linear1">
         <TextView
-            android:text="릴레이 시간"
+            android:text="작성자 아이디"
             android:textSize="15dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -175,6 +175,7 @@
         </TextView>
         <TextView
             android:text="NULL"
+            android:id="@+id/userId"
             android:textSize="15dp"
             android:layout_width="0dp"
             android:gravity="right"

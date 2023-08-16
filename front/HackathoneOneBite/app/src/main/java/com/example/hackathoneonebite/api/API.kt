@@ -34,26 +34,31 @@ public interface API {
     @Multipart
     @POST("/api/upload/add")
     fun addPost(
-        @Part("postId") postId: Long,
+        @Part("postId") postId: RequestBody,
         @Part images: ArrayList<MultipartBody.Part>,
-        @Part("userId") userId: String,
-    )
+        @Part("userId") userId: RequestBody,
+    ): Call<Main3AddPostIsComplete>
 
     // 릴레이 업로드
+    @Multipart
     @POST("/api/upload/relay")
     fun relayPost(
-        @Part("postId") postId: Long,
-        @Part("userId") userId: String,
-        @Part("remainingSeconds") remainingSeconds : Int
+        @Part("postId") postId: RequestBody,
+        @Part("userId") userId: RequestBody,
+        @Part("remainingSeconds") remainingSeconds : RequestBody
     ): Call<Main3RelayPostIsComplete>
 
     //알림 로드
-    @GET("/api/notification/{userId}")
+    @GET("/api/notifications/{userId}")
     fun notificationLoadRequest(
-        @Path("userId") userId: String
+        @Path("userId") id: Long
     ): Call<List<NotificationLoadResponse>>
 
-
+    // 릴레이 게시물 로드
+    @GET("/api/posts/{postId}")
+    fun main3LoadRelayPostRequest(
+        @Path("userId") id: Long
+    ): Call<Main3RelayPostResponse>
 
     //검색 로드
     @GET("/api/user/search")

@@ -1,5 +1,6 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ class AdapterMain2SearchTheme2 : RecyclerView.Adapter<AdapterMain2SearchTheme2.V
     private val postCount = 5
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_main1_post_thema2, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_theme_2, parent, false)
         return ViewHolder(view)
     }
 

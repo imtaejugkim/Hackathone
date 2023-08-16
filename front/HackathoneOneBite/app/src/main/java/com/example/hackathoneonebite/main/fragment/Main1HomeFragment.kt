@@ -164,6 +164,8 @@ class Main1HomeFragment : Fragment() {
         binding.notificationButton.setOnClickListener{
             val intent = Intent(requireContext(), NotificationActivity::class.java)
             intent.putExtra("userId",userId)
+            intent.putExtra("id",id)
+            Log.d("userId",userId)
             startActivity(intent)
         }
     }

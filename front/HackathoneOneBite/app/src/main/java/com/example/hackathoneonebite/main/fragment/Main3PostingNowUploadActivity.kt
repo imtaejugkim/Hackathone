@@ -98,7 +98,7 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         var theme = receivedPost?.theme
         var userId = receivedPost?.userId
 
-        binding.relayName.text = "$selectedName"
+        binding.userName.text = "$selectedName"
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)

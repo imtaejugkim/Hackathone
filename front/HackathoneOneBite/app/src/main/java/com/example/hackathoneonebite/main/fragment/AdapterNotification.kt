@@ -1,74 +1,67 @@
 package com.example.hackathoneonebite.main.fragment
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.R
 
-class AdapterNotification : RecyclerView.Adapter<AdapterNotification.NotificationViewHolder>() {
-    private val items: MutableList<NotificationItem> = mutableListOf()
+class AdapterNotification(private val notificationList: List<NotificationItem>) :
+    RecyclerView.Adapter<AdapterNotification.NotificationViewHolder>() {
+
+    private var requestNumber : Int = 1
+    class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val notificationName: TextView = itemView.findViewById(R.id.notificationName)
+        val notificationTime: TextView = itemView.findViewById(R.id.notificationTime)
+        val notificationButton: Button = itemView.findViewById(R.id.notificationButton)
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(R.layout.item_relay_notification, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_relay_notification, parent, false)
         return NotificationViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
-        val item = items[position]
-        holder.bind(item)
-    }
+        val item = notificationList[position]
 
-    override fun getItemCount(): Int = items.size
-
-    fun addItem(item: NotificationItem) {
-        items.add(item)
-        notifyItemInserted(items.size - 1)
-    }
-
-    inner class NotificationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val notificationProfile: ImageView = itemView.findViewById(R.id.notificationProfile)
-        private val notificationName: TextView = itemView.findViewById(R.id.notificationName)
-        private val notificationTime: TextView = itemView.findViewById(R.id.notificationTime)
-        private val notificationButton: Button = itemView.findViewById(R.id.notificationButton)
-
-        fun bind(item: NotificationItem) {
-            notificationName.text = item.userName
-            notificationTime.text = item.remainingTime
-            if(item.remainingTime == null){
-                notificationButton.visibility = View.GONE
-            }
-            notificationProfile.setImageResource(R.drawable.test_image1)
+        holder.notificationName.text = item.message
+        holder.notificationTime.text = item.createdAt
+        Log.d("notificationNme",holder.notificationName.text.toString())
+        if (item.remainingTime == null) {
+            holder.notificationButton.isEnabled = false
+            holder.notificationButton.text = "비활성화"
+        } else {
+            holder.notificationButton.isEnabled = true
+            holder.notificationButton.text = "수락"
         }
 
-        init {
-            notificationButton.setOnClickListener {
-                val context = itemView.context
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) {
-                    val clickedItem = items[position]
-                    if (clickedItem.remainingTime == null) {
-                        val userId = clickedItem.posId // 수정해야 할 부분
-                        val intent = Intent(context, Main3PostingMakingActivity::class.java)
-                        intent.putExtra("userId", userId)
-                        context.startActivity(intent)
-                    }
-                }
-            }
+        holder.notificationButton.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, Main3PostingMakingActivity::class.java)
+            intent.putExtra("postId", item.postId)
+            intent.putExtra("requestNumber",requestNumber)
+            context.startActivity(intent)
         }
     }
 
+
+    override fun getItemCount(): Int {
+        return notificationList.size
+    }
 }
 
+
 data class NotificationItem(
-    val id: Long?,
-    val userName: String?,
-    val message: String?,
+    val id: Long,
+    val userId: String,
+    val message: String,
+    val createdAt: String,
+    val userName: String,
     val remainingTime: String?,
-    val posId: Long?
+    val postId: Long
 )

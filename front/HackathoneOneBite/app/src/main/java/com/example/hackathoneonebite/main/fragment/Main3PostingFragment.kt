@@ -19,6 +19,7 @@ class Main3PostingFragment : Fragment() {
     private val circleViews = mutableListOf<View>()
     var id : Long = 0
     var userId: String = ""
+    var requestNumber : Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -61,6 +62,7 @@ class Main3PostingFragment : Fragment() {
                     intent.putExtra("layout_id", index)
                     intent.putExtra("id", id)
                     intent.putExtra("userId",userId)
+                    intent.putExtra("requestNumber",requestNumber)
                     Log.d("id", id.toString())
                     startActivity(intent)
                     activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
