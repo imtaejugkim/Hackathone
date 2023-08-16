@@ -61,6 +61,22 @@ public class UserController {
 	public ResponseEntity<Map<String, Object>> registerUser(@RequestBody UserRegistrationDto dto) {
 		Map<String, Object> response = new HashMap<>();
 
+		// 유효성 검사: userId는 영어로만 구성되어야 함
+		if (!dto.getUserId().matches("^[A-Za-z]*$")) {
+			response.put("success", false);
+			response.put("id", -2L); // userId가 영어로만 구성되지 않은 경우
+			return ResponseEntity.badRequest().body(response);
+		}
+
+		// 유효성 검사: userId는 10자까지 username은 5글자까지여야 한다.
+		if (dto.getUserId().length() <= 10 || dto.getUsername().length() <= 5) {
+			response.put("success", false);
+			response.put("id", -3L); // userId 또는 username이 5글자를 초과한 경우
+			return ResponseEntity.badRequest().body(response);
+		}
+
+
+
 		User existingUserByUserId = userRepository.findByUserId(dto.getUserId());
 		if (existingUserByUserId != null) {
 			response.put("success", false);
