@@ -8,11 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.konkuk.hackerthonrelay.comment.CommentService;
-import com.konkuk.hackerthonrelay.notification.Notification;
-import com.konkuk.hackerthonrelay.notification.NotificationDto;
-import com.konkuk.hackerthonrelay.notification.NotificationRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
@@ -25,11 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.comment.CommentDto;
+import com.konkuk.hackerthonrelay.comment.CommentService;
 import com.konkuk.hackerthonrelay.follow.FollowRelation;
 import com.konkuk.hackerthonrelay.follow.FollowRelationRepository;
-import com.konkuk.hackerthonrelay.search.UserService;
+import com.konkuk.hackerthonrelay.notification.Notification;
+import com.konkuk.hackerthonrelay.notification.NotificationDto;
+import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
@@ -219,7 +219,7 @@ public class PostController {
 	}
 
 	private LocalDateTime convertStringToLocalDateTime(String str) {
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
 
 		return LocalDateTime.parse(str, formatter);
 	}
