@@ -1,18 +1,26 @@
 package com.konkuk.hackerthonrelay.comment;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.konkuk.hackerthonrelay.notification.Notification;
 import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.pictureupload.Post;
 import com.konkuk.hackerthonrelay.pictureupload.PostRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/comments")
@@ -45,7 +53,7 @@ public class CommentController {
 
             User author = userRepository.findById(commentDto.getAuthorId()).orElse(null); // 댓글 작성자 정보 가져오기
             if (author != null) {
-                notification.setMessage(author.getUsername() + "님이 댓글을 남겼습니다.");
+				notification.setMessage("님이 댓글을 남겼습니다.");
                 notification.setUserId(author.getId());
                 notification.setUserIdString(author.getUserId()); // String 형태의 userId 설정
                 notification.setUserName(author.getUsername());

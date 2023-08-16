@@ -123,7 +123,7 @@ public class PostController {
 		if(isLiked && !isParticipant) {
 			Notification notification = new Notification();
 			notification.setRecipient(post.getCreator());
-			notification.setMessage(liker.getUsername() + "님이 당신의 게시물을 좋아합니다.");
+			notification.setMessage("님이 당신의 게시물을 좋아합니다.");
 			notification.setType(Notification.NotificationType.LIKE);
 			notification.setPostId(postId);
 			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
@@ -158,7 +158,7 @@ public class PostController {
 
 	@GetMapping("/loadMain")
 	public ResponseEntity<List<PostDto>> getMainPosts(@RequestParam Long userId, @RequestParam Integer theme,
-													  @RequestParam(required = false) String lastPostDateStr, @RequestParam(defaultValue = "20") int limit) {
+			@RequestParam(required = false) String lastPostDateStr, @RequestParam(defaultValue = "5") int limit) {
 
 		LocalDateTime lastPostDate = null;
 		if (lastPostDateStr != null && !lastPostDateStr.isEmpty()) {

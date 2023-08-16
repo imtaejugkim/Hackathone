@@ -2,14 +2,34 @@ package com.konkuk.hackerthonrelay.pictureupload;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.konkuk.hackerthonrelay.comment.Comment;
 import com.konkuk.hackerthonrelay.pictureupload.tag.Tag;
 import com.konkuk.hackerthonrelay.user.User;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -167,11 +187,13 @@ public class Post {
 				&& (this.remainingTime.isNegative() || this.remainingTime.equals(Duration.ZERO))) {
 			if (this.lastMentionedUser != null) {
 				this.user = this.lastMentionedUser;
+				this.lastMentionedUser = this.mentionedUser; // 이 부분을 추가합니다
 				this.mentionedUser = null; // 언급된 사용자 초기화
 				this.remainingTime = Duration.ofSeconds(24 * 3600);
 			}
 		}
 	}
+
 
 	public void incrementShareCount() {
 		this.shareCount++;

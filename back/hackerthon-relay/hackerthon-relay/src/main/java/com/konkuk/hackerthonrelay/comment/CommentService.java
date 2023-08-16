@@ -1,13 +1,14 @@
 package com.konkuk.hackerthonrelay.comment;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.konkuk.hackerthonrelay.pictureupload.Post;
 import com.konkuk.hackerthonrelay.pictureupload.PostRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CommentService {

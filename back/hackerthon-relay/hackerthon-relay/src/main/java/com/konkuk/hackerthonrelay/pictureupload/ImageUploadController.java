@@ -58,14 +58,15 @@ public class ImageUploadController {
 	}
 
 	// db 업데이트
-	@Scheduled(fixedRate = 60000) // 매 분마다 실행
-	public void checkPostExpiry() {
+	@Scheduled(fixedRate = 1000) // 매 초마다 실행
+	public void decreaseRemainingTime() {
 		List<Post> posts = postRepository.findAll();
 		for (Post post : posts) {
-			post.passEditRight();
+			post.decreaseRemainingTime();
 		}
 		postRepository.saveAll(posts); // 변경 사항 저장
 	}
+
 
 	// 새 게시물 생성
 	@PostMapping("/create")
@@ -242,14 +243,25 @@ public class ImageUploadController {
 		mentioned.updateScoreForReceivingRelay(); // 릴레이를 받은 사용자의 점수 업데이트
 		userRepository.save(mentioned); // 변경 사항을 저장합니다.
 
-		post.setLastMentionedUser(post.getUser()); // 현재의 편집 권한을 가진 사용자를 마지막으로 언급된 사용자로 설정
+		// 현재 릴레이의 사용자 (이전에 언급된 사용자)를 lastMentionedUser로 설정
+		post.setLastMentionedUser(post.getMentionedUser());
+		// 새로 언급된 사용자를 mentionedUser로 설정
 		post.setMentionedUser(mentioned);
 		post.setRemainingTime(Duration.ofSeconds(remainingSeconds));
 
 		// 알림 생성
 		Notification notification = new Notification();
 		notification.setRecipient(mentioned);
-		notification.setMessage(currentUser.getUsername() + "님이 릴레이를 신청하셨습니다.");
+
+		User lastUser = post.getLastMentionedUser();
+
+		if (lastUser == null) {
+			notification.setMessage("님이 릴레이를 신청하셨습니다.");
+		} else {
+			notification.setMessage("님이 릴레이를 신청하셨습니다.");
+		}
+
+
 		notification.setType(NotificationType.RELAY);
 		notification.setPostId(postId);
 		notification.setUserId(currentUser.getId()); // 현재 사용자의 ID

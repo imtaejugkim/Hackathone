@@ -1,16 +1,22 @@
 package com.konkuk.hackerthonrelay.follow;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.konkuk.hackerthonrelay.notification.Notification;
 import com.konkuk.hackerthonrelay.notification.NotificationRepository;
 import com.konkuk.hackerthonrelay.user.User;
 import com.konkuk.hackerthonrelay.user.UserRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
@@ -46,7 +52,7 @@ public class FollowController {
 
             Notification notification = new Notification();
             notification.setRecipient(target);
-            notification.setMessage(requester.getUsername() + "님이 당신을 팔로우했습니다.");
+			notification.setMessage("님이 당신을 팔로우했습니다.");
             notification.setType(Notification.NotificationType.FOLLOW);
             notification.setUserId(requester.getId()); // 팔로우 요청한 사용자의 ID
             notification.setUserIdString(requester.getUserId()); // 팔로우 요청한 사용자의 String userId 설정

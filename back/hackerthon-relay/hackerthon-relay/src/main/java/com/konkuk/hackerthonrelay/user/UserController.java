@@ -194,6 +194,7 @@ public class UserController {
 	public ResponseEntity<String> deleteUser(@PathVariable Long id) {
 		User user = userRepository.findById(id).orElse(null);
 		if (user == null) {
+	
 			return ResponseEntity.notFound().build();
 		}
 		userRepository.delete(user);
