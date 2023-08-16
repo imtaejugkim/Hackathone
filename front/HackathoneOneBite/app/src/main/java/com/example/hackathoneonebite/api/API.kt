@@ -102,35 +102,40 @@ public interface API {
     @Multipart
     @POST("/api/user/update/{userId}")
     fun updateProfile_userId_username(
-        @Path("userId") id: Long,
-        @Part("userUpdates") updateRequest: UpdateProfileRequest
+        @Path("id") id: Long,
+        @Part("userId") userId: RequestBody,
+        @Part("username") username: RequestBody
     ): Call<UpdateProfileResponse>
     @Multipart
     @POST("/api/user/update/{userId}")
     fun updateProfile_userId_username_profileImg(
-        @Path("userId") id: Long,
-        @Part("userUpdates") updateRequest: UpdateProfileRequest,
-        @Part profileImage: MultipartBody.Part
+        @Path("id") id: Long,
+        @Part("userId") userId: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("profileImage") profileImage: RequestBody
     ): Call<UpdateProfileResponse>
     @Multipart
     @POST("/api/user/update/{userId}")
     fun updateProfile_userId_username_backgroundImg(
-        @Path("userId") id: Long,
-        @Part("userUpdates") updateRequest: UpdateProfileRequest,
-        @Part backgroundImage: MultipartBody.Part
+        @Path("id") id: Long,
+        @Part("userId") userId: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("backgroundImage") backgroundImage: RequestBody
     ): Call<UpdateProfileResponse>
     @Multipart
     @POST("/api/user/update/{userId}")
     fun updateProfile_userId_username_profileImg_backgroundImg(
-        @Path("userId") id: Long,
-        @Part("userUpdates") updateRequest: UpdateProfileRequest,
-        @Part profileImage: MultipartBody.Part,
-        @Part backgroundImage: MultipartBody.Part
+        @Path("id") id: Long,
+        @Part("userId") userId: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("profileImage") profileImage: RequestBody,
+        @Part("backgroundImage") backgroundImage: RequestBody
     ): Call<UpdateProfileResponse>
 
 
     //랭킹
-
+    @GET("/api/user/ranking")
+    fun main4Ranking(): Call<List<LoadRanking>>
 
     //프로필
     //프로필 정보 받아오기
@@ -145,4 +150,9 @@ public interface API {
         @Path("userId") postId: Long,
         @Query("currentUser") currentUser: Long
     ): Call<List<Main5LoadPostInfoResponse>>
+    //포스트 하나 받아오기
+    @GET("/api/posts/{postId}")
+    fun loadAPostInfoRequest (
+        @Path("postId") postId: Long
+    ): Call<LoadAPostInfoResponse>
 }
