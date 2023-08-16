@@ -162,12 +162,13 @@ public class ImageUploadController {
 
 	// 이미지 추가
 	@PostMapping("/add")
-	public ResponseEntity<String> addImage(@RequestParam("postId") Long postId,
+	public ResponseEntity<Map<String, Object>> addImage(@RequestParam("postId") Long postId,
 										   @RequestParam("image") MultipartFile[] imageFiles, @RequestParam("userId") String userId) {
 		try {
 			Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
 			User user = userRepository.findByUserId(userId);
+			Map<String, Object> response = new HashMap<>();
 
 
 			// 참여자 목록에서 특정 사용자가 이미 포함되어 있는지 확인
@@ -192,7 +193,9 @@ public class ImageUploadController {
 			}
 
 			postRepository.save(post);
-			return ResponseEntity.ok("Images added successfully");
+
+			response.put("success", true);
+			return ResponseEntity.ok(response);
 		} catch (IOException e) {
 			throw new RuntimeException("Could not upload file. Please try again.", e);
 		}

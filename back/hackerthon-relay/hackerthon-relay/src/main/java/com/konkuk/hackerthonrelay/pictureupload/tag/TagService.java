@@ -21,12 +21,15 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
+
+    // 해시 태그 만들기
     public Tag createHashTag(String name) {
         Tag hashTag = new Tag();
         hashTag.setName(name);
         return tagRepository.save(hashTag);
     }
 
+    // 태그로 게시물 가져오기
     public Set<Post> getPostsByTag(String tagName) {
         Tag tag = tagRepository.findByName(tagName);
         if (tag == null) {
