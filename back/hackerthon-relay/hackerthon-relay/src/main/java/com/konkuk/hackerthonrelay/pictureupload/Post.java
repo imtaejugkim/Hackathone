@@ -157,7 +157,7 @@ public class Post {
 		this.remainingTime = Duration.ofSeconds(24 * 3600); // Here you reset the remainingTime when a user is
 																	// mentioned
 	}
-	
+
 	public boolean canEdit(User user) {
 		return user.equals(this.user) || user.equals(this.mentionedUser);
 	}

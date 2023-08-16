@@ -127,7 +127,9 @@ public class PostController {
 			notification.setType(Notification.NotificationType.LIKE);
 			notification.setPostId(postId);
 			notification.setUserId(liker.getId()); // 좋아요를 누른 사용자의 ID
+			notification.setUserIdString(liker.getUserId()); // String 형태의 userId 설정
 			notification.setUserName(liker.getUsername()); // 좋아요를 누른 사용자의 이름
+			notification.setUserProfileUrl(liker.getProfilePictureUrl());
 
 			notificationRepository.save(notification);
 		}
@@ -183,12 +185,14 @@ public class PostController {
 
 		User currentUser = userRepository.findById(userId).orElse(null); // 현재 사용자 정보 가져오기
 
-		List<PostDto> postDtos = posts.stream()
+		posts = posts.stream()
 				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+
+		List<PostDto> postDtos = posts.stream()
+				//.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
 				.map(post -> {
 					PostDto dto = postService.toDto(post);
-//		List<PostDto> postDtos = posts.stream().map(post -> {
-//			PostDto dto = postService.toDto(post);
 
 			// 사용자가 해당 게시물에 좋아요를 눌렀는지 확인
 			if (currentUser != null && post.getLikedUsers().contains(currentUser)) {
@@ -229,6 +233,10 @@ public class PostController {
 
 		User loggedInUser = userRepository.findById(currentUser).orElse(null); // 로그인한 사용자 정보 가져오기
 
+		posts = posts.stream()
+				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
+				.collect(Collectors.toList());
+
 		List<PostDto> postDtos = posts.stream().map(post -> {
 			PostDto dto = postService.toDto(post);
 
@@ -245,48 +253,19 @@ public class PostController {
 			return dto;
 		}).collect(Collectors.toList());
 
-		posts = posts.stream()
-				.filter(post -> post.getImages().stream().filter(image -> image.getPath() != null).count() == 4)
-				.collect(Collectors.toList());
-
 		log.info("postDtos = {}",postDtos);
 
 		return ResponseEntity.ok(postDtos);
 	}
 
 	// 실시간 인기 게시물 조회
-	@GetMapping("/realtime-popular")
-	public ResponseEntity<List<PostDto>> getRealtimePopularPosts() {
-		List<Post> popularPosts = postRepository.findTop2ByOrderByLikesDescCreatedAtDesc();
-
-		List<PostDto> postDtos = popularPosts.stream().map(post -> {
-			PostDto dto = new PostDto();
-			dto.setId(post.getId());
-			dto.setMainImage(post.getMainImage().getPath());
-			dto.setTheme(post.getTheme());
-			dto.setLikeCount(post.getLikes());
-			dto.setDate(post.getCreatedAt());
-			dto.setText(post.getText());
-
-			// Add participant user IDs
-			List<Long> participantUserIds = post.getParticipants().stream()
-					.map(participant -> participant.getUser().getId())
-					.collect(Collectors.toList());
-			dto.setParticipantUserIds(participantUserIds);
-
-			return dto;
-		}).collect(Collectors.toList());
-
-		return ResponseEntity.ok(postDtos);
-	}
-
-	@GetMapping("/popular-in-last-10-minutes")
+	@GetMapping("/realtimePopular")
 	public ResponseEntity<List<PostDto>> getPopularPostsInLast10Minutes() {
 		// 현재 시간
 		LocalDateTime currentTime = LocalDateTime.now();
 
 		// 10분 전 시간 계산
-		LocalDateTime tenMinutesAgo = currentTime.minus(10, ChronoUnit.MINUTES);
+		LocalDateTime tenMinutesAgo = currentTime.minus(60, ChronoUnit.MINUTES);
 
 		// 10분 이내의 게시물 조회
 		List<Post> posts = postRepository.findByCreatedAtAfter(tenMinutesAgo);

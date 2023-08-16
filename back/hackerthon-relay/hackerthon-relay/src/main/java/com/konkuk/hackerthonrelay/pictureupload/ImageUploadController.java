@@ -10,9 +10,6 @@ import com.konkuk.hackerthonrelay.pictureupload.tag.Tag;
 import com.konkuk.hackerthonrelay.pictureupload.tag.TagRepository;
 import com.konkuk.hackerthonrelay.pictureupload.tag.TagService;
 import lombok.extern.slf4j.Slf4j;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +30,7 @@ public class ImageUploadController {
     private final PostRepository postRepository;
 	private final PostService postService;
 	private final UserRepository userRepository;
+
 	private final ImageRepository imageRepository;
 	private final NotificationRepository notificationRepository;
 	private final TagService tagService;
@@ -53,7 +51,7 @@ public class ImageUploadController {
     }
 
 	//db 업데이트
-	@Scheduled(fixedRate = 60000) // 매 분마다 실행
+	@Scheduled(fixedRate = 60000) // 매 초마다 실행
 	public void checkPostExpiry() {
 		List<Post> posts = postRepository.findAll();
 		for (Post post : posts) {
@@ -141,12 +139,12 @@ public class ImageUploadController {
 			}
 
 			postRepository.save(post); // Post를 다시 저장하여 변경 사항을 반영합니다.
-			response.put("success", true); 
-			response.put("postId", post.getId()); 
+			response.put("success", true); // 추가된 부분
+			response.put("postId", post.getId()); // 추가된 부분
 			return new ResponseEntity<>(response, HttpStatus.CREATED); // 수정된 부분
 
 		} catch (IOException e) {
-			response.put("success", false);
+			response.put("success", false); // 추가된 부분
 			response.put("message", "Could not upload file. Please try again."); // 추가된 부분
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR); // 수정된 부분 }
 		}
@@ -211,8 +209,8 @@ public class ImageUploadController {
 	// 릴레이 이어가기 (사용자 언급만 허용)
 	@PostMapping("/relay")
 	public ResponseEntity<Map<String, Object>> relayPost(@RequestParam("postId") Long postId,
-			@RequestParam("user") String userId,
-			@RequestParam(value = "remainingSeconds", required = false, defaultValue = "86400") int remainingSeconds) {
+														 @RequestParam("user") String userId,
+														 @RequestParam(value = "remainingSeconds", required = false, defaultValue = "86400") int remainingSeconds) {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
 
 		User creator = post.getCreator();
@@ -246,6 +244,7 @@ public class ImageUploadController {
 		userRepository.save(mentioned); // 변경 사항을 저장합니다.
 
 		post.setLastMentionedUser(post.getUser()); // 현재의 편집 권한을 가진 사용자를 마지막으로 언급된 사용자로 설정
+		//post.setUser(mentioned); // 언급된 사용자에게 편집 권한 부여
 		post.setMentionedUser(mentioned);
 		post.setRemainingTime(Duration.ofSeconds(remainingSeconds));
 
@@ -253,14 +252,14 @@ public class ImageUploadController {
 		Notification notification = new Notification();
 		notification.setRecipient(mentioned);
 		notification.setMessage(currentUser.getUsername() + "님이 릴레이를 신청하셨습니다.");
-		notification.setType(NotificationType.COMMENT);
+		notification.setType(Notification.NotificationType.COMMENT);
 		notification.setPostId(postId);
 		notification.setUserId(currentUser.getId()); // 현재 사용자의 ID
 		notification.setUserIdString(currentUser.getUserId()); // 현재 사용자의 String userId 설정
 		notification.setUserName(currentUser.getUsername()); // 현재 사용자의 이름
 		notification.setRemainingTime(Duration.ofSeconds(remainingSeconds)); // 남은 시간 설정
 		notification.setUserProfileUrl(currentUser.getProfilePictureUrl()); // 'getProfileUrl()'는 사용자의 프로필 URL을 반환하는
-																			// 메서드여야 합니다.
+		// 메서드여야 합니다.
 
 		notificationRepository.save(notification);
 		postRepository.save(post);
