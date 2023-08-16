@@ -10,6 +10,7 @@ import com.example.hackathoneonebite.main.fragment.Main1HomeFirstFragment
 import com.example.hackathoneonebite.main.fragment.Main2SearchFragment
 import com.example.hackathoneonebite.main.fragment.Main3PostingFragment
 import com.example.hackathoneonebite.main.fragment.Main4RankingFragment
+import com.example.hackathoneonebite.main.fragment.Main4RankingFragmentTop
 import com.example.hackathoneonebite.main.fragment.Main5ProfileFragment
 
 class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(fragmentActivity) {
@@ -25,7 +26,7 @@ class ViewPageAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter(
         Main1HomeFirstFragment(),
         Main2SearchFragment(),
         Main3PostingFragment(),
-        Main4RankingFragment(),
+        Main4RankingFragmentTop(),
         Main5ProfileFragment()
     )
 

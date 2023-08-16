@@ -1,51 +1,48 @@
 package com.example.hackathoneonebite.main.fragment
 
+import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Rank
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.LoadRanking
 import com.example.hackathoneonebite.databinding.ItemRankingListBinding
-import com.google.android.material.imageview.ShapeableImageView
 
-class AdapterMain4Ranking(private val dataList: List<LoadRanking>) :
-    RecyclerView.Adapter<AdapterMain4Ranking.ViewHolder>() {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+class AdapterMain4Ranking(val context: Context, val dataList: MutableList<LoadRanking> = arrayListOf()) : RecyclerView.Adapter<AdapterMain4Ranking.ViewHolder>() {
+    val baseUrl = "http://203.252.139.231:8080/"
+    interface OnItemClickListener{
+        fun OnItemClick(position:Int)
     }
+    var itemClickListener:OnItemClickListener?=null
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val data = dataList[position]
-
-        if (position == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(holder.itemView.context, R.color.highlight))
-            holder.bind(data, position + 1) // 순위를 1로 설정하여 표시
-        } else {
-            holder.bind(data, position + 2) // 나머지 순위는 2부터 표시
+    inner class ViewHolder(val binding: ItemRankingListBinding) : RecyclerView.ViewHolder(binding.root){
+        init{
+            binding.touchRegion.setOnClickListener {
+                itemClickListener?.OnItemClick(adapterPosition)
+            }
         }
     }
 
-    override fun getItemCount(): Int {
-        return minOf(dataList.size, 4)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = ItemRankingListBinding.inflate(LayoutInflater.from(parent.context),parent,false)
+        return ViewHolder(view)
     }
-
-    inner class ViewHolder(val binding: ItemRankingListBinding) : RecyclerView.ViewHolder(binding.root) {
-        private val rankText = binding.rankText
-        private val rankingProfile = binding.rankingProfile
-        private val rankName = binding.rankName
-        private val followText = binding.followText
-
-        fun bind(data: Rank, rank: Int) {
-            rankText.text = data.rankText.toString()
-            rankName.text = data.rankName
-            rankingProfile.setImageResource(R.drawable.test_image1)
-            followText.text = data.followText.toString()
+    override fun getItemCount():Int{
+        return dataList.size
+    }
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.binding.apply {
+            Log.e("MAIN4RANKING_CREATE_COMMENT2.5", dataList.toString())
+            rankText.text = (position + 1).toString()
+            Glide.with(context)
+                .load(baseUrl + dataList[position].profileUrl)
+                .into(rankingProfile)
+            rankName.text = dataList[position].username
+            scoreText.text = dataList[position].score.toString()
         }
     }
 }

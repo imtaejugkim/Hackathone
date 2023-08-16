@@ -100,7 +100,7 @@ public interface API {
     ): Call<FollowToggleResponse>
     //프로필 수정
     @Multipart
-    @POST("/api/user/update/{userId}")
+    @POST("/api/user/update/{id}")
     fun updateProfile_userId_username(
         @Path("id") id: Long,
         @Part("userId") userId: RequestBody,

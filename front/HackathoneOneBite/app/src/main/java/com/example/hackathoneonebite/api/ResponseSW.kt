@@ -105,7 +105,7 @@ data class LoadAPostInfoResponse (
     @SerializedName("comments") val comments: List<CommentResponse>,
     @SerializedName("musicNum") val musicNum: Int,
     @SerializedName("participantUserIds") val participantUserIds: List<Long>,
-    @SerializedName("likedByCurrentUser") val likeClicked:Boolean,
+    @SerializedName("likedByCurrentUser") var likeClicked:Boolean,
     @SerializedName("participantUserIdStrings") val participantUserIdStrings: List<String>,
     @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: List<String>
 )

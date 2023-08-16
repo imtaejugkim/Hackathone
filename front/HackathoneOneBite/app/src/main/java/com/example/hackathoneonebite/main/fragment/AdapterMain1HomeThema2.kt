@@ -173,6 +173,7 @@ class AdapterMain1HomeThema2 (val context: Context,  val data:ArrayList<Post>)
             Glide.with(context)
                 .load(imgArray[3])
                 .into(postImageLayout.imageView4frame2)
+            postImageLayout.dateTextView.text = data[position].date.toString().split('T')[0]
         }
     }
 

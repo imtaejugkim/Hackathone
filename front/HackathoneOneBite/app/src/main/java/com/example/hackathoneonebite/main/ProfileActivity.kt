@@ -81,6 +81,7 @@ class ProfileActivity : AppCompatActivity() {//property
     var requesterId: Long = 0
     var targetId: Long = 0
     var userId: String = ""
+    var isfollowing: Boolean = false
     //network
     val baseUrl: String = "http://203.252.139.231:8080/"
     var refreshingProfile: Boolean = false
@@ -355,23 +356,23 @@ class ProfileActivity : AppCompatActivity() {//property
 
     //프로필 정보 호출
     private fun profileButtonSet(data_profile: Main5LoadProfileInfoResponse) {
+        isfollowing = data_profile.following
+        binding.button.visibility = View.VISIBLE
         //버튼 변경
         binding.button.apply {
             if (data_profile.selfProfile) {
-                text = "수정"
-                setOnClickListener {
-
-                }
+                text = ""
+                binding.button.visibility = View.INVISIBLE
             } else {
                 if (data_profile.following) {
-                    text = "- 팔로잉"
+                    text = "팔로잉"
                     setOnClickListener {
-                        followToggle(requesterId, targetId, true)
+                        followToggle(requesterId, targetId, isfollowing)
                     }
                 } else {
                     text = "+ 팔로우"
                     setOnClickListener {
-                        followToggle(requesterId, targetId, false)
+                        followToggle(requesterId, targetId, isfollowing)
                     }
                 }
             }
@@ -506,10 +507,13 @@ class ProfileActivity : AppCompatActivity() {//property
     //팔로우
     private fun applyFollowToggleResponse(wasFollowed: Boolean) {
         if (wasFollowed) {
+            isfollowing = false
             binding.button.text = "+ 팔로우"
         } else {
+            isfollowing = true
             binding.button.text = "팔로잉"
         }
+        loadProfileInfo(targetId)
     }
     private fun followToggle(requesterId: Long, targetId: Long, wasFollowed: Boolean) {
         followToggleRequest(requesterId, targetId, wasFollowed)
@@ -610,7 +614,7 @@ class ProfileActivity : AppCompatActivity() {//property
             bindingCommentDialog.userIdStringTextView4.text = aPostInfo.participantUserIdStrings[3]
         }
         bindingCommentDialog.textTextView.text = aPostInfo.text
-        bindingCommentDialog.dateTextView.text = aPostInfo.date
+        bindingCommentDialog.dateTextView.text = calculateTimeDifference(aPostInfo.date)
         bindingCommentDialog.addCommentButton.setOnClickListener {
             createComment(aPostInfo.id,this.requesterId,bindingCommentDialog.addCommentEditTextView.text.toString())
         }
@@ -706,7 +710,7 @@ class ProfileActivity : AppCompatActivity() {//property
                                     .load(baseUrl + aPostInfo.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4frame1)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = calculateTimeDifference(aPostInfo.date)
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
                                 //좋아요 반영
                                 if (aPostInfo.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
@@ -771,7 +775,7 @@ class ProfileActivity : AppCompatActivity() {//property
                                     .load(baseUrl + aPostInfo.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4frame2)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = calculateTimeDifference(aPostInfo.date)
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
                                 //좋아요 반영
                                 if (aPostInfo.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
@@ -836,7 +840,7 @@ class ProfileActivity : AppCompatActivity() {//property
                                     .load(baseUrl + aPostInfo.imageArray[3])
                                     .into(bindingAPost.postImageLayout.imageView4)
                                 //날짜 변경
-                                bindingAPost.postImageLayout.dateTextView.text = calculateTimeDifference(aPostInfo.date)
+                                bindingAPost.postImageLayout.dateTextView.text = aPostInfo.date.split('T')[0]
                                 //좋아요 반영
                                 if (aPostInfo.likeClicked) {
                                     bindingAPost.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)

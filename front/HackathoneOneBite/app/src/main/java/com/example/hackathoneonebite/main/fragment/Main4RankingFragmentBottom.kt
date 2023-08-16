@@ -25,8 +25,8 @@ class Main4RankingFragmentBottom : Fragment() {
 
         val recyclerView = binding.recyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        val adapter = AdapterMain4Ranking(viewModel.dataList?.subList(5, 49) ?: emptyList())
-        recyclerView.adapter = adapter
+        //val adapter = AdapterMain4Ranking(viewModel.dataList?.subList(5, 49) ?: emptyList())
+        //recyclerView.adapter = adapter
         Log.d("바텀 잘 왔니", viewModel.dataList.toString())
 
         return binding.root

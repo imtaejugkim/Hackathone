@@ -1,206 +1,240 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/rankingTopView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="700dp">
-
-        <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineStart"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.05" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guidelineEnd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.95" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/GuideLineTheme"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.045"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/GuideLineFirst"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.17"/>
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/GuideLineRanking"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.576"/>
-
-            <View
-                android:id="@+id/logoBackground"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@color/highlight"
-                app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
-                tools:layout_editor_absoluteX="0dp" />
-
-            <TextView
-                android:id="@+id/topicTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="테마 선택"
-                android:textSize="19sp"
-                android:fontFamily="@font/font_bold"
-                android:textColor="@android:color/white"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/logoBackground"
-                app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/rankingMain"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                app:layout_constraintTop_toBottomOf="@id/GuideLineFirst"
-                app:layout_constraintBottom_toTopOf="@id/GuideLineRanking"
-                android:layout_marginBottom="16dp">
+                android:id="@+id/rankingTopView"
+                android:layout_width="match_parent"
+                android:layout_height="700dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/rankFirst"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@color/light_gray"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/rankSecond"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:src="@color/light_gray"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    android:layout_marginBottom="15dp"
-                    app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/rankThird"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:src="@color/light_gray"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:shapeAppearanceOverlay="@style/CircleImageView"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <LinearLayout
-                android:id="@+id/myRanking"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                app:layout_constraintTop_toBottomOf="@+id/GuideLineRanking"
-                app:layout_constraintBottom_toTopOf="@+id/rankRecyclerView">
-
-                <LinearLayout
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="4dp"
-                    android:layout_width="0dp"
+            <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineStart"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginLeft="10dp">
-                    <TextView
-                        android:id="@+id/myRankText"
-                        android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="22sp"
-                        android:textColor="@color/black"
-                        android:text="00"/>
-                </LinearLayout>
+                    app:layout_constraintGuide_percent="0.05" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guidelineEnd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.95" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/GuideLineTheme"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.045"/>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/GuideLineFirst"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.17"/>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/GuideLineRanking"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintGuide_percent="0.576"/>
+
+                <View
+                    android:id="@+id/logoBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/highlight"
+                    app:layout_constraintTop_toTopOf="@id/GuideLineTheme"
+                    tools:layout_editor_absoluteX="0dp" />
+
+                <TextView
+                    android:id="@+id/topicTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="테마 선택"
+                    android:textSize="19sp"
+                    android:fontFamily="@font/font_bold"
+                    android:textColor="@android:color/white"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/logoBackground"
+                    app:layout_constraintBottom_toBottomOf="@id/logoBackground"/>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/rankingMain"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintTop_toBottomOf="@id/GuideLineFirst"
+                    app:layout_constraintBottom_toTopOf="@id/GuideLineRanking"
+                    android:layout_marginBottom="16dp">
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/rankFirst"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintWidth_percent="0.45"
+                        app:layout_constraintDimensionRatio="1:1"
+                        android:src="@color/light_gray"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircleImageView"
+                        android:layout_marginStart="20dp"/>
+
+                    <androidx.constraintlayout.utils.widget.ImageFilterView
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintWidth_percent="0.2"
+                        android:layout_marginStart="-10dp"
+                        android:layout_marginTop="-10dp"
+                        android:src="@drawable/img_crown"
+                        app:layout_constraintStart_toStartOf="@id/rankFirst"
+                        app:layout_constraintTop_toTopOf="@id/rankFirst"/>
+
+                    <!--<ImageView
+                        android:layout_width=""
+                        android:layout_height=""-->
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/rankSecond"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintWidth_percent="0.34"
+                        app:layout_constraintDimensionRatio="1:1"
+                        android:src="@color/light_gray"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="15dp"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/rankThird"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintWidth_percent="0.3"
+                        app:layout_constraintDimensionRatio="1:1"
+                        android:src="@color/light_gray"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:scaleType="centerCrop"
+                        app:shapeAppearanceOverlay="@style/CircleImageView"
+                        android:layout_marginEnd="15dp"/>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
+                    android:id="@+id/myRanking"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:layout_marginLeft="10dp">
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/myRankingProfile"
-                        android:layout_width="40dp"
-                        android:layout_height="40dp"
-                        android:src="@color/light_gray"
-                        app:shapeAppearanceOverlay="@style/CircleImageView"/>
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="3dp"
+                    android:paddingBottom="3dp"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintTop_toBottomOf="@+id/GuideLineRanking"
+                    app:layout_constraintBottom_toTopOf="@+id/rankRecyclerView"
+                    android:background="@color/light_gray">
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:layout_marginLeft="10dp">
-                    <TextView
-                        android:id="@+id/myRankName"
+                    <LinearLayout
+                        android:layout_marginTop="4dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginLeft="10dp">
+                        <TextView
+                            android:id="@+id/myRankText"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="22sp"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.2"
                         android:gravity="center"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:textSize="18sp"
-                        android:textColor="@color/black"
-                        android:text="이름"/>
-                </LinearLayout>
+                        android:layout_marginLeft="10dp">
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/myRankingProfile"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:src="@color/light_gray"
+                            android:scaleType="centerCrop"
+                            app:shapeAppearanceOverlay="@style/CircleImageView"/>
+                    </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:layout_marginLeft="10dp">
-                    <TextView
-                        android:id="@+id/myFollowText"
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"
                         android:gravity="center"
-                        android:layout_width="match_parent"
+                        android:layout_marginLeft="10dp">
+                        <TextView
+                            android:id="@+id/myRankName"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="18sp"
+                            android:textColor="@color/black"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:textSize="16sp"
-                        android:textColor="@color/gray"
-                        android:text="85,102"/>
+                        android:layout_weight="2.5"
+                        android:layout_marginLeft="10dp">
+                        <TextView
+                            android:id="@+id/myScore"
+                            android:gravity="center"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="16sp"
+                            android:textColor="@color/gray"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rankRecyclerView"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                tools:listitem="@layout/item_ranking_list"
-                app:layout_constraintStart_toStartOf="@id/guidelineStart"
-                app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
-                app:layout_constraintTop_toBottomOf="@id/myRanking"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rankRecyclerView"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    tools:listitem="@layout/item_ranking_list"
+                    app:layout_constraintStart_toStartOf="@id/guidelineStart"
+                    app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+                    app:layout_constraintTop_toBottomOf="@id/myRanking"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

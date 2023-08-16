@@ -6,6 +6,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.media.MediaPlayer
+import android.text.TextUtils.split
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -173,6 +174,8 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
             Glide.with(context)
                 .load(imgArray[3])
                 .into(postImageLayout.imageView4frame1)
+
+            postImageLayout.dateTextView.text = data[position].date.toString().split('T')[0]
         }
     }
 

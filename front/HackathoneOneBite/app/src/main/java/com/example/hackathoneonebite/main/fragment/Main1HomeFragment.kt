@@ -55,6 +55,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.Duration
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.random.Random
@@ -504,6 +505,9 @@ class Main1HomeFragment : Fragment() {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
+                        if (pos == data_thema1.count() - 1) {
+                            loadPosts(0)
+                        }
                         //like button init
                         if (data_thema1[pos].likeClicked) {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
@@ -548,34 +552,39 @@ class Main1HomeFragment : Fragment() {
                             singerNameTextView.visibility = View.INVISIBLE
                         }
                         //profile image
-                        userProfileImageView1.visibility = View.INVISIBLE
-                        userProfileImageView2.visibility = View.INVISIBLE
-                        userProfileImageView3.visibility = View.INVISIBLE
-                        userProfileImageView4.visibility = View.INVISIBLE
-                        if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
-                            Log.d("main111","1개 "+baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                        } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
-                            Log.d("main111","4개")
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[1])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[2])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[3])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                            userProfileImageView2.visibility = View.VISIBLE
-                            userProfileImageView3.visibility = View.VISIBLE
-                            userProfileImageView4.visibility = View.VISIBLE
+                        if (!data_thema1[pos].isFliped) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
+                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                                Log.d(
+                                    "main111",
+                                    "1개 " + baseUrl + data_thema1[pos].participantsUserProfileUrl[0]
+                                )
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                                Log.d("main111", "4개")
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[1])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[2])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[3])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                                userProfileImageView2.visibility = View.VISIBLE
+                                userProfileImageView3.visibility = View.VISIBLE
+                                userProfileImageView4.visibility = View.VISIBLE
+                            }
                         }
 
                         //music play
@@ -628,9 +637,9 @@ class Main1HomeFragment : Fragment() {
                         } catch (e: ArrayIndexOutOfBoundsException) {
                             Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                         }
-                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                        if (data_thema2[position].participantsUserProfileUrl.count() == 1) {
                             userProfileImageView1.visibility = View.INVISIBLE
-                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                        } else if (data_thema2[position].participantsUserProfileUrl.count() == 4) {
                             userProfileImageView1.visibility = View.INVISIBLE
                             userProfileImageView2.visibility = View.INVISIBLE
                             userProfileImageView3.visibility = View.INVISIBLE
@@ -641,9 +650,9 @@ class Main1HomeFragment : Fragment() {
                         musicNameTextView.visibility = View.VISIBLE
                         singerNameTextView.visibility = View.VISIBLE
                     } else {
-                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                        if (data_thema2[position].participantsUserProfileUrl.count() == 1) {
                             userProfileImageView1.visibility = View.VISIBLE
-                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                        } else if (data_thema2[position].participantsUserProfileUrl.count() == 4) {
                             userProfileImageView1.visibility = View.VISIBLE
                             userProfileImageView2.visibility = View.VISIBLE
                             userProfileImageView3.visibility = View.VISIBLE
@@ -715,6 +724,9 @@ class Main1HomeFragment : Fragment() {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
+                        if (pos == data_thema2.count() - 1) {
+                            loadPosts(1)
+                        }
                         //like button init
                         if (data_thema2[pos].likeClicked) {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
@@ -731,9 +743,9 @@ class Main1HomeFragment : Fragment() {
                             } catch (e: ArrayIndexOutOfBoundsException) {
                                 Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                             }
-                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                            if (data_thema2[pos].participantsUserProfileUrl.count() == 1) {
                                 userProfileImageView1.visibility = View.INVISIBLE
-                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                            } else if (data_thema2[pos].participantsUserProfileUrl.count() == 4) {
                                 userProfileImageView1.visibility = View.INVISIBLE
                                 userProfileImageView2.visibility = View.INVISIBLE
                                 userProfileImageView3.visibility = View.INVISIBLE
@@ -745,9 +757,9 @@ class Main1HomeFragment : Fragment() {
                             singerNameTextView.visibility = View.VISIBLE
                         } else {
                             Log.d("position", pos.toString())
-                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                            if (data_thema2[pos].participantsUserProfileUrl.count() == 1) {
                                 userProfileImageView1.visibility = View.VISIBLE
-                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                            } else if (data_thema2[pos].participantsUserProfileUrl.count() == 4) {
                                 userProfileImageView1.visibility = View.VISIBLE
                                 userProfileImageView2.visibility = View.VISIBLE
                                 userProfileImageView3.visibility = View.VISIBLE
@@ -759,32 +771,34 @@ class Main1HomeFragment : Fragment() {
                             singerNameTextView.visibility = View.INVISIBLE
                         }
                         //profile image
-                        userProfileImageView1.visibility = View.INVISIBLE
-                        userProfileImageView2.visibility = View.INVISIBLE
-                        userProfileImageView3.visibility = View.INVISIBLE
-                        userProfileImageView4.visibility = View.INVISIBLE
-                        if (data_thema2[pos].participantsUserProfileUrl.count() == 1) {
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                        } else if (data_thema2[pos].participantsUserProfileUrl.count() == 4) {
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[1])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[2])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[3])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                            userProfileImageView2.visibility = View.VISIBLE
-                            userProfileImageView3.visibility = View.VISIBLE
-                            userProfileImageView4.visibility = View.VISIBLE
+                        if (!data_thema2[pos].isFliped) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
+                            if (data_thema2[pos].participantsUserProfileUrl.count() == 1) {
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                            } else if (data_thema2[pos].participantsUserProfileUrl.count() == 4) {
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[1])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[2])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[3])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                                userProfileImageView2.visibility = View.VISIBLE
+                                userProfileImageView3.visibility = View.VISIBLE
+                                userProfileImageView4.visibility = View.VISIBLE
+                            }
                         }
 
                         //music stop
@@ -886,6 +900,9 @@ class Main1HomeFragment : Fragment() {
                         val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
+                        if (pos == data_film.count() - 1) {
+                            loadPosts(2)
+                        }
                         //like button init
                         if (data_film[pos].likeClicked) {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
@@ -893,35 +910,37 @@ class Main1HomeFragment : Fragment() {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
                         }
                         //profile image
-                        userProfileImageView1.visibility = View.INVISIBLE
-                        userProfileImageView2.visibility = View.INVISIBLE
-                        userProfileImageView3.visibility = View.INVISIBLE
-                        userProfileImageView4.visibility = View.INVISIBLE
-                        if (data_film[0].participantsUserProfileUrl.count() == 1) {
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                        } else if (data_film[0].participantsUserProfileUrl.count() == 4) {
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_film[0].participantsUserProfileUrl[1])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_film[0].participantsUserProfileUrl[2])
-                                .into(userProfileImageView1)
-                            Glide.with(requireContext())
-                                .load(baseUrl + data_film[0].participantsUserProfileUrl[3])
-                                .into(userProfileImageView1)
-                            userProfileImageView1.visibility = View.VISIBLE
-                            userProfileImageView2.visibility = View.VISIBLE
-                            userProfileImageView3.visibility = View.VISIBLE
-                            userProfileImageView4.visibility = View.VISIBLE
+                        if (!data_film[pos].isFliped) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
+                            if (data_film[0].participantsUserProfileUrl.count() == 1) {
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                            } else if (data_film[0].participantsUserProfileUrl.count() == 4) {
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_film[0].participantsUserProfileUrl[1])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_film[0].participantsUserProfileUrl[2])
+                                    .into(userProfileImageView1)
+                                Glide.with(requireContext())
+                                    .load(baseUrl + data_film[0].participantsUserProfileUrl[3])
+                                    .into(userProfileImageView1)
+                                userProfileImageView1.visibility = View.VISIBLE
+                                userProfileImageView2.visibility = View.VISIBLE
+                                userProfileImageView3.visibility = View.VISIBLE
+                                userProfileImageView4.visibility = View.VISIBLE
+                            }
+                            //
+                            messageTextView.text = data_film[pos]?.message
                         }
-                        //
-                        messageTextView.text = data_film[pos]?.message
                     }
                 }
             })
@@ -1219,8 +1238,8 @@ class Main1HomeFragment : Fragment() {
     //다른 프로필 Activity 실행
     private fun startProfileActivity(targetId: Long) {
         val i = Intent(requireContext(), ProfileActivity::class.java)
-        i.putExtra("requesterId",this.id)
-        i.putExtra("targetId",targetId)
+        i.putExtra("requesterId", this.id)
+        i.putExtra("targetId", targetId)
         startActivity(i)
     }
     //댓글 창 위쪽 데이터 설정
@@ -1234,7 +1253,7 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView1.setOnClickListener {
                             startProfileActivity(data_thema1[position].participantUserIds[0])
                         }
-                        dateTextView.text = data_thema1[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_thema1[position].date.toString())
                         textTextView.text = data_thema1[position].message
                     } else if (data_thema1[position].participantUserIdStrings.count() == 4) {
                         userIdStringTextView1.setText(data_thema1[position].participantUserIdStrings[0])
@@ -1253,7 +1272,7 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView4.setOnClickListener {
                             startProfileActivity(data_thema1[position].participantUserIds[3])
                         }
-                        dateTextView.text = data_thema1[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_thema1[position].date.toString())
                         textTextView.text = data_thema1[position].message
                     }
                 }
@@ -1263,7 +1282,7 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView1.setOnClickListener {
                             startProfileActivity(data_thema2[position].participantUserIds[0])
                         }
-                        dateTextView.text = data_thema2[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_thema2[position].date.toString())
                         textTextView.text = data_thema2[position].message
                     } else if (data_thema2[position].participantUserIdStrings.count() == 4) {
                         userIdStringTextView1.setText(data_thema2[position].participantUserIdStrings[0])
@@ -1282,7 +1301,7 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView4.setOnClickListener {
                             startProfileActivity(data_thema2[position].participantUserIds[3])
                         }
-                        dateTextView.text = data_thema2[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_thema2[position].date.toString())
                         textTextView.text = data_thema2[position].message
                     }
                 }
@@ -1292,7 +1311,7 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView1.setOnClickListener {
                             startProfileActivity(data_film[position].participantUserIds[0])
                         }
-                        dateTextView.text = data_film[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_film[position].date.toString())
                         textTextView.text = data_film[position].message
                     } else if (data_film[position].participantUserIdStrings.count() == 4) {
                         userIdStringTextView1.setText(data_film[position].participantUserIdStrings[0])
@@ -1311,11 +1330,38 @@ class Main1HomeFragment : Fragment() {
                         userIdStringTextView4.setOnClickListener {
                             startProfileActivity(data_film[position].participantUserIds[3])
                         }
-                        dateTextView.text = data_film[position].date.toString()
+                        dateTextView.text = calculateTimeDifference(data_film[position].date.toString())
                         textTextView.text = data_film[position].message
                     }
                 }
             }
+        }
+    }
+    //타임 차이 계산
+    private fun calculateTimeDifference(time: String): String {
+        var beforeTime = time
+        if (beforeTime.length < 26) {
+            for (i in 0..25 - time.length) {
+                beforeTime += "0"
+            }
+            val parts = beforeTime.split(".")
+            val nanoSeconds = ((parts[1]).toInt() - 1).toString()
+            beforeTime = parts[0] + "." + nanoSeconds
+        }
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        val timeObject = LocalDateTime.parse(beforeTime, formatter)
+
+        val duration = Duration.between(timeObject, LocalDateTime.now())
+
+        val days = duration.toDays()
+        val hours = duration.toHours() - days * 24
+        val minutes = duration.toMinutes() - days * 24 * 60 - hours * 60
+
+        return when {
+            days > 0 -> "$days 일 전"
+            hours > 0 -> "$hours 시간 전"
+            minutes > 0 -> "$minutes 분 전"
+            else -> "방금 전"
         }
     }
     //네에에에트으으으으으워어어어어크으으으으으으
