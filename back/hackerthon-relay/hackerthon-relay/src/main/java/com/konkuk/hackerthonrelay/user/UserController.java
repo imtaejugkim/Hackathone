@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.konkuk.hackerthonrelay.follow.FollowService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -122,45 +121,30 @@ public class UserController {
 
 	@PostMapping(value = "/update/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<Map<String, Object>> updateUser(@PathVariable Long id,
-														  @RequestPart(value = "userUpdates", required = false) String userUpdatesJson,
-														  @RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
-														  @RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) {
+			@RequestPart(value = "username", required = false) String username,
+			@RequestPart(value = "userId", required = false) String userId,
+			@RequestPart(value = "profileImage", required = false) MultipartFile profileImage,
+			@RequestPart(value = "backgroundImage", required = false) MultipartFile backgroundImage) {
 
 		Map<String, Object> response = new HashMap<>();
-		ObjectMapper objectMapper = new ObjectMapper();
-
-
 
 		try {
 			log.info("profileImage = {}", profileImage);
 			log.info("backgroundImage = {}", backgroundImage);
 			User user = userRepository.findById(id).orElse(null);
 
+			if (username != null) {
+				user.setUsername(username);
+			}
+			if (userId != null) {
+				User existingUserWithSameUserId = userRepository.findByUserId(userId);
 
-			if(userUpdatesJson != null) {
-				UserRegistrationDto userUpdates = objectMapper.readValue(userUpdatesJson, UserRegistrationDto.class);
-
-				if (userUpdates.getUsername() != null) {
-					user.setUsername(userUpdates.getUsername());
+				if (existingUserWithSameUserId != null && !existingUserWithSameUserId.getId().equals(id)) {
+					response.put("success", false);
+					response.put("message", "exist");
+					return ResponseEntity.ok(response);
 				}
-				if (userUpdates.getUserId() != null) {
-					User existingUserWithSameUserId = userRepository.findByUserId(userUpdates.getUserId());
-
-					if (existingUserWithSameUserId != null && !existingUserWithSameUserId.getId().equals(id)) {
-						response.put("success", false);
-						response.put("message", "exist");
-						return ResponseEntity.ok(response);
-					}
-
-//					if(!userUpdates.getUsername().equals(user.getUsername()) && userUpdates.getUserId().equals(user.getUserId())){
-//						log.info("userUpdates.getUserId() = {}" , userUpdates.getUserId());
-//						log.info("user.getUserId() = {}" , user.getUserId());
-//						response.put("success", false);
-//						response.put("message", "exist");
-//						return ResponseEntity.status(400).body(response);
-//					}
-					user.setUserId(userUpdates.getUserId());
-				}
+				user.setUserId(userId);
 			}
 
 			if (user == null) {
@@ -168,7 +152,6 @@ public class UserController {
 				response.put("message", "User not found");
 				return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
 			}
-
 
 			if (profileImage != null && !profileImage.isEmpty()) {
 				userService.saveProfileImage(id, profileImage);
