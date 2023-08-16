@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
 import android.content.IntentSender
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -25,6 +28,7 @@ import com.example.hackathoneonebite.api.Main1LoadPostRequest
 import com.example.hackathoneonebite.api.Main1LoadPostResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityStartBinding
+import com.example.hackathoneonebite.explanation.ExplanationActivity1
 import com.example.hackathoneonebite.main.MainFrameActivity
 import com.example.hackathoneonebite.main.fragment.Main1HomeFirstFragment
 import com.example.hackathoneonebite.main.fragment.Main3PostingRelaySearchActivity
@@ -66,6 +70,7 @@ class StartActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityStartBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        init()
         btnGoogle = binding.btnGoogle
 
         auth = FirebaseAuth.getInstance()
@@ -76,6 +81,17 @@ class StartActivity : ComponentActivity() {
 
         binding.loginBtn.setOnClickListener {
             setBasicLogin()
+        }
+    }
+
+    private fun init() {
+        val sharedPreferences = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
+        val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
+        if (isFirstRun) {
+            // 'isFirstRun'을 false로 설정하여, 이 코드가 다시 실행되지 않도록 합니다.
+            val editor = sharedPreferences.edit()
+            editor.putBoolean("isFirstRun", false)
+            editor.apply()
         }
     }
 

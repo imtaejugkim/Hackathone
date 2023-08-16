@@ -82,6 +82,7 @@
                 android:layout_marginBottom="16dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/rankFirst"
                     android:layout_width="180dp"
                     android:layout_height="180dp"
                     android:src="@color/light_gray"
@@ -91,6 +92,7 @@
                     app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/rankSecond"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
                     android:src="@color/light_gray"
@@ -101,6 +103,7 @@
                     app:shapeAppearanceOverlay="@style/CircleImageView"/>
 
                 <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/rankThird"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:src="@color/light_gray"
@@ -122,7 +125,7 @@
                 app:layout_constraintStart_toStartOf="@id/guidelineStart"
                 app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                 app:layout_constraintTop_toBottomOf="@+id/GuideLineRanking"
-                app:layout_constraintBottom_toTopOf="@+id/recyclerView">
+                app:layout_constraintBottom_toTopOf="@+id/rankRecyclerView">
 
                 <LinearLayout
                     android:layout_marginTop="4dp"
@@ -190,17 +193,14 @@
             </LinearLayout>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rankRecyclerView"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:id="@+id/recyclerView"
                 tools:listitem="@layout/item_ranking_list"
                 app:layout_constraintStart_toStartOf="@id/guidelineStart"
                 app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
                 app:layout_constraintTop_toBottomOf="@id/myRanking"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </LinearLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

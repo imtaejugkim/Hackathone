@@ -72,7 +72,7 @@ class Main1HomeFragment : Fragment() {
     lateinit var adapter_comment: AdapterMain1HomeComment
     var userId: String = ""
     var id: Long = 0
-    val baseUrl = "http://221.146.39.177:8081/"
+    val baseUrl = "http://203.252.139.231:8080/"
     val data_thema1: ArrayList<Post> = ArrayList()
     val data_thema2: ArrayList<Post> = ArrayList()
     val data_film: ArrayList<Post> = ArrayList()
@@ -83,9 +83,12 @@ class Main1HomeFragment : Fragment() {
     private val handler = Handler(Looper.getMainLooper())
     private var current_selected_thema: Int = -1
     private val loadMainRunnable = Runnable {
-        Log.d("MAIN1HOME", "theme ${current_selected_thema}를 다시 로드합니다.")
-        Toast.makeText(requireContext(),"게시물이 로드되지 않았습니다.\n재통신을 시도합니다.", Toast.LENGTH_SHORT).show()
-        loadPosts(current_selected_thema)
+        if (isAdded) {
+            Log.d("MAIN1HOME", "theme ${current_selected_thema}를 다시 로드합니다.")
+            Toast.makeText(requireContext(), "게시물이 로드되지 않았습니다.\n재통신을 시도합니다.", Toast.LENGTH_SHORT)
+                .show()
+            loadPosts(current_selected_thema)
+        }
     }
 
     //music
@@ -108,7 +111,6 @@ class Main1HomeFragment : Fragment() {
         val activity = requireActivity() as MainFrameActivity
         this.id = activity.id
         this.userId = activity.userId
-        current_selected_thema = arguments?.getInt("themaNum") ?: 0
         Log.d("ID", "메인 Fragment Attached / ID : ${this.id}")
         musicArray = resources.obtainTypedArray(R.array.music_array)
     }
@@ -121,8 +123,8 @@ class Main1HomeFragment : Fragment() {
         thema1Binding = FragmentMain1HomeThema1Binding.inflate(layoutInflater)
         thema2Binding = FragmentMain1HomeThema2Binding.inflate(layoutInflater)
         filmBinding = FragmentMain1HomeFilmBinding.inflate(layoutInflater)
+
         commentDialogBinding = DialogMain1CommentBinding.inflate(layoutInflater)
-        current_selected_thema = -1
         return binding.root
     }
 
@@ -180,17 +182,23 @@ class Main1HomeFragment : Fragment() {
                 0 -> {
                     Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
-                    loadPosts(0)
+                    if (data_thema1.isEmpty()) {
+                        loadPosts(0)
+                    }
                 }
                 1 -> {
                     Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
-                    loadPosts(1)
+                    if (data_thema2.isEmpty()) {
+                        loadPosts(1)
+                    }
                 }
                 2 -> {
                     Log.d("MAIN1HOME_LIKE", current_selected_thema.toString())
                     binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
-                    loadPosts(2)
+                    if (data_film.isEmpty()) {
+                        loadPosts(2)
+                    }
                 }
                 else -> {
                     Log.e("MAIN1HOME_UNBELIEVEABLE_ERROR1", "예상치 못한 버그 이게 보인다면 다시 코드 읽으시길.. ㅎㅎ")
@@ -209,7 +217,7 @@ class Main1HomeFragment : Fragment() {
             createNewCommentBinding()
             loadComments(data_thema1[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
-            showCommentDialog()
+            showCommentDialog(data_thema1[firstVisiblePosition].postId, firstVisiblePosition)
         }
         binding.postImageLayoutThema2.messageTextView.setOnClickListener {
             val layoutManager = binding.postImageLayoutThema2.recyclerView.layoutManager as LinearLayoutManager
@@ -218,7 +226,7 @@ class Main1HomeFragment : Fragment() {
             createNewCommentBinding()
             loadComments(data_thema2[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
-            showCommentDialog()
+            showCommentDialog(data_thema2[firstVisiblePosition].postId, firstVisiblePosition)
         }
         binding.postImageLayoutFilm.messageTextView.setOnClickListener {
             val layoutManager = binding.postImageLayoutFilm.recyclerView.layoutManager as LinearLayoutManager
@@ -226,7 +234,7 @@ class Main1HomeFragment : Fragment() {
             createNewCommentBinding()
             loadComments(data_film[firstVisiblePosition].postId, firstVisiblePosition)
             setPostDataInCommentWindow(firstVisiblePosition)
-            showCommentDialog()
+            showCommentDialog(data_film[firstVisiblePosition].postId, firstVisiblePosition)
         }
     }
     //<editor-fold desc="좋아요 뷰 접어놓기">
@@ -409,23 +417,29 @@ class Main1HomeFragment : Fragment() {
                         } catch (e: ArrayIndexOutOfBoundsException) {
                             Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                         }
-                        userProfileImageView1.visibility = View.INVISIBLE
-                        userProfileImageView2.visibility = View.INVISIBLE
-                        userProfileImageView3.visibility = View.INVISIBLE
-                        userProfileImageView4.visibility = View.INVISIBLE
+                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
+                        }
                         messageTextView.visibility = View.INVISIBLE
                         likeButton.visibility = View.INVISIBLE
-                        shareButton.visibility = View.INVISIBLE
                         musicNameTextView.visibility = View.VISIBLE
                         singerNameTextView.visibility = View.VISIBLE
                     } else {
-                        userProfileImageView1.visibility = View.VISIBLE
-                        userProfileImageView2.visibility = View.VISIBLE
-                        userProfileImageView3.visibility = View.VISIBLE
-                        userProfileImageView4.visibility = View.VISIBLE
+                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                            userProfileImageView1.visibility = View.VISIBLE
+                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                            userProfileImageView1.visibility = View.VISIBLE
+                            userProfileImageView2.visibility = View.VISIBLE
+                            userProfileImageView3.visibility = View.VISIBLE
+                            userProfileImageView4.visibility = View.VISIBLE
+                        }
                         messageTextView.visibility = View.VISIBLE
                         likeButton.visibility = View.VISIBLE
-                        shareButton.visibility = View.VISIBLE
                         musicNameTextView.visibility = View.INVISIBLE
                         singerNameTextView.visibility = View.INVISIBLE
                     }
@@ -506,33 +520,70 @@ class Main1HomeFragment : Fragment() {
                             } catch (e: ArrayIndexOutOfBoundsException) {
                                 Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                             }
-                            userProfileImageView1.visibility = View.INVISIBLE
-                            userProfileImageView2.visibility = View.INVISIBLE
-                            userProfileImageView3.visibility = View.INVISIBLE
-                            userProfileImageView4.visibility = View.INVISIBLE
+                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                                userProfileImageView1.visibility = View.INVISIBLE
+                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                                userProfileImageView1.visibility = View.INVISIBLE
+                                userProfileImageView2.visibility = View.INVISIBLE
+                                userProfileImageView3.visibility = View.INVISIBLE
+                                userProfileImageView4.visibility = View.INVISIBLE
+                            }
                             messageTextView.visibility = View.INVISIBLE
                             likeButton.visibility = View.INVISIBLE
-                            shareButton.visibility = View.INVISIBLE
                             musicNameTextView.visibility = View.VISIBLE
                             singerNameTextView.visibility = View.VISIBLE
                         } else {
-                            Log.d("position",pos.toString())
+                            Log.d("position", pos.toString())
+                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                                userProfileImageView1.visibility = View.VISIBLE
+                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                                userProfileImageView1.visibility = View.VISIBLE
+                                userProfileImageView2.visibility = View.VISIBLE
+                                userProfileImageView3.visibility = View.VISIBLE
+                                userProfileImageView4.visibility = View.VISIBLE
+                            }
+                            messageTextView.visibility = View.VISIBLE
+                            likeButton.visibility = View.VISIBLE
+                            musicNameTextView.visibility = View.INVISIBLE
+                            singerNameTextView.visibility = View.INVISIBLE
+                        }
+                        //profile image
+                        userProfileImageView1.visibility = View.INVISIBLE
+                        userProfileImageView2.visibility = View.INVISIBLE
+                        userProfileImageView3.visibility = View.INVISIBLE
+                        userProfileImageView4.visibility = View.INVISIBLE
+                        if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                            Log.d("main111","1개 "+baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            userProfileImageView1.visibility = View.VISIBLE
+                        } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                            Log.d("main111","4개")
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[1])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[2])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema1[pos].participantsUserProfileUrl[3])
+                                .into(userProfileImageView1)
                             userProfileImageView1.visibility = View.VISIBLE
                             userProfileImageView2.visibility = View.VISIBLE
                             userProfileImageView3.visibility = View.VISIBLE
                             userProfileImageView4.visibility = View.VISIBLE
-                            messageTextView.visibility = View.VISIBLE
-                            likeButton.visibility = View.VISIBLE
-                            shareButton.visibility = View.VISIBLE
-                            musicNameTextView.visibility = View.INVISIBLE
-                            singerNameTextView.visibility = View.INVISIBLE
                         }
 
                         //music play
                         //centerView.findViewById<ConstraintLayout>(R.id.postImageLayoutBack).findViewById<Button>(R.id.playButton).performClick()
 
                         //music stop
-                        playingViewHolderTheme1 = adapter_thema1.currentlyPlayingViewHolder ?: return
+                        playingViewHolderTheme1 =
+                            adapter_thema1.currentlyPlayingViewHolder ?: return
                         val position = playingViewHolderTheme1!!.adapterPosition
                         val layoutManager2 = recyclerView.layoutManager
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
@@ -541,7 +592,8 @@ class Main1HomeFragment : Fragment() {
                                 mediaPlayer?.release()
                                 Log.d("MAIN1HOME_MUSIC", "음악 정지!")
                                 mediaPlayer = null
-                                playingViewHolderTheme1?.stopMusicAnimation() ?: Log.d("MAIN1HOME_MUSICㅈㄷㄹㅈ","it's null")
+                                playingViewHolderTheme1?.stopMusicAnimation()
+                                    ?: Log.d("MAIN1HOME_MUSICㅈㄷㄹㅈ", "it's null")
                                 playingViewHolderTheme1 = null
                                 adapter_thema1.currentlyPlayingViewHolder = null
                                 //배경 색 변경
@@ -576,23 +628,29 @@ class Main1HomeFragment : Fragment() {
                         } catch (e: ArrayIndexOutOfBoundsException) {
                             Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                         }
-                        userProfileImageView1.visibility = View.INVISIBLE
-                        userProfileImageView2.visibility = View.INVISIBLE
-                        userProfileImageView3.visibility = View.INVISIBLE
-                        userProfileImageView4.visibility = View.INVISIBLE
+                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                            userProfileImageView1.visibility = View.INVISIBLE
+                            userProfileImageView2.visibility = View.INVISIBLE
+                            userProfileImageView3.visibility = View.INVISIBLE
+                            userProfileImageView4.visibility = View.INVISIBLE
+                        }
                         messageTextView.visibility = View.INVISIBLE
                         likeButton.visibility = View.INVISIBLE
-                        shareButton.visibility = View.INVISIBLE
                         musicNameTextView.visibility = View.VISIBLE
                         singerNameTextView.visibility = View.VISIBLE
                     } else {
-                        userProfileImageView1.visibility = View.VISIBLE
-                        userProfileImageView2.visibility = View.VISIBLE
-                        userProfileImageView3.visibility = View.VISIBLE
-                        userProfileImageView4.visibility = View.VISIBLE
+                        if (data_thema1[position].participantsUserProfileUrl.count() == 1) {
+                            userProfileImageView1.visibility = View.VISIBLE
+                        } else if (data_thema1[position].participantsUserProfileUrl.count() == 4) {
+                            userProfileImageView1.visibility = View.VISIBLE
+                            userProfileImageView2.visibility = View.VISIBLE
+                            userProfileImageView3.visibility = View.VISIBLE
+                            userProfileImageView4.visibility = View.VISIBLE
+                        }
                         messageTextView.visibility = View.VISIBLE
                         likeButton.visibility = View.VISIBLE
-                        shareButton.visibility = View.VISIBLE
                         musicNameTextView.visibility = View.INVISIBLE
                         singerNameTextView.visibility = View.INVISIBLE
                     }
@@ -658,7 +716,7 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         //like button init
-                        if (data_thema1[pos].likeClicked) {
+                        if (data_thema2[pos].likeClicked) {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                         } else {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
@@ -673,30 +731,65 @@ class Main1HomeFragment : Fragment() {
                             } catch (e: ArrayIndexOutOfBoundsException) {
                                 Log.e("MAIN1HOME_MUSIC", "없는 인덱스 곡입니다. : ${e.message}")
                             }
-                            userProfileImageView1.visibility = View.INVISIBLE
-                            userProfileImageView2.visibility = View.INVISIBLE
-                            userProfileImageView3.visibility = View.INVISIBLE
-                            userProfileImageView4.visibility = View.INVISIBLE
+                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                                userProfileImageView1.visibility = View.INVISIBLE
+                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                                userProfileImageView1.visibility = View.INVISIBLE
+                                userProfileImageView2.visibility = View.INVISIBLE
+                                userProfileImageView3.visibility = View.INVISIBLE
+                                userProfileImageView4.visibility = View.INVISIBLE
+                            }
                             messageTextView.visibility = View.INVISIBLE
                             likeButton.visibility = View.INVISIBLE
-                            shareButton.visibility = View.INVISIBLE
                             musicNameTextView.visibility = View.VISIBLE
                             singerNameTextView.visibility = View.VISIBLE
                         } else {
-                            Log.d("position",pos.toString())
+                            Log.d("position", pos.toString())
+                            if (data_thema1[pos].participantsUserProfileUrl.count() == 1) {
+                                userProfileImageView1.visibility = View.VISIBLE
+                            } else if (data_thema1[pos].participantsUserProfileUrl.count() == 4) {
+                                userProfileImageView1.visibility = View.VISIBLE
+                                userProfileImageView2.visibility = View.VISIBLE
+                                userProfileImageView3.visibility = View.VISIBLE
+                                userProfileImageView4.visibility = View.VISIBLE
+                            }
+                            messageTextView.visibility = View.VISIBLE
+                            likeButton.visibility = View.VISIBLE
+                            musicNameTextView.visibility = View.INVISIBLE
+                            singerNameTextView.visibility = View.INVISIBLE
+                        }
+                        //profile image
+                        userProfileImageView1.visibility = View.INVISIBLE
+                        userProfileImageView2.visibility = View.INVISIBLE
+                        userProfileImageView3.visibility = View.INVISIBLE
+                        userProfileImageView4.visibility = View.INVISIBLE
+                        if (data_thema2[pos].participantsUserProfileUrl.count() == 1) {
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            userProfileImageView1.visibility = View.VISIBLE
+                        } else if (data_thema2[pos].participantsUserProfileUrl.count() == 4) {
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[1])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[2])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_thema2[pos].participantsUserProfileUrl[3])
+                                .into(userProfileImageView1)
                             userProfileImageView1.visibility = View.VISIBLE
                             userProfileImageView2.visibility = View.VISIBLE
                             userProfileImageView3.visibility = View.VISIBLE
                             userProfileImageView4.visibility = View.VISIBLE
-                            messageTextView.visibility = View.VISIBLE
-                            likeButton.visibility = View.VISIBLE
-                            shareButton.visibility = View.VISIBLE
-                            musicNameTextView.visibility = View.INVISIBLE
-                            singerNameTextView.visibility = View.INVISIBLE
                         }
 
                         //music stop
-                        playingViewHolderTheme2 = adapter_thema2.currentlyPlayingViewHolder ?: return
+                        playingViewHolderTheme2 =
+                            adapter_thema2.currentlyPlayingViewHolder ?: return
                         val position = playingViewHolderTheme2!!.adapterPosition
                         val layoutManager2 = recyclerView.layoutManager
                         if (!layoutManager2!!.isViewCompletelyVisible(position)) {
@@ -794,10 +887,38 @@ class Main1HomeFragment : Fragment() {
                         val centerView = snapHelper.findSnapView(layoutManager)
                         val pos = layoutManager.getPosition(centerView!!)
                         //like button init
-                        if (data_thema1[pos].likeClicked) {
+                        if (data_film[pos].likeClicked) {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                         } else {
                             likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                        }
+                        //profile image
+                        userProfileImageView1.visibility = View.INVISIBLE
+                        userProfileImageView2.visibility = View.INVISIBLE
+                        userProfileImageView3.visibility = View.INVISIBLE
+                        userProfileImageView4.visibility = View.INVISIBLE
+                        if (data_film[0].participantsUserProfileUrl.count() == 1) {
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            userProfileImageView1.visibility = View.VISIBLE
+                        } else if (data_film[0].participantsUserProfileUrl.count() == 4) {
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_film[0].participantsUserProfileUrl[1])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_film[0].participantsUserProfileUrl[2])
+                                .into(userProfileImageView1)
+                            Glide.with(requireContext())
+                                .load(baseUrl + data_film[0].participantsUserProfileUrl[3])
+                                .into(userProfileImageView1)
+                            userProfileImageView1.visibility = View.VISIBLE
+                            userProfileImageView2.visibility = View.VISIBLE
+                            userProfileImageView3.visibility = View.VISIBLE
+                            userProfileImageView4.visibility = View.VISIBLE
                         }
                         //
                         messageTextView.text = data_film[pos]?.message
@@ -884,8 +1005,9 @@ class Main1HomeFragment : Fragment() {
 
         //Dialog에서 thema1을 선택했을 경우
         bindingDialog.postFrame1.setOnClickListener {
+            val previous_selected_thema = current_selected_thema
             current_selected_thema = 0
-            when (current_selected_thema) {
+            when (previous_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     dlg.dismiss()
                 }
@@ -928,8 +1050,9 @@ class Main1HomeFragment : Fragment() {
         }
         //Dialog에서 thema2을 선택했을 경우
         bindingDialog.postFrame2.setOnClickListener {
+            val previous_selected_thema = current_selected_thema
             current_selected_thema = 1
-            when (current_selected_thema) {
+            when (previous_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     //글 로드 중지
                     handler.removeCallbacks(loadMainRunnable)
@@ -944,6 +1067,7 @@ class Main1HomeFragment : Fragment() {
                     //배경 색 변경
                     binding.postImageLayoutThema1.viewGroup.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
 
+                    Log.d("main1 이거 실행돼야함","아니 뭔데")
                     binding.postImageLayoutThema1.viewGroup.visibility = View.INVISIBLE
                     if (data_thema2.isNotEmpty()) {
                         binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
@@ -973,8 +1097,9 @@ class Main1HomeFragment : Fragment() {
         }
         //Dialog에서 Film을 선택했을 경우
         bindingDialog.postFrameFilm.setOnClickListener {
+            val previous_selected_thema = current_selected_thema
             current_selected_thema = 2
-            when (current_selected_thema) {
+            when (previous_selected_thema) {
                 ThemaNumbering.thema1.value -> {
                     //글 로드 중지
                     handler.removeCallbacks(loadMainRunnable)
@@ -1055,7 +1180,7 @@ class Main1HomeFragment : Fragment() {
         }
     }
     //댓글 Dialog
-    private fun showCommentDialog() {
+    private fun showCommentDialog(postId: Long, position: Int) {
         //dialog 객체 생성
         val builder = AlertDialog.Builder(requireContext())
         val dlg = builder.setView(commentDialogBinding.root).show()
@@ -1076,6 +1201,7 @@ class Main1HomeFragment : Fragment() {
                 dateTextView.text = ""
             }
         }
+        loadComments(postId, position)
     }
     private fun initCommentRecyclerView() {
         commentDialogBinding.apply {
@@ -1102,64 +1228,92 @@ class Main1HomeFragment : Fragment() {
         commentDialogBinding.apply {
             when (current_selected_thema) {
                 0 -> {
-                    userIdStringTextView1.setText(data_thema1[position].participantUserIdStrings[0])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema1[position].participantUserIds[0])
+                    Log.d("main1eeeeee",data_thema1[position].participantUserIdStrings.count().toString())
+                    if (data_thema1[position].participantUserIdStrings.count() == 1) {
+                        userIdStringTextView1.setText(data_thema1[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_thema1[position].participantUserIds[0])
+                        }
+                        dateTextView.text = data_thema1[position].date.toString()
+                        textTextView.text = data_thema1[position].message
+                    } else if (data_thema1[position].participantUserIdStrings.count() == 4) {
+                        userIdStringTextView1.setText(data_thema1[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_thema1[position].participantUserIds[0])
+                        }
+                        userIdStringTextView2.setText(data_thema1[position].participantUserIdStrings[1])
+                        userIdStringTextView2.setOnClickListener {
+                            startProfileActivity(data_thema1[position].participantUserIds[1])
+                        }
+                        userIdStringTextView3.setText(data_thema1[position].participantUserIdStrings[2])
+                        userIdStringTextView3.setOnClickListener {
+                            startProfileActivity(data_thema1[position].participantUserIds[2])
+                        }
+                        userIdStringTextView4.setText(data_thema1[position].participantUserIdStrings[3])
+                        userIdStringTextView4.setOnClickListener {
+                            startProfileActivity(data_thema1[position].participantUserIds[3])
+                        }
+                        dateTextView.text = data_thema1[position].date.toString()
+                        textTextView.text = data_thema1[position].message
                     }
-                    userIdStringTextView2.setText(data_thema1[position].participantUserIdStrings[1])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema1[position].participantUserIds[1])
-                    }
-                    userIdStringTextView3.setText(data_thema1[position].participantUserIdStrings[2])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema1[position].participantUserIds[2])
-                    }
-                    userIdStringTextView4.setText(data_thema1[position].participantUserIdStrings[3])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema1[position].participantUserIds[3])
-                    }
-                    dateTextView.text = data_thema1[position].date.toString()
-                    textTextView.text = data_thema1[position].message
                 }
                 1 -> {
-                    userIdStringTextView1.setText(data_thema2[position].participantUserIdStrings[0])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema2[position].participantUserIds[0])
+                    if (data_thema2[position].participantUserIdStrings.count() == 1) {
+                        userIdStringTextView1.setText(data_thema2[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_thema2[position].participantUserIds[0])
+                        }
+                        dateTextView.text = data_thema2[position].date.toString()
+                        textTextView.text = data_thema2[position].message
+                    } else if (data_thema2[position].participantUserIdStrings.count() == 4) {
+                        userIdStringTextView1.setText(data_thema2[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_thema2[position].participantUserIds[0])
+                        }
+                        userIdStringTextView2.setText(data_thema2[position].participantUserIdStrings[1])
+                        userIdStringTextView2.setOnClickListener {
+                            startProfileActivity(data_thema2[position].participantUserIds[1])
+                        }
+                        userIdStringTextView3.setText(data_thema2[position].participantUserIdStrings[2])
+                        userIdStringTextView3.setOnClickListener {
+                            startProfileActivity(data_thema2[position].participantUserIds[2])
+                        }
+                        userIdStringTextView4.setText(data_thema2[position].participantUserIdStrings[3])
+                        userIdStringTextView4.setOnClickListener {
+                            startProfileActivity(data_thema2[position].participantUserIds[3])
+                        }
+                        dateTextView.text = data_thema2[position].date.toString()
+                        textTextView.text = data_thema2[position].message
                     }
-                    userIdStringTextView2.setText(data_thema2[position].participantUserIdStrings[1])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema2[position].participantUserIds[1])
-                    }
-                    userIdStringTextView3.setText(data_thema2[position].participantUserIdStrings[2])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema2[position].participantUserIds[2])
-                    }
-                    userIdStringTextView4.setText(data_thema2[position].participantUserIdStrings[3])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_thema2[position].participantUserIds[3])
-                    }
-                    dateTextView.text = data_thema2[position].date.toString()
-                    textTextView.text = data_thema2[position].message
                 }
                 2 -> {
-                    userIdStringTextView1.setText(data_film[position].participantUserIdStrings[0])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_film[position].participantUserIds[0])
+                    if (data_film[position].participantUserIdStrings.count() == 1) {
+                        userIdStringTextView1.setText(data_film[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_film[position].participantUserIds[0])
+                        }
+                        dateTextView.text = data_film[position].date.toString()
+                        textTextView.text = data_film[position].message
+                    } else if (data_film[position].participantUserIdStrings.count() == 4) {
+                        userIdStringTextView1.setText(data_film[position].participantUserIdStrings[0])
+                        userIdStringTextView1.setOnClickListener {
+                            startProfileActivity(data_film[position].participantUserIds[0])
+                        }
+                        userIdStringTextView2.setText(data_film[position].participantUserIdStrings[1])
+                        userIdStringTextView2.setOnClickListener {
+                            startProfileActivity(data_film[position].participantUserIds[1])
+                        }
+                        userIdStringTextView3.setText(data_film[position].participantUserIdStrings[2])
+                        userIdStringTextView3.setOnClickListener {
+                            startProfileActivity(data_film[position].participantUserIds[2])
+                        }
+                        userIdStringTextView4.setText(data_film[position].participantUserIdStrings[3])
+                        userIdStringTextView4.setOnClickListener {
+                            startProfileActivity(data_film[position].participantUserIds[3])
+                        }
+                        dateTextView.text = data_film[position].date.toString()
+                        textTextView.text = data_film[position].message
                     }
-                    userIdStringTextView2.setText(data_film[position].participantUserIdStrings[1])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_film[position].participantUserIds[1])
-                    }
-                    userIdStringTextView3.setText(data_film[position].participantUserIdStrings[2])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_film[position].participantUserIds[2])
-                    }
-                    userIdStringTextView4.setText(data_film[position].participantUserIdStrings[3])
-                    userIdStringTextView1.setOnClickListener {
-                        startProfileActivity(data_film[position].participantUserIds[3])
-                    }
-                    dateTextView.text = data_film[position].date.toString()
-                    textTextView.text = data_film[position].message
                 }
             }
         }
@@ -1289,27 +1443,27 @@ class Main1HomeFragment : Fragment() {
     //</editor-fold>
     private fun loadPosts(themaNum: Int) {
         //요청을 보낼 시간 설정
-        val lastPostDate: LocalDateTime? = when(themaNum) {
+        var lastPostDate: String = when(themaNum) {
             0 -> {
                 if (data_thema1.isEmpty())
-                    LocalDateTime.now()
+                    LocalDateTime.now().toString()
                 else
-                    data_thema1[data_thema1.count() - 1].date
+                    data_thema1[data_thema1.count() - 1].date.toString()
             }
             1 -> {
                 if (data_thema2.isEmpty())
-                    LocalDateTime.now()
+                    LocalDateTime.now().toString()
                 else
-                    data_thema2[data_thema2.count() - 1].date
+                    data_thema2[data_thema2.count() - 1].date.toString()
             }
             2 -> {
                 if (data_film.isEmpty())
-                    LocalDateTime.now()
+                    LocalDateTime.now().toString()
                 else
-                    data_film[data_film.count() - 1].date
+                    data_film[data_film.count() - 1].date.toString()
             }
             else -> {
-                LocalDateTime.now()
+                LocalDateTime.now().toString()
             }
         }
         when(themaNum) {
@@ -1326,7 +1480,16 @@ class Main1HomeFragment : Fragment() {
                     binding.postImageLayoutFilm.viewGroup.visibility = View.INVISIBLE
             }
         }
-        loadPostRequest(this.id, current_selected_thema, lastPostDate.toString())
+
+        if (lastPostDate.length < 26) {
+            for (i in 0..25 - lastPostDate.length) {
+                lastPostDate += "0"
+            }
+            val parts = lastPostDate.split(".")
+            val nanoSeconds = ((parts[1]).toInt() - 1).toString()
+            lastPostDate = parts[0] + "." + nanoSeconds
+        }
+        loadPostRequest(this.id, current_selected_thema, lastPostDate)
     }
     fun loadPostRequest(id: Long, theme: Int, lastPostDate: String){
         Log.d("MAIN1HOME", lastPostDate+" 이전의 게시글을 로드합니다.")
@@ -1364,18 +1527,24 @@ class Main1HomeFragment : Fragment() {
                         newPost.postId = post.postId
                         newPost.likeCount = post.likeCount
                         var dateString = post.date
-                        for (i in 0..25 - dateString.length) {
-                            dateString += "0"
+                        if (dateString.length < 26) {
+                            for (i in 0..25 - dateString.length) {
+                                dateString += "0"
+                            }
+                            val parts = dateString.split(".")
+                            val nanoSeconds = ((parts[1]).toInt() - 1).toString()
+                            dateString = parts[0] + "." + nanoSeconds
                         }
-                        val parts = dateString.split(".")
-                        val nanoSeconds = ((parts[1]).toInt() - 1).toString()
                         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-                        newPost.date = LocalDateTime.parse(parts[0] + "." + nanoSeconds, formatter)
+                        newPost.date = LocalDateTime.parse(dateString, formatter)
 
                         newPost.message = post.text
                         newPost.musicNum = post.musicNum
-                        newPost.participantUserIds = post.participantUserIds
                         newPost.likeClicked = post.isLikeClicked
+                        newPost.participantUserIds = post.participantUserIds
+                        newPost.participantUserIdStrings = post.participantUserIdStrings
+                        newPost.participantsUserProfileUrl = post.participantsUserProfileUrl
+
 
                         when(theme) {
                             0 -> data_thema1.add(newPost)
@@ -1390,25 +1559,45 @@ class Main1HomeFragment : Fragment() {
                             } else {
                                 Log.d("MAIN1HOME", "theme1 게시물이 로드되었습니다. data_set개수 : " + data_thema1.count())
                                 adapter_thema1.notifyDataSetChanged()
-                                binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                                 if (beforeDataCount == 0) {
+                                    Log.d("main1 likeClicked",data_thema1[0].likeClicked.toString())
                                     if (data_thema1[0].likeClicked) {
+                                        Log.d("main1","eieieieieieieieiei")
                                         thema1Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
                                     } else {
+                                        Log.d("main1","eaaaaaaaaaaaaaaaaaaaieieieieieieieiei")
                                         thema1Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
                                     }
                                     if (data_thema1[0].participantsUserProfileUrl.count() == 1) {
                                         Glide.with(requireContext())
                                             .load(baseUrl + data_thema1[0].participantsUserProfileUrl[0])
                                             .into(thema1Binding.userProfileImageView1)
+                                        thema1Binding.userProfileImageView1.visibility = View.VISIBLE
+                                        thema1Binding.userProfileImageView2.visibility = View.INVISIBLE
+                                        thema1Binding.userProfileImageView3.visibility = View.INVISIBLE
+                                        thema1Binding.userProfileImageView4.visibility = View.INVISIBLE
                                     } else if (data_thema1[0].participantsUserProfileUrl.count() == 4) {
-                                        for (i in 0..3){
-                                            Glide.with(requireContext())
-                                                .load(baseUrl + data_thema1[i].participantsUserProfileUrl[i])
-                                                .into(thema1Binding.userProfileImageView1)
-                                        }
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema1[0].participantsUserProfileUrl[0])
+                                            .into(thema1Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema1[0].participantsUserProfileUrl[1])
+                                            .into(thema1Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema1[0].participantsUserProfileUrl[2])
+                                            .into(thema1Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema1[0].participantsUserProfileUrl[3])
+                                            .into(thema1Binding.userProfileImageView1)
+                                        thema1Binding.userProfileImageView1.visibility = View.VISIBLE
+                                        thema1Binding.userProfileImageView2.visibility = View.VISIBLE
+                                        thema1Binding.userProfileImageView3.visibility = View.VISIBLE
+                                        thema1Binding.userProfileImageView4.visibility = View.VISIBLE
                                     }
+                                    binding.postImageLayoutThema1.messageTextView.text = data_thema1[0].message
+                                    adapter_thema1.notifyItemChanged(0)
                                 }
+                                binding.postImageLayoutThema1.viewGroup.visibility = View.VISIBLE
                             }
                         }
                         1 -> {
@@ -1418,13 +1607,86 @@ class Main1HomeFragment : Fragment() {
                                 Log.d("MAIN1HOME","theme2 게시물이 로드되었습니다. 현재 data_set개수 : " + data_thema2.count() + " / 이전 data_set개수 : " + beforeDataCount.toString())
                                 adapter_thema2.notifyDataSetChanged()
                                 binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
+                                if (beforeDataCount == 0) {
+                                    if (data_thema2[0].likeClicked) {
+                                        thema2Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
+                                    } else {
+                                        thema2Binding.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                                    }
+                                    if (data_thema2[0].participantsUserProfileUrl.count() == 1) {
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema2[0].participantsUserProfileUrl[0])
+                                            .into(thema2Binding.userProfileImageView1)
+                                        thema2Binding.userProfileImageView1.visibility = View.VISIBLE
+                                        thema2Binding.userProfileImageView2.visibility = View.INVISIBLE
+                                        thema2Binding.userProfileImageView3.visibility = View.INVISIBLE
+                                        thema2Binding.userProfileImageView4.visibility = View.INVISIBLE
+                                    } else if (data_thema2[0].participantsUserProfileUrl.count() == 4) {
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema2[0].participantsUserProfileUrl[0])
+                                            .into(thema2Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema2[0].participantsUserProfileUrl[1])
+                                            .into(thema2Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema2[0].participantsUserProfileUrl[2])
+                                            .into(thema2Binding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_thema2[0].participantsUserProfileUrl[3])
+                                            .into(thema2Binding.userProfileImageView1)
+                                        thema2Binding.userProfileImageView1.visibility = View.VISIBLE
+                                        thema2Binding.userProfileImageView2.visibility = View.VISIBLE
+                                        thema2Binding.userProfileImageView3.visibility = View.VISIBLE
+                                        thema2Binding.userProfileImageView4.visibility = View.VISIBLE
+                                    }
+                                    binding.postImageLayoutThema2.messageTextView.text = data_thema2[0].message
+                                    adapter_thema2.notifyItemChanged(0)
+                                }
+                                binding.postImageLayoutThema2.viewGroup.visibility = View.VISIBLE
                             }
                         }
                         2 -> {
                             if (beforeDataCount == data_film.count()) {
                                 reload()
-                            } else {Log.d("MAIN1HOME","theme_film 게시물이 로드되었습니다. data_set개수 : " + data_film.count())
+                            } else {
+                                Log.d("MAIN1HOME","theme_film 게시물이 로드되었습니다. data_set개수 : " + data_film.count())
                                 adapter_film.notifyDataSetChanged()
+                                binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
+                                if (beforeDataCount == 0) {
+                                    if (data_film[0].likeClicked) {
+                                        filmBinding.likeButton.setBackgroundResource(R.drawable.img_icon_like_click)
+                                    } else {
+                                        filmBinding.likeButton.setBackgroundResource(R.drawable.img_icon_like_unclick)
+                                    }
+                                    if (data_film[0].participantsUserProfileUrl.count() == 1) {
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                            .into(filmBinding.userProfileImageView1)
+                                        filmBinding.userProfileImageView1.visibility = View.VISIBLE
+                                        filmBinding.userProfileImageView2.visibility = View.INVISIBLE
+                                        filmBinding.userProfileImageView3.visibility = View.INVISIBLE
+                                        filmBinding.userProfileImageView4.visibility = View.INVISIBLE
+                                    } else if (data_film[0].participantsUserProfileUrl.count() == 4) {
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_film[0].participantsUserProfileUrl[0])
+                                            .into(filmBinding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_film[0].participantsUserProfileUrl[1])
+                                            .into(filmBinding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_film[0].participantsUserProfileUrl[2])
+                                            .into(filmBinding.userProfileImageView1)
+                                        Glide.with(requireContext())
+                                            .load(baseUrl + data_film[0].participantsUserProfileUrl[3])
+                                            .into(filmBinding.userProfileImageView1)
+                                        filmBinding.userProfileImageView1.visibility = View.VISIBLE
+                                        filmBinding.userProfileImageView2.visibility = View.VISIBLE
+                                        filmBinding.userProfileImageView3.visibility = View.VISIBLE
+                                        filmBinding.userProfileImageView4.visibility = View.VISIBLE
+                                    }
+                                    binding.postImageLayoutFilm.messageTextView.text = data_film[0].message
+                                    adapter_film.notifyItemChanged(0)
+                                }
                                 binding.postImageLayoutFilm.viewGroup.visibility = View.VISIBLE
                             }
                         }

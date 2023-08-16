@@ -137,8 +137,7 @@
         app:layout_constraintTop_toBottomOf="@id/imageView4frame1"
         app:layout_constraintStart_toStartOf="@id/imageView4frame1"
         app:layout_constraintEnd_toEndOf="@id/imageView4frame1"
-        app:layout_constraintBottom_toTopOf="@id/emptyView5"
-        />
+        app:layout_constraintBottom_toTopOf="@id/emptyView5"/>
 
     <TextView
         android:id="@+id/dateTextView"

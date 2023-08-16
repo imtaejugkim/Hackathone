@@ -101,7 +101,7 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
         fun stopMusicAnimation() {
             if(isMusicPlaying) {
                 continuousRotationAnimator.cancel()
-                binding.postImageLayoutBack.cdOuter.setImageResource(R.drawable.cd_outer)
+                binding.postImageLayoutBack.cdOuterImageView.setImageResource(R.drawable.cd_outer)
                 binding.postImageLayoutBack.cdImageView.rotation = 0f
                 binding.postImageLayoutBack.cdOuterWhenPlaying.alpha = 0f
                 isMusicPlaying = false
@@ -123,6 +123,19 @@ class AdapterMain1HomeThema1(val context: Context,  val data:ArrayList<Post>)
         holder.stopMusicAnimation()
 
         holder.binding.apply {
+            if (data[position].musicNum == -1) {
+                postImageLayoutBack.cdInnerImageView
+                postImageLayoutBack.cdImageView.visibility = View.INVISIBLE
+                postImageLayoutBack.cdOuterImageView
+                postImageLayoutBack.playButtonImage.visibility = View.INVISIBLE
+                postImageLayoutBack.playButton.visibility = View.INVISIBLE
+            } else {
+                postImageLayoutBack.cdInnerImageView
+                postImageLayoutBack.cdImageView.visibility = View.VISIBLE
+                postImageLayoutBack.cdOuterImageView
+                postImageLayoutBack.playButtonImage.visibility = View.VISIBLE
+                postImageLayoutBack.playButton.visibility = View.VISIBLE
+            }
             //cd이미지 변경
             when (data[position].musicNum) {
                 0 -> postImageLayoutBack.cdImageView.setImageResource(R.drawable.cd_music0)
