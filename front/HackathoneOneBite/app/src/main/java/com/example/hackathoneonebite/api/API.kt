@@ -57,7 +57,7 @@ public interface API {
     // 릴레이 게시물 로드
     @GET("/api/posts/{postId}")
     fun main3LoadRelayPostRequest(
-        @Path("userId") id: Long
+        @Path("postId") postId: Long
     ): Call<Main3RelayPostResponse>
 
     //검색 로드

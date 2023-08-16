@@ -34,14 +34,18 @@ class AdapterNotification(private val notificationList: List<NotificationItem>) 
         Log.d("notificationNme",holder.notificationName.text.toString())
         if (item.remainingTime == null) {
             holder.notificationButton.isEnabled = false
-            holder.notificationButton.text = "비활성화"
+            holder.notificationButton.visibility = View.GONE
+            holder.notificationTime.visibility = View.GONE
         } else {
             holder.notificationButton.isEnabled = true
             holder.notificationButton.text = "수락"
+            holder.notificationButton.visibility = View.VISIBLE
+            holder.notificationTime.visibility = View.VISIBLE
         }
 
         holder.notificationButton.setOnClickListener {
             val context = holder.itemView.context
+            Log.d("context",context.toString())
             val intent = Intent(context, Main3PostingMakingActivity::class.java)
             intent.putExtra("postId", item.postId)
             intent.putExtra("requestNumber",requestNumber)

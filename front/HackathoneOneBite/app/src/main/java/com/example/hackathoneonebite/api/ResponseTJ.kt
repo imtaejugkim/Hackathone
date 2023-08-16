@@ -40,13 +40,13 @@ data class Main3RelayPostResponse(
     @SerializedName("images")var images: ArrayList<String>,
     @SerializedName("mainImage")var mainImage: String = "",
     @SerializedName("theme")var theme: Int = 0,
-    @SerializedName("likeCount")var likeCount: Long = 0,
+    @SerializedName("likeCount") val likeCount: Int,
     @SerializedName("date")var date: String = "",
     @SerializedName("text")var text: String = "",
     @SerializedName("comments")var comments: String = "",
-    @SerializedName("musicNum")var musicNum: Long = 0,
-    @SerializedName("participantUserIds")var username: String = "",
-    @SerializedName("likedByCurrentUser")var userId: String = "",
+    @SerializedName("musicNum")var musicNum: Int = 0,
+    @SerializedName("participantUserIds") val participantUserIds: ArrayList<Long>,
+    @SerializedName("likedByCurrentUser") val likedByCurrentUser: Boolean,
     @SerializedName("participantUserIdStrings") val participantUserIdStrings: ArrayList<String>,
     @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: ArrayList<String>
     )

@@ -10,11 +10,13 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat.startActivityForResult
 import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.MyApplication
 import com.example.hackathoneonebite.MyApplication.Companion.imageByteArrays
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.Main3AddPostIsComplete
 import com.example.hackathoneonebite.api.Main3RelayPostResponse
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
 import com.example.hackathoneonebite.api.RetrofitBuilder
@@ -67,6 +69,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             Log.d("userId", userId)
         } else {
             postId = intent.getLongExtra("postId", 0)
+            Log.d("postId",postId.toString())
             LoadPost(postId)
 
         }
@@ -260,41 +263,35 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             // relay 마지막 받은 사람
             else {
                 var imageByteArrayIndex = 0 // imageByteArrays 리스트의 인덱스
-                val imageParts = ArrayList<MultipartBody.Part>()
-                images = Array(4) { ByteArray(0) }
+                val imageParts = ArrayList<MultipartBody.Part>(4)
+                //images = Array(4) { ByteArray(0) }
 
-                for (i in 0..3) {
-                    Log.d("imageArray$i", imgArray[i])
-                    if (imgArray[i] == "true") {
-                        if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
-                            images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
-                            Log.d("images[$i]", images[i].toString())
-                            Log.d("인덱스는?", imageByteArrayIndex.toString())
-                            imageByteArrayIndex++
-                            val requestFile =
-                                RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
-                            imageParts.add(
-                                MultipartBody.Part.createFormData(
-                                    "image",
-                                    "image$i.jpg",
-                                    requestFile
-                                )
-                            )
-                        }
-                    } else {
-                        val emptyRequestBody =
-                            RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
-                        val emptyPart = MultipartBody.Part.createFormData(
-                            "empty_part_name",
-                            "",
-                            emptyRequestBody
-                        )
-                        imageParts.add(emptyPart)
+                for (i in 0 until 4) {
+                    if (images[i].isNotEmpty()) {
+                        Log.d("images$i",images[i].toString())
+                        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
+                        val partName = "image${i + 1}.jpg"
+                        val imagePart =
+                            MultipartBody.Part.createFormData("image", partName, requestFile)
+                        Log.d("imagePart",imagePart.toString())
+                        imageParts.add(imagePart)
+                        val buffer = okio.Buffer()
+                        requestFile.writeTo(buffer)
+                        val byteArray = buffer.readByteArray()
+                        imageByteArrays.add(byteArray)
                     }
+                }
+
 
                     //addImage 해야함
+                    val idPart =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+                    val postIdPart =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), postId.toString())
+                    AddPost(postIdPart, imageParts, idPart)
 
-                }
+
+
                 val intent = Intent(this@Main3PostingMakingActivity, MainFrameActivity::class.java)
                 Toast.makeText(this, "모든 사진 게시 완료!", Toast.LENGTH_SHORT).show()
                 startActivity(intent)
@@ -358,7 +355,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
                     for (i in 0..3) {
                         Log.d("imageArray$i", imgArray[i])
-                        if (imgArray[i] == "true") {
+                        if (imagesFill[i] == "true") {
                             if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
                                 images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
                                 Log.d("images[$i]", images[i].toString())
@@ -397,6 +394,54 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
     }
 
+    //이미지 추가
+    fun AddPost(postId : RequestBody, image: ArrayList<MultipartBody.Part>, userId : RequestBody) {
+        val call = RetrofitBuilder.api.addPost(postId, image, userId)
+        call.enqueue(object : retrofit2.Callback<Main3AddPostIsComplete> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: retrofit2.Call<Main3AddPostIsComplete>,
+                response: retrofit2.Response<Main3AddPostIsComplete>
+            ) {
+                if (response.isSuccessful()) { // 응답 잘 받은 경우
+                    val userResponse = response.body()
+                    // userResponse를 사용하여 JSON 데이터에 접근할 수 있습니다.
+                    Log.d("RESPONSE: ", "Success")
+                } else {
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(
+                                this@Main3PostingMakingActivity,
+                                errorMessage,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: JSONException) {
+                            Log.e("ERROR PARSING", "Failed to parse error response: $errorBody")
+                            Toast.makeText(
+                                this@Main3PostingMakingActivity,
+                                "오류가 발생했습니다.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            this@Main3PostingMakingActivity,
+                            "오류가 발생했습니다.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
+            override fun onFailure(call: retrofit2.Call<Main3AddPostIsComplete>, t: Throwable) {
+                Log.d("CONNECTION FAILURE: ", t.localizedMessage)
+            }
+        })
+    }
+
 
     fun LoadPost(postId : Long){
         val call = RetrofitBuilder.api.main3LoadRelayPostRequest(postId)
@@ -409,6 +454,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                     val userResponse = response.body()
                     for(i in 0..3){
                         imgArray[i] = userResponse?.images?.get(i).toString()
+                        Log.d("사진$i",imgArray[i])
                         if(userResponse?.images?.get(i) !=null){
                             val selectedImageView = findImageViewForCurrentContentFrame(i, userResponse.theme)
                             Glide.with(this@Main3PostingMakingActivity)

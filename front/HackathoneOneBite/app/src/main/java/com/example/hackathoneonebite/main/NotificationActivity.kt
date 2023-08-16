@@ -44,6 +44,8 @@ class NotificationActivity : AppCompatActivity() {
 
         adapter = AdapterNotification(notificationList)
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+
 
         loadNotificationRequest(id)
         Log.d("userId",userId.toString())
