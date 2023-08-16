@@ -23,7 +23,6 @@ import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingRequestBinding
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingUploadBinding
 import com.example.hackathoneonebite.main.MainFrameActivity
-import com.google.android.gms.internal.zzaqb.reset
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
