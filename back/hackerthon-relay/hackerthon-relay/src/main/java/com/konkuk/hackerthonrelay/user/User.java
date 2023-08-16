@@ -67,6 +67,7 @@ public class User {
     private String profilePictureUrl;   // 프로필 사진 url
     private String backgroundPictureUrl;    // 배경 사진 url
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -172,6 +173,10 @@ public class User {
         int totalScore = (int) (relayReceivedScore + likesScore + relayGivenScore);
         this.setScore(totalScore); // 실제 score 필드에 값을 저장
         return totalScore;
+    }
+
+    public void updateScoreForInitialization() {
+        this.score = 0;
     }
 
 }

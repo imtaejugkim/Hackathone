@@ -47,7 +47,7 @@ public class ImageUploadController {
 	@Autowired
 	public ImageUploadController(ImageUploadService uploadService, PostRepository postRepository,
 			 ImageRepository imageRepository, UserRepository userRepository, TagRepository tagRepository, TagService tagService,
-								 NotificationRepository notificationRepository) {
+			NotificationRepository notificationRepository) {
         this.uploadService = uploadService;
         this.postRepository = postRepository;
 		this.userRepository = userRepository;
@@ -144,8 +144,8 @@ public class ImageUploadController {
 			}
 
 			postRepository.save(post); // Post를 다시 저장하여 변경 사항을 반영합니다.
-			response.put("success", true); 
-			response.put("postId", post.getId()); 
+			response.put("success", true);
+			response.put("postId", post.getId());
 			return new ResponseEntity<>(response, HttpStatus.CREATED); // 수정된 부분
 
 		} catch (IOException e) {

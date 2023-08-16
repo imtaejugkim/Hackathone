@@ -25,7 +25,7 @@ public class Post {
 	@OneToOne
 	private Image mainImage;
 
-	@JsonManagedReference // 형
+	@JsonManagedReference
 	@OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Image> images = new ArrayList<>();
 
@@ -157,7 +157,7 @@ public class Post {
 		this.remainingTime = Duration.ofSeconds(24 * 3600); // Here you reset the remainingTime when a user is
 																	// mentioned
 	}
-	
+
 	public boolean canEdit(User user) {
 		return user.equals(this.user) || user.equals(this.mentionedUser);
 	}
@@ -224,5 +224,6 @@ public class Post {
 			return true; // 좋아요 눌림을 나타내는 true 반환
 		}
 	}
+
 
 }

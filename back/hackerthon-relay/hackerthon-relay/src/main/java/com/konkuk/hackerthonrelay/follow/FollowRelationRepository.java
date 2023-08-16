@@ -11,8 +11,7 @@ public interface FollowRelationRepository extends JpaRepository<FollowRelation, 
 
     FollowRelation findByFollowerAndFollowing(User follower, User following);
     List<FollowRelation> findFollowersByFollowing(User following);
-    List<User> findFollowingByFollower(User follower);
-
+    //List<User> findFollowingByFollower(User follower);
     List<FollowRelation> findByFollowing(User following);
     List<FollowRelation> findByFollower(User follower);
 }
