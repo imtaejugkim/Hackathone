@@ -49,7 +49,7 @@
         android:background="@color/black"/>
 
     <ImageView
-        android:id="@+id/cd_outer"
+        android:id="@+id/cd_outer_imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.643"
@@ -100,6 +100,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <ImageView
+        android:id="@+id/cd_inner_imageView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.12"

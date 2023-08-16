@@ -56,8 +56,8 @@ class TestLoginActivity : AppCompatActivity() {
             //Login(imageParts, themePart, idPart)
         }
         binding.loadImage.setOnClickListener {
-            val request = Main1LoadPostRequest(0)
-            checkEmailExist(request)
+            //val request = Main1LoadPostRequest(0)
+            //checkEmailExist(request)
         }
     }
 

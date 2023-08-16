@@ -50,6 +50,7 @@ data class LikeClickResponse(
 
 //팔로우
 data class FollowToggleResponse(
+    @SerializedName("isFollowing") val isFollowing: Boolean,
     @SerializedName("success") val isSuccess: Boolean,
     @SerializedName("message") val message: String
 )
@@ -91,4 +92,28 @@ data class Main5LoadPostInfoResponse (
 data class UpdateProfileResponse (
     @SerializedName("success") val isSuccess: Boolean = true,
     @SerializedName("message") val message: String
+)
+//포스트 하나 정보 가져오기
+data class LoadAPostInfoResponse (
+    @SerializedName("id") val id: Long,
+    @SerializedName("images") val imageArray: List<String>,
+    @SerializedName("mainImage") val mainImage: String,
+    @SerializedName("theme") val theme: Int,
+    @SerializedName("likeCount") val likeCount: Int,
+    @SerializedName("date") val date: String,
+    @SerializedName("text") val text: String,
+    @SerializedName("comments") val comments: List<CommentResponse>,
+    @SerializedName("musicNum") val musicNum: Int,
+    @SerializedName("participantUserIds") val participantUserIds: List<Long>,
+    @SerializedName("likedByCurrentUser") val likeClicked:Boolean,
+    @SerializedName("participantUserIdStrings") val participantUserIdStrings: List<String>,
+    @SerializedName("participantsUserProfileUrl") val participantsUserProfileUrl: List<String>
+)
+//랭킹
+data class LoadRanking (
+    @SerializedName("userId") val userId: Long,
+    @SerializedName("userIdStr") val userIdStr: String,
+    @SerializedName("username") val username: String,
+    @SerializedName("score") val score: Int,
+    @SerializedName("profileUrl") val profileUrl: String
 )

@@ -68,7 +68,7 @@ public class User {
     @JsonManagedReference // 난 JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<Post> posts = new HashSet<>();
-
+    
     //private Set<> relays = new HashSet();
 
     // 프로필 사진 배경 사진 - 유저 아이디와 연결해야함, 저장가능해야함, 요청하면 화면 바꿔주고 db저장 보관, id와 엮기

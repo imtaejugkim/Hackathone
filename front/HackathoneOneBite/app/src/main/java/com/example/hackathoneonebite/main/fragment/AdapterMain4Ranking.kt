@@ -8,11 +8,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.hackathoneonebite.Data.Rank
 import com.example.hackathoneonebite.R
+import com.example.hackathoneonebite.api.LoadRanking
 import com.example.hackathoneonebite.databinding.ItemRankingListBinding
 import com.google.android.material.imageview.ShapeableImageView
 
-// ... (다른 import 문들)
-class AdapterMain4Ranking(private val dataList: List<Rank>) :
+class AdapterMain4Ranking(private val dataList: List<LoadRanking>) :
     RecyclerView.Adapter<AdapterMain4Ranking.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
