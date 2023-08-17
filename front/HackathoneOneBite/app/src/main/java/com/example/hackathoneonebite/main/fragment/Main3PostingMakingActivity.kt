@@ -53,8 +53,8 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main3_posting_making)
 
-        requestNumber = intent.getIntExtra("requestNumber", requestNumber)
-
+        requestNumber = intent.getIntExtra("requestNumber", 0)
+        Log.d("requestNumber",requestNumber.toString())
         imagesFill = Array(4) { "" }
         images = Array(4) { ByteArray(0) }
         imgArray = Array(4) { "" }
@@ -63,6 +63,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         if (requestNumber == 0) {
             // Intent에서 클릭된 레이아웃의 ID를 가져옴
             id = intent.getLongExtra("id", 0)
+            Log.d("make처음",id.toString())
             theme = intent.getIntExtra("layout_id", 0)
             userId = intent.getStringExtra("userId") + ""
             Log.d("id", id.toString())
@@ -143,6 +144,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             intent.putExtra("id", id)
             intent.putExtra("userId", userId)
             intent.putExtra("requestNumber", requestNumber)
+            intent.putExtra("postId",postId)
 
             for (i in 0 until 4) {
                 val image = images[i]
@@ -163,7 +165,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
         }
 
         relayButton2.setOnClickListener {
-            val message = "백엔드야 메세지 받아라"
+            val message = ""
             val post = Post(imagesFill, theme, userId, 0, LocalDateTime.now(), message, false)
             imgPartArray = Array(4) { 0 }
 
@@ -186,10 +188,10 @@ class Main3PostingMakingActivity : AppCompatActivity() {
             intent.putExtra("post_data", post)
             intent.putExtra("imagePartSize", imageParts.size)
             intent.putExtra("id", id)
+            Log.d("전달 할때 id",id.toString())
             intent.putExtra("userId", userId)
             intent.putExtra("requestNumber", requestNumber)
-
-            //val imageByteArrays = ArrayList<ByteArray>() // Image data extraction list
+            intent.putExtra("postId",postId)
 
             for (i in 0 until 4) {
                 val image = images[i]
@@ -205,11 +207,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                     imageByteArrays.add(byteArray)
                 }
             }
-
-            /*for (i in 0 until imageByteArrays.size) {
-                intent.putExtra("imageByteArrays$i", imageByteArrays[i]) // Pass individual byte arrays to the next screen
-                Log.d("new 보냄 ", imageByteArrays[i].toString())
-            }*/
 
             startActivity(intent)
         }
@@ -241,6 +238,7 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 intent.putExtra("post_data", post)
                 intent.putExtra("imagePartSize", imageParts.size)
                 intent.putExtra("id", id)
+                Log.d("relay id", id.toString())
                 intent.putExtra("userId", userId)
 
                 for (i in 0 until 4) {
@@ -268,12 +266,13 @@ class Main3PostingMakingActivity : AppCompatActivity() {
 
                 for (i in 0 until 4) {
                     if (images[i].isNotEmpty()) {
-                        Log.d("images$i",images[i].toString())
-                        val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
+                        Log.d("images$i", images[i].toString())
+                        val requestFile =
+                            RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
                         val partName = "image${i + 1}.jpg"
                         val imagePart =
                             MultipartBody.Part.createFormData("image", partName, requestFile)
-                        Log.d("imagePart",imagePart.toString())
+                        Log.d("imagePart", imagePart.toString())
                         imageParts.add(imagePart)
                         val buffer = okio.Buffer()
                         requestFile.writeTo(buffer)
@@ -283,20 +282,21 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                 }
 
 
-                    //addImage 해야함
-                    val idPart =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
-                    val postIdPart =
-                        RequestBody.create("text/plain".toMediaTypeOrNull(), postId.toString())
-                    AddPost(postIdPart, imageParts, idPart)
-
+                //addImage 해야함
+                val idPart =
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+                val postIdPart =
+                    RequestBody.create("text/plain".toMediaTypeOrNull(), postId.toString())
+                AddPost(postIdPart, imageParts, idPart)
 
 
                 val intent = Intent(this@Main3PostingMakingActivity, MainFrameActivity::class.java)
+                intent.putExtra("userId", userId)
+                intent.putExtra("id", id)
                 Toast.makeText(this, "모든 사진 게시 완료!", Toast.LENGTH_SHORT).show()
                 startActivity(intent)
             }
-
+        }
             uploadButton2.setOnClickListener {
                 //게시물 4개 업로드시
                 if (requestNumber == 0) {
@@ -320,15 +320,6 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                         }
                     }
 
-                    val intent = Intent(
-                        this@Main3PostingMakingActivity,
-                        Main3PostingNowUploadActivity::class.java
-                    )
-                    intent.putExtra("post_data", post)
-                    intent.putExtra("imagePartSize", imageParts.size)
-                    intent.putExtra("id", id)
-                    intent.putExtra("userId", userId)
-
                     for (i in 0 until 4) {
                         val image = images[i]
                         if (image.isNotEmpty()) {
@@ -344,54 +335,59 @@ class Main3PostingMakingActivity : AppCompatActivity() {
                             imageByteArrays.add(byteArray)
                         }
                     }
+                    val intent = Intent(
+                        this@Main3PostingMakingActivity,
+                        Main3PostingNowUploadActivity::class.java
+                    )
+                    intent.putExtra("post_data", post)
+                    intent.putExtra("imagePartSize", imageParts.size)
+                    intent.putExtra("id", id)
+                    Log.d("make마지막",id.toString())
+                    intent.putExtra("userId", userId)
 
                     startActivity(intent)
                 }
                 // relay 마지막 받은 사람
                 else {
                     var imageByteArrayIndex = 0 // imageByteArrays 리스트의 인덱스
-                    val imageParts = ArrayList<MultipartBody.Part>()
-                    images = Array(4) { ByteArray(0) }
+                    val imageParts = ArrayList<MultipartBody.Part>(4)
+                    //images = Array(4) { ByteArray(0) }
 
-                    for (i in 0..3) {
-                        Log.d("imageArray$i", imgArray[i])
-                        if (imagesFill[i] == "true") {
-                            if (imageByteArrayIndex < MyApplication.imageByteArrays.size) {
-                                images[i] = MyApplication.imageByteArrays[imageByteArrayIndex]
-                                Log.d("images[$i]", images[i].toString())
-                                Log.d("인덱스는?", imageByteArrayIndex.toString())
-                                imageByteArrayIndex++
-                                val requestFile =
-                                    RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
-                                imageParts.add(
-                                    MultipartBody.Part.createFormData(
-                                        "image",
-                                        "image$i.jpg",
-                                        requestFile
-                                    )
-                                )
-                            }
-                        } else {
-                            val emptyRequestBody =
-                                RequestBody.create("multipart/form-data".toMediaTypeOrNull(), "")
-                            val emptyPart = MultipartBody.Part.createFormData(
-                                "empty_part_name",
-                                "",
-                                emptyRequestBody
-                            )
-                            imageParts.add(emptyPart)
+                    for (i in 0 until 4) {
+                        if (images[i].isNotEmpty()) {
+                            Log.d("images$i", images[i].toString())
+                            val requestFile =
+                                RequestBody.create("image/*".toMediaTypeOrNull(), images[i])
+                            val partName = "image${i + 1}.jpg"
+                            val imagePart =
+                                MultipartBody.Part.createFormData("image", partName, requestFile)
+                            Log.d("imagePart", imagePart.toString())
+                            imageParts.add(imagePart)
+                            val buffer = okio.Buffer()
+                            requestFile.writeTo(buffer)
+                            val byteArray = buffer.readByteArray()
+                            imageByteArrays.add(byteArray)
                         }
-
-                        //addImage 해야함
-
                     }
+
+
+                    //addImage 해야함
+                    val idPart =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), userId)
+                    val postIdPart =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), postId.toString())
+                    AddPost(postIdPart, imageParts, idPart)
+
+
                     val intent =
                         Intent(this@Main3PostingMakingActivity, MainFrameActivity::class.java)
+                    intent.putExtra("userId", userId)
+                    intent.putExtra("id", id)
                     Toast.makeText(this, "모든 사진 게시 완료!", Toast.LENGTH_SHORT).show()
+                    onBackPressedDispatcher.onBackPressed()
                     startActivity(intent)
                 }
             }
-        }
     }
 
     //이미지 추가

@@ -26,8 +26,9 @@ class Main3PostingTimeActivity : AppCompatActivity() {
     var id : Long = 0
     var selectedId : Long = 0
     var userId : String = ""
-    var selectedUserId : Long = 0
+    var selectedUserId : String = ""
     var requestNumber : Int = -1
+    var postId : Long = 0
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,8 +41,9 @@ class Main3PostingTimeActivity : AppCompatActivity() {
 
         val receivedIntent = intent
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
-        val selectedName = intent.getStringExtra("selected_name")
-        selectedUserId = receivedIntent.getLongExtra("selectedUserId",0)
+        val selectedName = receivedIntent.getStringExtra("selected_name")
+        selectedUserId = receivedIntent.getStringExtra("selectedUserId")?:""
+        postId = receivedIntent.getLongExtra("postId",0)
         id = receivedIntent.getLongExtra("id", 0)
         selectedId = receivedIntent.getLongExtra("selectedId",selectedId)
         requestNumber = receivedIntent.getIntExtra("requestNumber",-1)
@@ -97,6 +99,7 @@ class Main3PostingTimeActivity : AppCompatActivity() {
             nextIntent.putExtra("selectedUserId",selectedUserId)
             nextIntent.putExtra("selectedId",selectedId)
             nextIntent.putExtra("requestNumber",requestNumber)
+            nextIntent.putExtra("postId",postId)
             nextIntent.putExtra("id",id)
             nextIntent.putExtra("userId",userId)
             nextIntent.putExtra("imagePartSize", imgPartArray.size)
@@ -107,6 +110,7 @@ class Main3PostingTimeActivity : AppCompatActivity() {
             }
 
             startActivity(nextIntent)
+            onBackPressedDispatcher.onBackPressed()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
     }

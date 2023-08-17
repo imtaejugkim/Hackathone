@@ -34,7 +34,9 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
     var id : Long = 0
     var selectedId : Long = 0
     var userId : String = ""
+    val selectedUserId : String = ""
     var requestNumber : Int = -1
+    var postId : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,8 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
         val receivedIntent = intent
         id = receivedIntent.getLongExtra("id", 0)
         userId = receivedIntent.getStringExtra("userId") + ""
+        postId = receivedIntent.getLongExtra("postId",0)
+        Log.d("userId",userId)
         requestNumber = receivedIntent.getIntExtra("requestNumber",-1)
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
         val imgPartArray = Array(4) { 0 }
@@ -61,12 +65,11 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
 
         adapter.setOnNameClickListener(object : AdapterMain3PostingRelaySearch.OnNameClickListener {
             override fun onNameClick(name: String) {
-
-
                 val parts = name.split("(", ")","(",")")
                 Log.d("parts",parts.toString())
                 val selectedName = parts[0].trim()
                 val selectedUserId = parts[1].trim()
+                Log.d("selectedUserId",selectedUserId)
                 val selectedId = parts[3].trim().toLong()
 
                 Log.d("selectedUserId",selectedUserId)
@@ -93,8 +96,10 @@ class Main3PostingRelaySearchActivity : AppCompatActivity() {
                     nextIntent.putExtra("id", id)
                     nextIntent.putExtra("requestNumber",requestNumber)
                     nextIntent.putExtra("userId",userId)
+                    nextIntent.putExtra("postId",postId)
 
                     startActivity(nextIntent)
+                    onBackPressedDispatcher.onBackPressed()
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
                 }
             }

@@ -79,9 +79,6 @@ class StartActivity : ComponentActivity() {
             googleLogin()
         }
 
-        binding.loginBtn.setOnClickListener {
-            setBasicLogin()
-        }
     }
 
     private fun init() {
@@ -195,7 +192,7 @@ class StartActivity : ComponentActivity() {
 
             i.putExtra("email", email)
             i.putExtra("displayName", displayName)
-
+            onBackPressedDispatcher.onBackPressed()
             startActivity(i)
         }
     }

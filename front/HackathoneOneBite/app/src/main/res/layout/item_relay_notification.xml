@@ -1,17 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginBottom="16dp"
     android:gravity="center_vertical">
 
-    <LinearLayout
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.12" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.88" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="parent"
         android:gravity="center">
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/notificationProfile"
@@ -24,38 +40,53 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@+id/guidelineStart"
+        app:layout_constraintTop_toTopOf="parent"
         android:layout_weight="5"
         android:orientation="vertical"
         android:layout_marginLeft="10dp">
-
-
-        <TextView
-            android:id="@+id/notificationName"
-            android:gravity="center"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:text="이름님이 릴레이를 신청하셨습니다"/>
-
-        <TextView
-            android:id="@+id/notificationTime"
-            android:layout_width="match_parent"
+            >
+            <TextView
+            android:id="@+id/notificationName"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/highlight"
-            android:text="12:23:01">
-        </TextView>
-    </LinearLayout>
+            android:gravity="center"
+            android:text="이름"
+            android:textColor="@color/black"
+            android:textSize="15dp"
+            android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/notificationBackText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15dp"
+                android:textColor="@color/black"
+                android:text="님이 릴레이를 신청하였습니다">
+            </TextView>
 
-    <Button
+        </LinearLayout>
+    </LinearLayout>
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/notificationButton"
-        android:layout_width="0dp"
+        app:layout_constraintStart_toEndOf="@+id/guidelineEnd"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@color/highlight"
+        app:shapeAppearanceOverlay="@style/CircleImageView"/>
+
+    <TextView
+        android:id="@+id/notificationText"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:text="수락"
-        android:background="@color/highlight"
+        app:layout_constraintStart_toStartOf="@+id/notificationButton"
+        app:layout_constraintEnd_toEndOf="@+id/notificationButton"
+        app:layout_constraintTop_toTopOf="@+id/notificationButton"
+        app:layout_constraintBottom_toBottomOf="@+id/notificationButton"
         android:textColor="@color/white">
-    </Button>
-</LinearLayout>
+    </TextView>
+</androidx.constraintlayout.widget.ConstraintLayout>

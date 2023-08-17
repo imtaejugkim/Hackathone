@@ -13,11 +13,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.hackathoneonebite.Data.Post
 import com.example.hackathoneonebite.MyApplication
 import com.example.hackathoneonebite.MyApplication.Companion.imageByteArrays
 import com.example.hackathoneonebite.R
 import com.example.hackathoneonebite.api.Main3UploadPostIsComplete
+import com.example.hackathoneonebite.api.Main5LoadProfileInfoResponse
 import com.example.hackathoneonebite.api.RetrofitBuilder
 import com.example.hackathoneonebite.databinding.ActivityMain3PostingNowUploadBinding
 import com.example.hackathoneonebite.main.MainFrameActivity
@@ -39,7 +41,9 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
     private var mediaPlayer: MediaPlayer? = null
     private var selectedMusicPosition = 0
     private var musicIsExist = false
+    val baseUrl: String = "http://203.252.139.231:8080/"
     private lateinit var images: Array<ByteArray> // image 변환 전 byteArray들
+    var id : Long = 0
 
     lateinit var binding: ActivityMain3PostingNowUploadBinding
     private val imageResources = arrayOf(
@@ -71,34 +75,14 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         val receivedIntent = intent
         val selectedName = receivedIntent.getStringExtra("selected_name")
         val receivedPost = receivedIntent.getSerializableExtra("post_data") as? Post
+        id = receivedIntent.getLongExtra("id",id)
 
-        Log.d("post",receivedPost.toString())
-
-        //Log.d("imagePartSize",imageSize.toString())
-
-        /*if (receivedPost != null) {
-            Log.d("PostDebug", "ID: ${receivedPost.userId}")
-            Log.d("PostDebug", "Like Count: ${receivedPost.likeCount}")
-            Log.d("PostDebug", "Date: ${receivedPost.date}")
-            Log.d("PostDebug", "Message: ${receivedPost.message}")
-            Log.d("PostDebug", "Theme: ${receivedPost.theme}")
-            Log.d("PostDebug", "Is Flipped: ${receivedPost.isFliped}")
-        }*/
-
-        //val imageByteArrays = ArrayList<ByteArray>()
-        /*for (i in 0 until 4) {
-            val byteArray = receivedIntent.getByteArrayExtra("imageByteArrays$i")
-            if (byteArray != null) {
-                imageByteArrays.add(byteArray)
-            }
-        }
-        Log.d("new 받음",imageByteArrays.toString())*/
-
+        loadProfileInfoMine(id)
 
         var theme = receivedPost?.theme
         var userId = receivedPost?.userId
 
-        binding.userName.text = "$selectedName"
+        binding.userId.text = userId.toString()
 
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
         val layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -161,7 +145,10 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
             MyApplication.imageByteArrays.clear()
 
             val intent = Intent(this@Main3PostingNowUploadActivity, MainFrameActivity::class.java)
+            intent.putExtra("userId",userId)
+            intent.putExtra("id",id)
             startActivity(intent)
+            onBackPressedDispatcher.onBackPressed()
             overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
         }
 
@@ -271,5 +258,53 @@ class Main3PostingNowUploadActivity : AppCompatActivity(),
         super.onDestroy()
         mediaPlayer?.release()
         mediaPlayer = null
+    }
+
+    private fun loadProfileInfoMine(id: Long) {
+        Log.d("Mine", "id : " + id.toString())
+        loadProfileInfoRequest(id, id)
+        Log.d("나 혼자",id.toString())
+    }
+
+    private fun loadProfileInfoRequest(targetId: Long, currentId: Long) {
+        val call = RetrofitBuilder.api.main5LoadProfileInfo(targetId, currentId)
+        call.enqueue(object : retrofit2.Callback<Main5LoadProfileInfoResponse> { // 비동기 방식 통신 메소드
+            override fun onResponse(
+                call: retrofit2.Call<Main5LoadProfileInfoResponse>,
+                response: retrofit2.Response<Main5LoadProfileInfoResponse>
+            ) {
+                Log.e("MAIN5PROFILE: LOAD PROFILE INFO0", response.raw().request.url.toString())
+                if(response.isSuccessful()){ // 응답 잘 받은 경우
+                    val data_profile = response.body()
+                    changeProfileImageMine(baseUrl + data_profile?.profileImageUrl)
+                    Log.d("이미지 url 내거",data_profile?.profileImageUrl.toString())
+                }else{
+                    // 통신 성공 but 응답 실패
+                    val errorBody = response.errorBody()?.string()
+                    if (!errorBody.isNullOrEmpty()) {
+                        try {
+                            val jsonObject = JSONObject(errorBody)
+                            val errorMessage = jsonObject.getString("error_message")
+                            Toast.makeText(this@Main3PostingNowUploadActivity, errorMessage, Toast.LENGTH_SHORT).show()
+                        } catch (e: JSONException) {
+                            Log.e("MAIN5PROFILE: LOAD PROFILE INFO3", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@Main3PostingNowUploadActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                        }
+                    } else {
+                        Toast.makeText(this@Main3PostingNowUploadActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+            override fun onFailure(call: retrofit2.Call<Main5LoadProfileInfoResponse>, t: Throwable) {
+                // 통신에 실패한 경우
+                Log.d("MAIN5PROFILE CONNECTION FAILURE: LOAD PROFILE INFO4", t.localizedMessage)
+            }
+        })
+    }
+
+    private fun changeProfileImageMine(url: String) {
+        Glide.with(this)
+            .load(url)
+            .into(binding.relayGiverProfile)
     }
 }

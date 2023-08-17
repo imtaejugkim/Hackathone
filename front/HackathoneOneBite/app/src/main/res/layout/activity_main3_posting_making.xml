@@ -100,7 +100,7 @@
     <include
         android:id="@+id/postImageLayoutFilm"
         layout="@layout/post_frame_film"
-        android:visibility="invisible"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.6"
@@ -125,7 +125,7 @@
     <include
         android:id="@+id/postImageLayout2"
         layout="@layout/post_frame2"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintHeight_percent="0.6"

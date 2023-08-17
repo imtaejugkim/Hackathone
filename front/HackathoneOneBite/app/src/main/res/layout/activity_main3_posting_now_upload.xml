@@ -110,6 +110,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@color/light_gray"
+            android:scaleType="centerCrop"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -143,30 +144,6 @@
         app:layout_constraintEnd_toEndOf="@+id/rightArrow"
         app:layout_constraintTop_toBottomOf="@id/guidelineRelayInfo">
         <TextView
-            android:text="작성자"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-        </TextView>
-        <TextView
-            android:id="@+id/userName"
-            android:text="NULL"
-            android:layout_width="0dp"
-            android:gravity="right"
-            android:layout_height="wrap_content"
-            android:layout_weight="1">
-        </TextView>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/linear2"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintHeight_percent="0.06"
-        app:layout_constraintStart_toStartOf="@id/leftArrow"
-        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
-        app:layout_constraintTop_toBottomOf="@id/linear1">
-        <TextView
             android:text="작성자 아이디"
             android:textSize="15dp"
             android:layout_width="0dp"
@@ -182,6 +159,18 @@
             android:layout_height="wrap_content"
             android:layout_weight="1">
         </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:id="@+id/linear2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintHeight_percent="0.06"
+        app:layout_constraintStart_toStartOf="@id/leftArrow"
+        app:layout_constraintEnd_toEndOf="@+id/rightArrow"
+        app:layout_constraintTop_toBottomOf="@id/linear1">
+
     </LinearLayout>
 
 

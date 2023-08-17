@@ -26,6 +26,8 @@ class NotificationActivity : AppCompatActivity() {
     lateinit var binding: ActivityNotificationBinding
     private var notificationList = mutableListOf<NotificationItem>()
     lateinit var adapter: AdapterNotification
+    var userId = ""
+    var id:Long = 0
 
 
 
@@ -33,8 +35,8 @@ class NotificationActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityNotificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        val userId = intent.getStringExtra("userId")
-        val id = intent.getLongExtra("id",0)
+        userId = intent.getStringExtra("userId")?:""
+        id = intent.getLongExtra("id",0)
 
         val leftArrow = binding.leftArrow
         leftArrow.setOnClickListener {
@@ -42,7 +44,7 @@ class NotificationActivity : AppCompatActivity() {
             overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         }
 
-        adapter = AdapterNotification(notificationList)
+        adapter = AdapterNotification(this, notificationList)
         binding.recyclerView.adapter = adapter
         binding.recyclerView.layoutManager = LinearLayoutManager(this)
 
@@ -51,6 +53,10 @@ class NotificationActivity : AppCompatActivity() {
         Log.d("userId",userId.toString())
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadNotificationRequest(this.id)
+    }
 
 
     private fun loadNotificationRequest(userId : Long) {
@@ -63,7 +69,7 @@ class NotificationActivity : AppCompatActivity() {
                 Log.e("Notification: LOAD POST INFO0", response.raw().request.url.toString())
                 if (response.isSuccessful()) {
                     val userResponse = response.body()
-                    notificationList.clear() // Clear the list before adding new items
+                    notificationList.clear()
 
                     val notificationItems = userResponse?.map {
                         NotificationItem(
@@ -73,13 +79,14 @@ class NotificationActivity : AppCompatActivity() {
                             it.createdAt,
                             it.userName,
                             it.remainingTime,
-                            it.postId
+                            it.postId,
+                            it.profileUrl
                         )
                     }
 
                     if (notificationItems != null) {
                         notificationList.addAll(notificationItems)
-                        adapter.notifyDataSetChanged() // Notify the adapter about the changes
+                        adapter.notifyDataSetChanged()
                     }
                 }else{
                     // 통신 성공 but 응답 실패
@@ -90,6 +97,7 @@ class NotificationActivity : AppCompatActivity() {
                             val errorMessage = jsonObject.getString("error_message")
                         } catch (e: JSONException) {
                             Log.e("Notification: LOAD POST INFO2", "Failed to parse error response: $errorBody")
+                            Toast.makeText(this@NotificationActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
 
                             }
                     } else {
@@ -100,6 +108,7 @@ class NotificationActivity : AppCompatActivity() {
             override fun onFailure(call: Call<List<NotificationLoadResponse>>, t: Throwable) {
                 // 통신에 실패한 경우
                 Log.d("MAIN5PROFILE CONNECTION FAILURE: LOAD POST INFO3", t.localizedMessage)
+                Toast.makeText(this@NotificationActivity, "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
 
             }
 

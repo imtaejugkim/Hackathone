@@ -44,7 +44,7 @@ public interface API {
     @POST("/api/upload/relay")
     fun relayPost(
         @Part("postId") postId: RequestBody,
-        @Part("userId") userId: RequestBody,
+        @Part("user") userId: RequestBody,
         @Part("remainingSeconds") remainingSeconds : RequestBody
     ): Call<Main3RelayPostIsComplete>
 

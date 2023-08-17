@@ -111,6 +111,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@color/light_gray"
+            android:scaleType="centerCrop"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

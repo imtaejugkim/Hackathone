@@ -24,8 +24,8 @@ data class NotificationLoadResponse(
     @SerializedName("userId") val userId : String,
     @SerializedName("userName") val userName : String,
     @SerializedName("remainingTime") val remainingTime : String,
-    @SerializedName("postId") val postId : Long
-
+    @SerializedName("postId") val postId : Long,
+    @SerializedName("userProfileUrl") val profileUrl: String
     )
 
 data class Main3RelaySearchResponse(

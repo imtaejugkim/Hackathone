@@ -43,6 +43,7 @@ class SignInActivity : AppCompatActivity() {
         val nextIntent = Intent(this, MainFrameActivity::class.java)
         nextIntent.putExtra("id", id)
         nextIntent.putExtra("userId", binding.userId.text.toString())
+        onBackPressedDispatcher.onBackPressed()
         startActivity(nextIntent)
     }
 
